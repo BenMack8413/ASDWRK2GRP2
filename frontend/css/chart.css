@@ -1,0 +1,15 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    height: 400px; /* Important: canvas needs height */
+    margin: 40px auto;
+    position: relative;
+    border: 1px solid #007BFF;
+    padding: 10px;
+    box-sizing: border-box;
+}
