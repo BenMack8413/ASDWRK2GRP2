@@ -144,6 +144,68 @@ h3{
     margin-top:6px;
 }
 
+.widgets{
+    display:grid; 
+    grid-template-columns: 1fr; 
+    gap:18px;
+}
+
+.widget{
+    background:var(--panel); 
+    padding:18px; 
+    border-radius:14px; 
+    box-shadow:var(--card-shadow);
+}
+
+.widget.dragging{
+    opacity:0.6;
+}
+
+.widget-header{
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:8px;
+}
+
+.btn{
+    background:var(--soft); 
+    border:none; 
+    padding:8px 10px; 
+    border-radius:10px; 
+    cursor:pointer;
+}
+
+.btn.primary{
+    background:var(--accent); 
+    color:#fff;
+}
+
+.chart-wrap{
+    height:240px;
+}
+
+.layout-controls{
+    display:flex; 
+    gap:8px; 
+    align-items:center;
+}
+
+@media (max-width:1800px){
+  .sidebar{
+    position:static;
+    width:220px;
+    border-radius:20px;
+    padding:28px;
+}
+  .main{
+    margin-left:0; 
+    padding-right:16px;
+}
+  .dashboard{
+    padding:16px
+}
+}
 /* -------- Dashboard End -------- */
 
 </style>
@@ -176,6 +238,9 @@ h3{
 
     <!-- Main starts here -->
     <main class="main">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+            <h3>Dashboard</h3>
+        </div>
       <div class="top_row">
         <div class="card small">
           <div class="widget_header">
@@ -202,3 +267,30 @@ h3{
           </div>
         </div>
       </div>
+      <section>
+          <div class="widget" draggable="true" data-id="widget-pie" id="widget-pie">
+            <div class="widget-header">
+              <div>
+                <h3>Spending by category</h3>
+                <div class="muted">This month</div>
+              </div>
+            </div>
+            <div style="margin-top:12px; height:220px">
+              <canvas id="spendPie"></canvas>
+            </div>
+          </div>
+
+          <div class="widget" draggable="true" data-id="widget-activity" id="widget-activity">
+            <div class="widget-header">
+              <div>
+                <h3>Activity</h3>
+                <div class="muted">Income vs Spending</div>
+              </div>
+            </div>
+            <div style="margin-top:12px; height:280px">
+              <canvas id="activityBar"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
