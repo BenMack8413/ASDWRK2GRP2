@@ -1,210 +1,209 @@
-<!--HEADER COPY START HERE-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <!-- <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}"> -->
-    <!-- <script src="{{ url_for('serve_js', filename='script.js') }}"></script> -->
+    <title>Budget</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    /* -------- Universal Root Start -------- */
+    :root{
+        --bg:#f3f6fb;
+        --panel:#ffffff;
+        --accent:#1062cd;
+        --accent-2:#083880;
+        --muted:#8b94a6;
+        --card_shadow: 0 6px 18px rgba(32,41,78,0.06);
+    }
+    *{box-sizing:border-box}
+    body{
+        margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        background: linear-gradient(180deg,var(--bg), var(--panel)); color:#111;
+        height: 100vh;
+        overflow: hidden;
+    }
+    /* -------- Universal Root End -------- */
 
-    <!-- CSS here for now -->
-<style>
-/* -------- Universal Root Start -------- */
-:root{
-    --bg:#f3f6fb;
-    --panel:#ffffff;
-    --accent:#1062cd;
-    --accent-2:#083880;
-    --muted:#8b94a6;
-    --card_shadow: 0 6px 18px rgba(32,41,78,0.06);
-}
-*{box-sizing:border-box}
-body{
-    margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    background: linear-gradient(180deg,var(--bg), var(--panel)); color:#111;
-}
-/* -------- Universal Root End -------- */
+    /* -------- Dashboard Start -------- */
+    .dashboard{
+      display:flex;
+      min-height:100vh;
+      gap:24px;
+      padding:28px 28px 28px 0;
+      align-items:stretch;
+    }
 
-/* -------- Dashboard Start -------- */
-.dashboard{
-  display:flex;
-  min-height:100vh;
-  gap:24px;
-  padding:28px 28px 28px 0;
-  align-items:stretch;
-}
+    .sidebar{
+      position:fixed;
+      left:0;
+      top:0;
+      bottom:0;
+      width:260px;
+      padding:32px 28px;     
+      background:linear-gradient(180deg,var(--accent),var(--accent-2));
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      z-index:50;
+    }
 
-.sidebar{
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
-  width:260px;
-  padding:32px 28px;     
-  background:linear-gradient(180deg,var(--accent),var(--accent-2));
-  color:#fff;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  z-index:50;
-}
+    .budget_name{
+        font-weight:700;
+    }
 
-.budget_name{
-    font-weight:700;
-}
+    .balance{
+        font-size:20px; 
+        opacity:0.9;
+    }
 
-.balance{
-    font-size:20px; 
-    opacity:0.9;
-}
+    .balance_amount{
+        font-size:28px; 
+        font-weight:700; 
+        margin-top:6px;
+    }
 
-.balance_amount{
-    font-size:28px; 
-    font-weight:700; 
-    margin-top:6px;
-}
+    .nav{
+        display:flex; 
+        flex-direction:column; 
+        gap:12px; 
+        margin-top:6px;
+    }
 
-.nav{
-    display:flex; 
-    flex-direction:column; 
-    gap:12px; 
-    margin-top:6px;
-}
+    .nav a{
+        color:rgba(255, 255, 255, 0.9); 
+        text-decoration:none; display:flex; gap:10px; 
+        align-items:center; 
+        padding:8px 10px; 
+        border-radius:10px;
+    }
 
-.nav a{
-    color:rgba(255, 255, 255, 0.9); 
-    text-decoration:none; display:flex; gap:10px; 
-    align-items:center; 
-    padding:8px 10px; 
-    border-radius:10px;
-}
+    .nav a.active{
+        background:rgba(255,255,255,0.08);
+    }
 
-.nav a.active{
-    background:rgba(255,255,255,0.08);
-}
+    .main{
+      margin-left: 280px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      min-width:0;
+      padding-right:28px;
+      height: 100vh;
+      overflow-y: auto;
+    }
 
-.main{
-  margin-left: 280px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  min-width:0;
-  padding-right:28px;
-}
+    .top_row{
+        display:flex; 
+        gap:18px; 
+        align-items:flex-start;
+    }
 
-.top_row{
-    display:flex; 
-    gap:18px; 
-    align-items:flex-start;
-}
+    .card{
+        background:var(--panel); 
+        border-radius:14px; padding:18px; 
+        box-shadow:var(--card_shadow);
+    }
+    .card.small{
+        flex:0 0 260px;
+    }
 
-.card{
-    background:var(--panel); 
-    border-radius:14px; padding:18px; 
-    box-shadow:var(--card_shadow);
-}
-.card.small{
-    flex:0 0 260px;
-}
+    .card.medium{
+        flex:1;
+    }
 
-.card.medium{
-    flex:1;
-};
+    .card.half{
+        flex:0 0 420px;
+    }
 
-.card.half{
-    flex:0 0 420px;
-}
+    .grid{
+        display:grid; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap:18px;
+    }
 
-.grid{
-    display:grid; 
-    grid-template-columns: 
-    repeat(2, 1fr); 
-    gap:18px;
-}
+    h3{
+        margin:0; 
+        font-size:18px;
+    }
 
-h3{
-    margin:0; 
-    font-size:18px;
-}
+    .muted{
+        color:var(--muted); 
+        font-size:13px;
+    }
 
-.muted{
-    color:var(--muted); 
-    font-size:13px;
-}
+    .big-num{
+        font-size:26px; 
+        font-weight:700;
+    }
 
-.big-num{
-    font-size:26px; 
-    font-weight:700;
-}
+    .sub{
+        font-size:13px; 
+        color:var(--muted); 
+        margin-top:6px;
+    }
 
-.sub{
-    font-size:13px; 
-    color:var(--muted); 
-    margin-top:6px;
-}
+    .widgets{
+        display:grid; 
+        grid-template-columns: 1fr; 
+        gap:18px;
+    }
 
-.widgets{
-    display:grid; 
-    grid-template-columns: 1fr; 
-    gap:18px;
-}
+    .widget{
+        background:var(--panel); 
+        padding:18px; 
+        border-radius:14px; 
+        box-shadow:var(--card_shadow);
+    }
 
-.widget{
-    background:var(--panel); 
-    padding:18px; 
-    border-radius:14px; 
-    box-shadow:var(--card-shadow);
-}
+    .widget.dragging{
+        opacity:0.6;
+    }
 
-.widget.dragging{
-    opacity:0.6;
-}
+    .widget-header{
+        display:flex; 
+        align-items:center; 
+        justify-content:space-between; 
+        gap:8px;
+    }
 
-.widget-header{
-    display:flex; 
-    align-items:center; 
-    justify-content:space-between; 
-    gap:8px;
-}
+    .chart-wrap{
+        height:240px;
+    }
 
-.chart-wrap{
-    height:240px;
-}
+    .layout-controls{
+        display:flex; 
+        gap:8px; 
+        align-items:center;
+    }
 
-.layout-controls{
-    display:flex; 
-    gap:8px; 
-    align-items:center;
-}
+    .transactions{
+        display:flex; 
+        flex-direction:column; 
+        gap:12px; 
+        padding:12px;
+    }
 
-.transactions{
-    display:flex; 
-    flex-direction:column; 
-    gap:12px; 
-    padding:12px;
-}
+    .tx{
+        display:flex; 
+        align-items:center; 
+        justify-content:space-between; 
+        gap:12px;
+    }
 
-.tx{
-    display:flex; 
-    align-items:center; 
-    justify-content:space-between; 
-    gap:12px;
-}
+    .tx.meta{
+        display:flex; 
+        gap:10px; 
+        align-items:center;
+    }
 
-  .tx.meta{
-    display:flex; 
-    gap:10px; 
-    align-items:center;
-}
-
-  .dot{
-    width:36px; 
-    height:36px; 
-    border-radius:10px; 
-    display:grid; 
-    place-items:center;
-}
+    .dot{
+        width:36px; 
+        height:36px; 
+        border-radius:10px; 
+        display:grid; 
+        place-items:center;
+    }
 
     /* Budget-specific styles */
     .budget-grid {
@@ -433,7 +432,7 @@ h3{
     
     .category-header {
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr;
         padding: 12px 0;
         font-weight: 600;
         border-bottom: 1px solid #eee;
@@ -442,10 +441,38 @@ h3{
     
     .category-row {
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr;
         padding: 12px 0;
         border-bottom: 1px solid #f5f5f5;
         font-size: 14px;
+        align-items: center;
+    }
+    
+    .category-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+    }
+    
+    .icon-entertainment {
+        background-color: #8b5cf6;
+    }
+    
+    .icon-transportation {
+        background-color: #3b82f6;
+    }
+    
+    .icon-eating {
+        background-color: #ec4899;
+    }
+    
+    .icon-education {
+        background-color: #10b981;
     }
     
     .status-badge {
@@ -500,14 +527,13 @@ h3{
         padding-right:16px;
     }
       .dashboard{
-        padding:16px;
+        padding:16px
     }
     }
     /* -------- Dashboard End -------- */
-
-</style>
-<!-- CSS here for now -->
+    </style>
 </head>
+
 <body>
   <div class="dashboard">
     <!--LEFT SIDE BAR STARTS HERE-->
@@ -532,8 +558,8 @@ h3{
     <!-- Main starts here -->
     <main class="main">
         <div style="display:flex; justify-content:space-between; align-items:center">
-            <h3>Budgets</h3>
-        </div>
+            <h3>Budget</h3>
+        </div>   
         <div class="budget-grid">
             <div class="card budget-card">
                 <div class="budget-card-header">
@@ -690,6 +716,7 @@ h3{
                 <div class="budget-category">
                     <h3 style="margin-bottom: 16px;">Budget Category</h3>
                     <div class="category-header">
+                        <div></div>
                         <div>Budget</div>
                         <div>Monthly Limit</div>
                         <div>Spent Today</div>
@@ -697,6 +724,9 @@ h3{
                         <div>Status</div>
                     </div>
                     <div class="category-row">
+                        <div class="category-icon">
+
+                        </div>
                         <div>Entertainment</div>
                         <div>$48.00</div>
                         <div>$28.00</div>
@@ -704,6 +734,8 @@ h3{
                         <div><span class="status-badge status-on-track">On Track</span></div>
                     </div>
                     <div class="category-row">
+                        <div class="category-icon">
+                        </div>
                         <div>Transportation</div>
                         <div>$25.00</div>
                         <div>$15.00</div>
@@ -727,5 +759,26 @@ h3{
     </main>
   </div>
 
+<script>
+    // Simple interaction for filter buttons
+    document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+
+    // Simple interaction for month selection
+    document.querySelectorAll('.month').forEach(month => {
+        month.addEventListener('click', function() {
+            document.querySelectorAll('.month').forEach(m => {
+                m.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+</script>
 </body>
 </html>
