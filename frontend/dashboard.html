@@ -168,19 +168,6 @@ h3{
     gap:8px;
 }
 
-.btn{
-    background:var(--soft); 
-    border:none; 
-    padding:8px 10px; 
-    border-radius:10px; 
-    cursor:pointer;
-}
-
-.btn.primary{
-    background:var(--accent); 
-    color:#fff;
-}
-
 .chart-wrap{
     height:240px;
 }
@@ -241,12 +228,18 @@ h3{
         <div style="display:flex; justify-content:space-between; align-items:center">
             <h3>Dashboard</h3>
         </div>
-      <div class="top_row">
+        <div class="top_row">
         <div class="card small">
           <div class="widget_header">
             <div><h3>Current Balance</h3></div>
               <div class="balance_amount">$99,999</div>
               </div>
+        </div>
+        <div class="card">
+        <h3 style="margin-bottom:8px">Latest transactions</h3>
+            <div id="miniTx" style="display:flex; flex-direction:column; gap:8px">
+            <!-- small tx preview -->
+            </div>
         </div>
         <div class="card medium">
           <div class="widget_header">
