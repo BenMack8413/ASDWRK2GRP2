@@ -2,8 +2,8 @@
 :root{
     --bg:#f3f6fb;
     --panel:#ffffff;
-    --accent:#3b5bd8;
-    --accent-2:#2c3ebf;
+    --accent:#1062cd;
+    --accent-2:#083880;
     --muted:#8b94a6;
     --card_shadow: 0 6px 18px rgba(32,41,78,0.06);
 }
@@ -81,5 +81,133 @@ body{
   padding-right:28px;
 }
 
+.top_row{
+    display:flex; 
+    gap:18px; 
+    align-items:flex-start;
+}
+
+.card{
+    background:var(--panel); 
+    border-radius:14px; padding:18px; 
+    box-shadow:var(--card_shadow);
+}
+.card.small{
+    flex:0 0 260px;
+}
+
+.card.medium{
+    flex:1;
+};
+
+.card.half{
+    flex:0 0 420px;
+}
+
+.grid{
+    display:grid; 
+    grid-template-columns: 
+    repeat(2, 1fr); 
+    gap:18px;
+}
+
+h3{
+    margin:0; 
+    font-size:18px;
+}
+
+.muted{
+    color:var(--muted); 
+    font-size:13px;
+}
+
+.big-num{
+    font-size:26px; 
+    font-weight:700;
+}
+
+.sub{
+    font-size:13px; 
+    color:var(--muted); 
+    margin-top:6px;
+}
+
+.widgets{
+    display:grid; 
+    grid-template-columns: 1fr; 
+    gap:18px;
+}
+
+.widget{
+    background:var(--panel); 
+    padding:18px; 
+    border-radius:14px; 
+    box-shadow:var(--card-shadow);
+}
+
+.widget.dragging{
+    opacity:0.6;
+}
+
+.widget-header{
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:8px;
+}
+
+.chart-wrap{
+    height:240px;
+}
+
+.layout-controls{
+    display:flex; 
+    gap:8px; 
+    align-items:center;
+}
+
+.transactions{
+    display:flex; 
+    flex-direction:column; 
+    gap:12px; 
+    padding:12px;
+}
+
+.tx{
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:12px;
+}
+
+  .tx.meta{
+    display:flex; 
+    gap:10px; 
+    align-items:center;
+}
+
+  .dot{
+    width:36px; 
+    height:36px; 
+    border-radius:10px; 
+    display:grid; 
+    place-items:center;
+}
+
+@media (max-width:1800px){
+  .sidebar{
+    position:static;
+    width:220px;
+    border-radius:20px;
+    padding:28px;
+}
+  .main{
+    margin-left:0; 
+    padding-right:16px;
+}
+  .dashboard{
+    padding:16px
+}
+}
 
 /* -------- Dashboard End -------- */
