@@ -1,4 +1,5 @@
 
+/* -------- Dashboard Start -------- */
 const sample = {
   recentTx: [
     { id:1, title:'Deposit to Amex', date:'2 September', amount:-1230 },
@@ -123,3 +124,5 @@ function resetLayout(){ try{ localStorage.removeItem(LAYOUT_KEY); localStorage.r
   initCharts();
   loadLayout();
 })();
+
+/* -------- Dashboard End -------- */
