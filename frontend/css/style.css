@@ -1,0 +1,16 @@
+/* -------- DASHBOARD START -------- */
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:260px;                  
+  padding:32px 28px;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  z-index:50;
+}
+
+/* -------- DASHBOARD END -------- */
