@@ -9,3 +9,26 @@
     <script src="{{ url_for('serve_js', filename='script.js') }}"></script>
 </head>
 <!--HEADER COPY END HERE-->
+
+<body>
+  <div class="dashboard">
+    <!--LEFT SIDE BAR STARTS HERE-->
+    <aside class="sidebar">
+      <div class="budget_name">MyBudget</div>
+      <div>
+        <div class="balance">Current balance</div>
+        <div class="balance_amount">$9,999</div>
+      </div>
+      <nav class="nav">
+        <a class="active" onclick="location.href='/dashboard';">Dashboard</a>
+        <a onclick="location.href='#';">Budget</a>
+        <!-- <a href="#">Charts</a> -->
+        <a onclick="location.href='#';">Reports</a>
+        <a onclick="location.href='#';">Schedules</a>
+        <a onclick="location.href='#';">Charts</a>
+        <a onclick="location.href='#';">Calendar</a>
+        <a onclick="location.href='#';">Messages</a>
+        <a onclick="location.href='#';">Settings</a>
+      </nav>
+    </aside>
+    <!--LEFT SIDE BAR END HERE-->
