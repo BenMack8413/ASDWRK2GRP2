@@ -235,7 +235,7 @@ h3{
     <main class="main">
         <div style="display:flex; justify-content:space-between; align-items:center">
             <h3>Budgets</h3>
-        </div> 
+        </div>
         <div class="budget-grid">
             <div class="card budget-card">
                 <div class="budget-card-header">
@@ -288,6 +288,146 @@ h3{
                 </div>
             </div>
         </div>
+
+        <div class="main-content">
+            <div class="left-column">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="time-filters">
+                            <button class="filter-btn active">Monthly</button>
+                            <button class="filter-btn">Weekly</button>
+                            <button class="filter-btn">Export</button>
+                        </div>
+                    </div>
+
+                    <div class="month-scroller">
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 40%"></div>
+                            </div>
+                            Jan
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 60%"></div>
+                            </div>
+                            Feb
+                        </div>
+                        <div class="month active">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 85%"></div>
+                            </div>
+                            Mar
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 30%"></div>
+                            </div>
+                            Apr
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 25%"></div>
+                            </div>
+                            May
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 50%"></div>
+                            </div>
+                            Jun
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 70%"></div>
+                            </div>
+                            Jul
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 65%"></div>
+                            </div>
+                            Aug
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 45%"></div>
+                            </div>
+                            Sep
+                        </div>
+                        <div class="month">
+                            <div class="month-bar">
+                                <div class="month-progress" style="height: 35%"></div>
+                            </div>
+                            Oct
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="budget-card-subtitle">Monthly</div>
+                        <div class="budget-card-title">March 13, 2024</div>
+                        <div class="stat-value">$3,400</div>
+                        <div class="budget-card-subtitle">Budget</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="budget-card-subtitle">Expected</div>
+                        <div class="budget-card-title">Export</div>
+                        <div class="stat-value">$350.00</div>
+                        <div class="budget-card-subtitle">Bill Sale</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="budget-card-subtitle">Running Budget</div>
+                        <div class="budget-card-title">Today</div>
+                        <div class="stat-value">$350.00</div>
+                        <div class="budget-card-subtitle">The amount that can be spent</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="budget-category">
+                    <h3 style="margin-bottom: 16px;">Budget Category</h3>
+                    <div class="category-header">
+                        <div>Budget</div>
+                        <div>Monthly Limit</div>
+                        <div>Spent Today</div>
+                        <div>Remaining</div>
+                        <div>Status</div>
+                    </div>
+                    <div class="category-row">
+                        <div>Entertainment</div>
+                        <div>$48.00</div>
+                        <div>$28.00</div>
+                        <div>$25.00</div>
+                        <div><span class="status-badge status-on-track">On Track</span></div>
+                    </div>
+                    <div class="category-row">
+                        <div>Transportation</div>
+                        <div>$25.00</div>
+                        <div>$15.00</div>
+                        <div>$10.00</div>
+                        <div><span class="status-badge status-near-limit">Near Limit</span></div>
+                    </div>
+
+                    <div class="category-chips">
+                        <div class="category-chip">
+                            <i class="fas fa-utensils"></i>
+                            <span>Eating & Drinking: $45.00</span>
+                        </div>
+                        <div class="category-chip">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Education: $95.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+  </div>
 
 </body>
 </html>
