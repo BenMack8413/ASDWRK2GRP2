@@ -126,3 +126,23 @@ function resetLayout(){ try{ localStorage.removeItem(LAYOUT_KEY); localStorage.r
 })();
 
 /* -------- Dashboard End -------- */
+
+/* -------- Budget Start -------- */
+    document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+
+    document.querySelectorAll('.month').forEach(month => {
+        month.addEventListener('click', function() {
+            document.querySelectorAll('.month').forEach(m => {
+                m.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+/* -------- Budget End -------- */
