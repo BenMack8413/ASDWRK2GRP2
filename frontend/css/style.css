@@ -22,4 +22,38 @@
   z-index:50;
 }
 
+.budget_name{
+    font-weight:700
+}
+
+.balance{
+    font-size:20px; 
+    opacity:0.9
+}
+
+.balance_amount{
+    font-size:28px; 
+    font-weight:700; 
+    margin-top:6px
+}
+
+.nav{
+    display:flex; 
+    flex-direction:column; 
+    gap:12px; 
+    margin-top:6px
+}
+
+.nav a{
+    color:rgba(255, 255, 255, 0.9); 
+    text-decoration:none; display:flex; gap:10px; 
+    align-items:center; 
+    padding:8px 10px; 
+    border-radius:10px
+}
+
+.nav a.active{
+    background:rgba(255,255,255,0.08)
+}
+
 /* -------- DASHBOARD END -------- */
