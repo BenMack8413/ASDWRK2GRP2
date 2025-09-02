@@ -10,7 +10,21 @@
 
     <!-- CSS here for now -->
 <style>
+/* -------- Universal Root Start -------- */
+:root{
+    --bg:#f3f6fb;
+    --panel:#ffffff;
+    --accent:#3b5bd8;
+    --accent-2:#2c3ebf;
+}
+*{box-sizing:border-box}
+body{
+    margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    background: linear-gradient(180deg,var(--bg), var(--panel)); color:#111;
+}
+/* -------- Universal Root End -------- */
 
+/* -------- Dashboard Start -------- */
 .dashboard{
   display:flex;
   min-height:100vh;
@@ -26,7 +40,7 @@
   bottom:0;
   width:260px;
   padding:32px 28px;     
-  background:#3b5bd8;
+  background:linear-gradient(180deg,var(--accent),var(--accent-2));
   color:#fff;
   display:flex;
   flex-direction:column;
@@ -67,6 +81,7 @@
 .nav a.active{
     background:rgba(255,255,255,0.08)
 }
+/* -------- Dashboard End -------- */
 
 </style>
 <!-- CSS here for now -->
@@ -80,7 +95,7 @@
       <div class="budget_name">My Budget</div>
       <div>
         <div class="balance">Current balance</div>
-        <div class="balance_amount">$9,999</div>
+        <div class="balance_amount">$99,999</div>
       </div>
       <nav class="nav">
         <a class="active" onclick="location.href='/dashboard';">Dashboard</a>
