@@ -1,11 +1,20 @@
 /* -------- DASHBOARD START -------- */
+.dashboard{
+  display:flex;
+  min-height:100vh;
+  gap:24px;
+  padding:28px 28px 28px 0;
+  align-items:stretch;
+}
+
 .sidebar{
   position:fixed;
   left:0;
   top:0;
   bottom:0;
-  width:260px;                  
-  padding:32px 28px;
+  width:260px;
+  padding:32px 28px;     
+  background:#3b5bd8;
   color:#fff;
   display:flex;
   flex-direction:column;

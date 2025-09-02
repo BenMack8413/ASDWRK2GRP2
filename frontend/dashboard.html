@@ -5,8 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}">
-    <script src="{{ url_for('serve_js', filename='script.js') }}"></script>
+    <!-- <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}"> -->
+    <!-- <script src="{{ url_for('serve_js', filename='script.js') }}"></script> -->
+
+    <!-- CSS here for now -->
+<style>
+
+.dashboard{
+  display:flex;
+  min-height:100vh;
+  gap:24px;
+  padding:28px 28px 28px 0;
+  align-items:stretch;
+}
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:260px;
+  padding:32px 28px;     
+  background:#3b5bd8;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  z-index:50;
+}
+
+</style>
+<!-- CSS here for now -->
 </head>
 <!--HEADER COPY END HERE-->
 
