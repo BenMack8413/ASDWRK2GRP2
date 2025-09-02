@@ -3,14 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Expenses Chart</title>
-    <link rel="stylesheet" href="css/chart.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <ul>
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="budget.html">Budget</a></li>
-        <li><a href="chart.html" class="active">Charts</a></li>
-    </ul>
+    <aside class="sidebar">
+      <div class="budget_name">My Budget</div>
+      <div>
+        <div class="balance">Menu</div>
+      </div>
+      <nav class="nav">
+        <a onclick="location.href='/dashboard';">Dashboard</a>
+        <a onclick="location.href='/budget';">Budget</a>
+        <!-- <a href="#">Charts</a> -->
+        <a onclick="location.href='/reports';">Reports</a>
+        <a onclick="location.href='/schedules';">Schedules</a>
+        <a class="active" onclick="location.href='/charts';">Charts</a>
+        <a onclick="location.href='/calendar';">Calendar</a>
+        <a onclick="location.href='/messages';">Messages</a>
+        <a onclick="location.href='/settings';">Settings</a>
+      </nav>
+    </aside>
 
     <h2>Expenses by Category</h2>
     <div class="chart-container">
