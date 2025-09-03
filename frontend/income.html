@@ -852,3 +852,25 @@ h3{
     </main>
   </div>
 </body>
+
+<script>
+const showIncomeFormBtn = document.getElementById('showIncomeForm');
+const incomeForm = document.getElementById('incomeForm');
+
+let incomes = [
+    { id: 1, source: 'Salary', amount: 2500.00, date: '2025-09-01', frequency: 'monthly', description: 'Monthly salary', recurring: true },
+    { id: 2, source: 'Social Media', amount: 750.00, date: '2025-08-28', frequency: 'one-time', description: 'Website design project', recurring: false },
+    { id: 3, source: 'Rental Income', amount: 1200.00, date: '2025-08-15', frequency: 'monthly', description: 'Apartment rental', recurring: true },
+    { id: 4, source: 'Dividend Stocks', amount: 350.00, date: '2025-08-10', frequency: 'fortnightly', description: 'Investment dividends', recurring: true }
+];
+
+showIncomeFormBtn.addEventListener('click', () => {
+    incomeForm.classList.add('visible');
+});
+
+function hideIncomeForm() {
+    incomeForm.classList.remove('visible');
+    incomeEntryForm.reset();
+}
+
+</script>
