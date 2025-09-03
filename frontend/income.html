@@ -860,6 +860,10 @@ const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
 const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
 const incomeFrequency = document.getElementById('incomeFrequency');
 const incomeEntryForm = document.getElementById('incomeEntryForm');
+const recurringOptions = document.getElementById('recurringOptions');
+const incomeList = document.getElementById('incomeList');
+const searchIncome = document.getElementById('searchIncome');
+const sortIncome = document.getElementById('sortIncome');
 
 let incomes = [
     { id: 1, source: 'Salary', amount: 2500.00, date: '2025-09-01', frequency: 'monthly', description: 'Monthly salary', recurring: true },
@@ -917,4 +921,89 @@ incomeEntryForm.addEventListener('submit', function(e) {
     alert('Income added successfully!');
 });
 
+function renderIncomes() {
+
+    incomeList.innerHTML = '';
+    
+    let filteredIncomes = [...incomes];
+
+    const searchTerm = searchIncome.value.toLowerCase();
+    if (searchTerm) {
+        filteredIncomes = filteredIncomes.filter(income => 
+            income.source.toLowerCase().includes(searchTerm) ||
+            income.description.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    const sortValue = sortIncome.value;
+    filteredIncomes.sort((a, b) => {
+        switch(sortValue) {
+            case 'date-asc':
+                return new Date(a.date) - new Date(b.date);
+            case 'date-desc':
+                return new Date(b.date) - new Date(a.date);
+            case 'amount-asc':
+                return a.amount - b.amount;
+            case 'amount-desc':
+                return b.amount - a.amount;
+            case 'source':
+                return a.source.localeCompare(b.source);
+            default:
+                return new Date(b.date) - new Date(a.date);
+        }
+    });
+
+    filteredIncomes.forEach(income => {
+        const row = document.createElement('tr');
+        row.className = 'income-row';
+
+        const dateObj = new Date(income.date);
+        const formattedDate = dateObj.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        let frequencyClass = '';
+        if (income.frequency === 'monthly') frequencyClass = 'frequency-monthly';
+        else if (income.frequency === 'weekly') frequencyClass = 'frequency-weekly';
+        else if (income.frequency === 'fortnightly') frequencyClass = 'frequency-fortnightly';
+        
+        row.innerHTML = `
+            <td>
+                <div class="income-source">
+                    <div class="source-icon">
+                        <i class="fas ${getIconForSource(income.source)}"></i>
+                    </div>
+                    <div>${income.source}</div>
+                </div>
+            </td>
+            <td class="income-amount">$${income.amount.toFixed(2)}</td>
+            <td>${formattedDate}</td>
+            <td><span class="income-frequency ${frequencyClass}">${income.frequency.charAt(0).toUpperCase() + income.frequency.slice(1)}</span></td>
+            <td>
+                <div class="income-actions">
+                    <button class="edit-btn" data-id="${income.id}"><i class="fas fa-edit"></i></button>
+                    <button class="delete-btn" data-id="${income.id}"><i class="fas fa-trash"></i></button>
+                </div>
+            </td>
+        `;
+        
+        incomeList.appendChild(row);
+    });
+    
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = parseInt(this.getAttribute('data-id'));
+            editIncome(id);
+        });
+    });
+    
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = parseInt(this.getAttribute('data-id'));
+            deleteIncome(id);
+        });
+    });
+}
 </script>
