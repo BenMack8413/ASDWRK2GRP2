@@ -65,4 +65,26 @@ const createTransactionAtomic = db.transaction(payload => {
   return transaction_id;
 });
 
-module.exports = { db, createTransactionAtomic };
+// adds new user to the and returns the user_id
+function addUser(db, username, email, passwordHash) {
+  if (!username || !email || !passwordHash) {
+    throw new Error('Username, email, and passwordHash are required');
+  }
+
+  try {
+    const statement = db.prepare(`
+      INSERT INTO users (username, email, password_hash)
+      VALUES (?, ?, ?)
+    `);
+    const info = statement.run(username, email, passwordHash);
+    return info.lastInsertRowid; // the new user_id
+  } catch (err) {
+    // handle unique constraint violations
+    if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+      throw new Error('Username or email already exists');
+    }
+    throw err;
+  }
+}
+
+module.exports = { db, createTransactionAtomic, addUser};
