@@ -28,5 +28,192 @@
       </nav>
     </aside>
     <!--LEFT SIDE BAR END HERE-->
-    
+
+    <main class="main">
+        <div class="income-header">
+            <div class="header-left">
+                <h1>Income Tracking</h1>
+            </div>
+            <div class="header-right">
+                <button class="add-income-btn" id="showIncomeForm">
+                    <i class="fas fa-plus"></i> Add Income
+                </button>
+            </div>
+        </div>
+
+        <div class="income-form-container" id="incomeForm">
+            <div class="form-header">
+                <h3>Add New Income</h3>
+                <button class="close-form" id="closeIncomeForm">&times;</button>
+            </div>
+            <form id="incomeEntryForm">
+                <div class="form-group">
+                    <label for="incomeSource">Income Source</label>
+                    <input type="text" id="incomeSource" required placeholder="Salary, Freelance, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="incomeAmount">Amount ($)</label>
+                    <input type="number" id="incomeAmount" required placeholder="0.00" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="incomeDate">Date</label>
+                    <input type="date" id="incomeDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="incomeFrequency">Frequency</label>
+                    <select id="incomeFrequency" required>
+                        <option value="">Select frequency</option>
+                        <option value="one-time">One-time</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="fortnightly">Fortnightly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="incomeDescription">Description (Optional)</label>
+                    <input type="text" id="incomeDescription" placeholder="Additional details about this income">
+                </div>
+                <div class="form-group full-width recurring-options" id="recurringOptions" style="display: none;">
+                    <input type="checkbox" id="setRecurring">
+                    <label for="setRecurring">Set as recurring income</label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" id="cancelIncomeForm">Cancel</button>
+                    <button type="submit" class="submit-btn">Add Income</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="income-stats">
+            <div class="stat-card stat-1">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-value">$4,250.00</div>
+                <div class="stat-title">Total Monthly Income</div>
+            </div>
+            <div class="stat-card stat-2">
+                <div class="stat-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-value">$2,800.00</div>
+                <div class="stat-title">Expected This Month</div>
+            </div>
+            <div class="stat-card stat-3">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="stat-value">5</div>
+                <div class="stat-title">Income Sources</div>
+            </div>
+        </div>
+        
+        <div class="income-list-container">
+            <div class="list-header">
+                <h3>Income History</h3>
+                <div class="list-controls">
+                    <input type="text" class="search-box" placeholder="Search income..." id="searchIncome">
+                    <select class="sort-select" id="sortIncome">
+                        <option value="date-desc">Sort by: Date (Newest)</option>
+                        <option value="date-asc">Sort by: Date (Oldest)</option>
+                        <option value="amount-desc">Sort by: Amount (High to Low)</option>
+                        <option value="amount-asc">Sort by: Amount (Low to High)</option>
+                        <option value="source">Sort by: Source</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="income-table">
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Frequency</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incomeList">
+                        <tr class="income-row">
+                            <td>
+                                <div class="income-source">
+                                    <div class="source-icon">
+                                        <i class="fas fa-building"></i>
+                                    </div>
+                                    <div>Salary - Company Inc.</div>
+                                </div>
+                            </td>
+                            <td class="income-amount">$2,500.00</td>
+                            <td>Sep 1, 2025</td>
+                            <td><span class="income-frequency frequency-monthly">Monthly</span></td>
+                            <td>
+                                <div class="income-actions">
+                                    <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="income-row">
+                            <td>
+                                <div class="income-source">
+                                    <div class="source-icon">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </div>
+                                    <div>Freelance Work</div>
+                                </div>
+                            </td>
+                            <td class="income-amount">$750.00</td>
+                            <td>Aug 28, 2025</td>
+                            <td><span class="income-frequency">One-time</span></td>
+                            <td>
+                                <div class="income-actions">
+                                    <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="income-row">
+                            <td>
+                                <div class="income-source">
+                                    <div class="source-icon">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div>Rental Income</div>
+                                </div>
+                            </td>
+                            <td class="income-amount">$1,200.00</td>
+                            <td>Aug 15, 2025</td>
+                            <td><span class="income-frequency frequency-monthly">Monthly</span></td>
+                            <td>
+                                <div class="income-actions">
+                                    <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="income-row">
+                            <td>
+                                <div class="income-source">
+                                    <div class="source-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div>Dividend Stocks</div>
+                                </div>
+                            </td>
+                            <td class="income-amount">$350.00</td>
+                            <td>Aug 10, 2025</td>
+                            <td><span class="income-frequency frequency-fortnightly">Fortnightly</span></td>
+                            <td>
+                                <div class="income-actions">
+                                    <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+  </div>
 </body>
