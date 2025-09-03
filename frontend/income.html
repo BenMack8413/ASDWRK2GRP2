@@ -856,6 +856,8 @@ h3{
 <script>
 const showIncomeFormBtn = document.getElementById('showIncomeForm');
 const incomeForm = document.getElementById('incomeForm');
+const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
+const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
 
 let incomes = [
     { id: 1, source: 'Salary', amount: 2500.00, date: '2025-09-01', frequency: 'monthly', description: 'Monthly salary', recurring: true },
@@ -872,5 +874,8 @@ function hideIncomeForm() {
     incomeForm.classList.remove('visible');
     incomeEntryForm.reset();
 }
+
+closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
+cancelIncomeFormBtn.addEventListener('click', hideIncomeForm);
 
 </script>
