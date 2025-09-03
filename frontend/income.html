@@ -858,6 +858,8 @@ const showIncomeFormBtn = document.getElementById('showIncomeForm');
 const incomeForm = document.getElementById('incomeForm');
 const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
 const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
+const incomeFrequency = document.getElementById('incomeFrequency');
+const incomeEntryForm = document.getElementById('incomeEntryForm');
 
 let incomes = [
     { id: 1, source: 'Salary', amount: 2500.00, date: '2025-09-01', frequency: 'monthly', description: 'Monthly salary', recurring: true },
@@ -877,5 +879,42 @@ function hideIncomeForm() {
 
 closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
 cancelIncomeFormBtn.addEventListener('click', hideIncomeForm);
+
+incomeFrequency.addEventListener('change', function() {
+    if (this.value !== 'one-time' && this.value !== '') {
+        recurringOptions.style.display = 'flex';
+    } else {
+        recurringOptions.style.display = 'none';
+    }
+});
+
+incomeEntryForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const source = document.getElementById('incomeSource').value;
+    const amount = parseFloat(document.getElementById('incomeAmount').value);
+    const date = document.getElementById('incomeDate').value;
+    const frequency = document.getElementById('incomeFrequency').value;
+    const description = document.getElementById('incomeDescription').value;
+    const isRecurring = document.getElementById('setRecurring').checked;
+    
+    const newIncome = {
+        id: incomes.length > 0 ? Math.max(...incomes.map(i => i.id)) + 1 : 1,
+        source,
+        amount,
+        date,
+        frequency,
+        description,
+        recurring: frequency !== 'one-time' && isRecurring
+    };
+    
+    incomes.push(newIncome);
+    
+    renderIncomes();
+    
+    hideIncomeForm();
+    
+    alert('Income added successfully!');
+});
 
 </script>
