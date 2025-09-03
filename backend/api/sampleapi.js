@@ -29,108 +29,143 @@ const express = require('express');
 
 */
 
-module.exports = (db, /* list of helper functions used { createTransactionAtomic, getTransactionId, etc } note: remove comma if no extra functions*/) => {
-  const router = express.Router();
+module.exports = (
+    db /* list of helper functions used { createTransactionAtomic, getTransactionId, etc } note: remove comma if no extra functions*/,
+) => {
+    const router = express.Router();
 
-  // -------------------
-  // GET all items for a specific budget
-  // Example: GET /api/items?budget_id=1
-  router.get('/', async (req, res) => {
-    try {
-      const budget_id = Number(req.query.budget_id);
-      if (!budget_id) return res.status(400).json({ error: 'budget_id query parameter is required' });
+    // -------------------
+    // GET all items for a specific budget
+    // Example: GET /api/items?budget_id=1
+    router.get('/', async (req, res) => {
+        try {
+            const budget_id = Number(req.query.budget_id);
+            if (!budget_id)
+                return res
+                    .status(400)
+                    .json({ error: 'budget_id query parameter is required' });
 
-      const items = getItems ? await getItems(budget_id) : [];
-      res.status(200).json({ data: items });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Internal Server Error', detail: err.message });
-    }
-  });
+            const items = getItems ? await getItems(budget_id) : [];
+            res.status(200).json({ data: items });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                error: 'Internal Server Error',
+                detail: err.message,
+            });
+        }
+    });
 
-  // -------------------
-  // GET single item by ID
-  // Example: GET /api/items/123
-  router.get('/:id', async (req, res) => {
-    try {
-      const id = Number(req.params.id);
-      if (!id) return res.status(400).json({ error: 'Invalid item id' });
+    // -------------------
+    // GET single item by ID
+    // Example: GET /api/items/123
+    router.get('/:id', async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            if (!id) return res.status(400).json({ error: 'Invalid item id' });
 
-      const item = getItemById ? await getItemById(id) : null;
-      if (!item) return res.status(404).json({ error: 'Item not found' });
+            const item = getItemById ? await getItemById(id) : null;
+            if (!item) return res.status(404).json({ error: 'Item not found' });
 
-      res.status(200).json({ data: item });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Internal Server Error', detail: err.message });
-    }
-  });
+            res.status(200).json({ data: item });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                error: 'Internal Server Error',
+                detail: err.message,
+            });
+        }
+    });
 
-  // -------------------
-  // POST new item
-  router.post('/', async (req, res) => {
-    try {
-      const payload = req.body;
-      if (!payload || !payload.name || !payload.budget_id) {
-        return res.status(400).json({ error: 'Missing required fields: name, budget_id' });
-      }
+    // -------------------
+    // POST new item
+    router.post('/', async (req, res) => {
+        try {
+            const payload = req.body;
+            if (!payload || !payload.name || !payload.budget_id) {
+                return res.status(400).json({
+                    error: 'Missing required fields: name, budget_id',
+                });
+            }
 
-      const newItem = createItem ? await createItem(payload) : payload;
-      res.status(201).json({ message: 'Item created', data: newItem });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to create item', detail: err.message });
-    }
-  });
+            const newItem = createItem ? await createItem(payload) : payload;
+            res.status(201).json({ message: 'Item created', data: newItem });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                error: 'Failed to create item',
+                detail: err.message,
+            });
+        }
+    });
 
-  // -------------------
-  // PUT full update of item
-  router.put('/:id', async (req, res) => {
-    try {
-      const id = Number(req.params.id);
-      const payload = req.body;
-      if (!id || !payload) return res.status(400).json({ error: 'Invalid id or payload' });
+    // -------------------
+    // PUT full update of item
+    router.put('/:id', async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            const payload = req.body;
+            if (!id || !payload)
+                return res.status(400).json({ error: 'Invalid id or payload' });
 
-      const updated = updateItem ? await updateItem(id, payload) : payload;
-      res.status(200).json({ message: 'Item updated', data: updated });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to update item', detail: err.message });
-    }
-  });
+            const updated = updateItem
+                ? await updateItem(id, payload)
+                : payload;
+            res.status(200).json({ message: 'Item updated', data: updated });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                error: 'Failed to update item',
+                detail: err.message,
+            });
+        }
+    });
 
-  // -------------------
-  // PATCH partial update
-  router.patch('/:id', async (req, res) => {
-    try {
-      const id = Number(req.params.id);
-      const payload = req.body;
-      if (!id || !payload) return res.status(400).json({ error: 'Invalid id or payload' });
+    // -------------------
+    // PATCH partial update
+    router.patch('/:id', async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            const payload = req.body;
+            if (!id || !payload)
+                return res.status(400).json({ error: 'Invalid id or payload' });
 
-      const patched = updateItem ? await updateItem(id, payload, { partial: true }) : payload;
-      res.status(200).json({ message: 'Item partially updated', data: patched });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to patch item', detail: err.message });
-    }
-  });
+            const patched = updateItem
+                ? await updateItem(id, payload, { partial: true })
+                : payload;
+            res.status(200).json({
+                message: 'Item partially updated',
+                data: patched,
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                error: 'Failed to patch item',
+                detail: err.message,
+            });
+        }
+    });
 
-  // -------------------
-  // DELETE item
-  router.delete('/:id', async (req, res) => {
-    try {
-      const id = Number(req.params.id);
-      if (!id) return res.status(400).json({ error: 'Invalid id' });
+    // -------------------
+    // DELETE item
+    router.delete('/:id', async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            if (!id) return res.status(400).json({ error: 'Invalid id' });
 
-      const deleted = deleteItem ? await deleteItem(id) : true;
-      if (!deleted) return res.status(404).json({ error: 'Item not found' });
+            const deleted = deleteItem ? await deleteItem(id) : true;
+            if (!deleted)
+                return res.status(404).json({ error: 'Item not found' });
 
-      res.status(200).json({ message: 'Item deleted' });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to delete item', detail: err.message });
-    }
-  });
+            res.status(200).json({ message: 'Item deleted' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                error: 'Failed to delete item',
+                detail: err.message,
+            });
+        }
+    });
 
-  return router;
-}
+    return router;
+};

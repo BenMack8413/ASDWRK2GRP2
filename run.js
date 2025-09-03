@@ -4,7 +4,6 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 
-
 // Initialize DB (executes schema & seeding)
 require('./backend/db-init');
 
@@ -27,42 +26,41 @@ app.use('/api', createApiRouter(db, createTransactionAtomic));
 
 // SPA fallback
 app.use((req, res, next) => {
-  // skip API routes
-  if (req.path.startsWith('/api/')) return next();
+    // skip API routes
+    if (req.path.startsWith('/api/')) return next();
 
-  const indexFile = path.join(__dirname, 'frontend', 'index.html');
-  if (fs.existsSync(indexFile)) {
-    return res.sendFile(indexFile);
-  }
+    const indexFile = path.join(__dirname, 'frontend', 'index.html');
+    if (fs.existsSync(indexFile)) {
+        return res.sendFile(indexFile);
+    }
 
-  next(); // pass to 404 if index.html is missing
+    next(); // pass to 404 if index.html is missing
 });
-
 
 // Start server
 const server = app.listen(PORT, HOST, () => {
-  console.log(`Server listening on http://${HOST}:${PORT}`);
+    console.log(`Server listening on http://${HOST}:${PORT}`);
 });
 
 // Graceful shutdown
 const shutdown = (signal) => {
-  console.log('Shutting down... signal=', signal);
-  try {
-    server.close(() => {
-      console.log('HTTP server closed.');
-      try {
-        db.close();
-        console.log('Database closed.');
-        process.exit(0);
-      } catch (err) {
-        console.error('Error closing DB:', err);
+    console.log('Shutting down... signal=', signal);
+    try {
+        server.close(() => {
+            console.log('HTTP server closed.');
+            try {
+                db.close();
+                console.log('Database closed.');
+                process.exit(0);
+            } catch (err) {
+                console.error('Error closing DB:', err);
+                process.exit(1);
+            }
+        });
+    } catch (err) {
+        console.error('Error during shutdown:', err);
         process.exit(1);
-      }
-    });
-  } catch (err) {
-    console.error('Error during shutdown:', err);
-    process.exit(1);
-  }
+    }
 };
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));

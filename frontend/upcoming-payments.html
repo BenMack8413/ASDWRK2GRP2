@@ -1,120 +1,155 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Upcoming Payments</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Upcoming Payments</title>
 
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/upcoming-payments.css">
+        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/upcoming-payments.css" />
 
-  <script defer src="./scripts/upcoming-payments.js"></script>
-</head>
-<body>
-  <div class="dashboard">
-    <!-- Sidebar (keep consistent) -->
-    <aside class="sidebar">
-      <div class="budget_name">My Budget</div>
-      <div><div class="balance">Menu</div></div>
-      <nav class="nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="budget.html">Budget</a>
-        <a href="chart.html">Charts</a>
-        <a href="saving-goals.html">Saving Goals</a>
-        <a class="active" href="upcoming-payments.html">Upcoming Payments</a>
-      </nav>
-    </aside>
+        <script defer src="./scripts/upcoming-payments.js"></script>
+    </head>
+    <body>
+        <div class="dashboard">
+            <!-- Sidebar (keep consistent) -->
+            <aside class="sidebar">
+                <div class="budget_name">My Budget</div>
+                <div><div class="balance">Menu</div></div>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="budget.html">Budget</a>
+                    <a href="chart.html">Charts</a>
+                    <a href="saving-goals.html">Saving Goals</a>
+                    <a class="active" href="upcoming-payments.html"
+                        >Upcoming Payments</a
+                    >
+                </nav>
+            </aside>
 
-    <!-- Main -->
-    <main class="main">
-      <div class="page-header">
-        <h2>Upcoming Payments</h2>
-        <p class="subtext">See what’s due next, avoid late fees, and mark items paid.</p>
-      </div>
+            <!-- Main -->
+            <main class="main">
+                <div class="page-header">
+                    <h2>Upcoming Payments</h2>
+                    <p class="subtext">
+                        See what’s due next, avoid late fees, and mark items
+                        paid.
+                    </p>
+                </div>
 
-      <div class="grid-2">
-        <!-- FORM -->
-        <div class="card form-card">
-          <h3>Add / Edit Payment</h3>
+                <div class="grid-2">
+                    <!-- FORM -->
+                    <div class="card form-card">
+                        <h3>Add / Edit Payment</h3>
 
-          <!-- Category quick pick -->
-          <div class="category-picker" id="categoryPicker"></div>
+                        <!-- Category quick pick -->
+                        <div class="category-picker" id="categoryPicker"></div>
 
-          <form id="paymentForm" class="form-grid">
-            <input type="hidden" id="paymentId">
+                        <form id="paymentForm" class="form-grid">
+                            <input type="hidden" id="paymentId" />
 
-            <div class="input-group">
-              <label for="description">Description</label>
-              <input id="description" placeholder="e.g., Telstra Bill" required>
-            </div>
+                            <div class="input-group">
+                                <label for="description">Description</label>
+                                <input
+                                    id="description"
+                                    placeholder="e.g., Telstra Bill"
+                                    required
+                                />
+                            </div>
 
-            <div class="input-group">
-              <label for="amount">Amount ($)</label>
-              <input id="amount" type="number" min="0" step="0.01" placeholder="120.00" required>
-            </div>
+                            <div class="input-group">
+                                <label for="amount">Amount ($)</label>
+                                <input
+                                    id="amount"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="120.00"
+                                    required
+                                />
+                            </div>
 
-            <div class="input-group">
-              <label for="dueDate">Due Date</label>
-              <input id="dueDate" type="date" required>
-            </div>
+                            <div class="input-group">
+                                <label for="dueDate">Due Date</label>
+                                <input id="dueDate" type="date" required />
+                            </div>
 
-            <div class="input-group">
-              <label for="status">Status</label>
-              <select id="status">
-                <option value="pending" selected>Pending</option>
-                <option value="paid">Paid</option>
-              </select>
-            </div>
+                            <div class="input-group">
+                                <label for="status">Status</label>
+                                <select id="status">
+                                    <option value="pending" selected>
+                                        Pending
+                                    </option>
+                                    <option value="paid">Paid</option>
+                                </select>
+                            </div>
 
-            <div class="form-actions">
-              <button class="btn primary" type="submit">+ Save Payment</button>
-              <button class="btn ghost" type="button" id="resetPaymentForm">Reset</button>
-            </div>
-          </form>
-          <div class="hint">Tip: use the category buttons to keep payments organised.</div>
+                            <div class="form-actions">
+                                <button class="btn primary" type="submit">
+                                    + Save Payment
+                                </button>
+                                <button
+                                    class="btn ghost"
+                                    type="button"
+                                    id="resetPaymentForm"
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                        <div class="hint">
+                            Tip: use the category buttons to keep payments
+                            organised.
+                        </div>
+                    </div>
+
+                    <!-- SUMMARY -->
+                    <div class="card">
+                        <h3>Summary</h3>
+                        <div class="summary">
+                            <div class="summary-item">
+                                <div class="label">Next Due</div>
+                                <div class="big-num" id="nextDue">$0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="label">Due in 7 days</div>
+                                <div class="big-num" id="dueSoon">0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="label">Total Outstanding</div>
+                                <div class="big-num" id="totalOutstanding">
+                                    $0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIST -->
+                <div class="card">
+                    <div class="list-header">
+                        <h3>Your Payments</h3>
+                        <div class="controls">
+                            <select id="filterBy" class="select">
+                                <option value="all">All</option>
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                            <select id="sortBy" class="select">
+                                <option value="dueDate">
+                                    Sort by due date
+                                </option>
+                                <option value="amount">Sort by amount</option>
+                                <option value="status">Sort by status</option>
+                                <option value="description">
+                                    Sort by description
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="paymentsList" class="list"></div>
+                </div>
+            </main>
         </div>
-
-        <!-- SUMMARY -->
-        <div class="card">
-          <h3>Summary</h3>
-          <div class="summary">
-            <div class="summary-item">
-              <div class="label">Next Due</div>
-              <div class="big-num" id="nextDue">$0</div>
-            </div>
-            <div class="summary-item">
-              <div class="label">Due in 7 days</div>
-              <div class="big-num" id="dueSoon">0</div>
-            </div>
-            <div class="summary-item">
-              <div class="label">Total Outstanding</div>
-              <div class="big-num" id="totalOutstanding">$0</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LIST -->
-      <div class="card">
-        <div class="list-header">
-          <h3>Your Payments</h3>
-          <div class="controls">
-            <select id="filterBy" class="select">
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="paid">Paid</option>
-            </select>
-            <select id="sortBy" class="select">
-              <option value="dueDate">Sort by due date</option>
-              <option value="amount">Sort by amount</option>
-              <option value="status">Sort by status</option>
-              <option value="description">Sort by description</option>
-            </select>
-          </div>
-        </div>
-        <div id="paymentsList" class="list"></div>
-      </div>
-    </main>
-  </div>
-</body>
+    </body>
 </html>

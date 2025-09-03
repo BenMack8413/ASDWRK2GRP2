@@ -3,15 +3,15 @@ name: CI
 on:
     push:
         branches-ignore:
-          - main
+            - main
 jobs:
     test:
         runs-on: ubuntu-latest
 
         strategy:
             matrix:
-              node-version: [22]
-            
+                node-version: [22]
+
         steps:
             - name: Checkout code
               uses: actions/checkout@v2
@@ -29,6 +29,6 @@ jobs:
 
             - name: Format code
               run: npm run format
-            
+
             - name: Lint check
               run: npm run lint:check
