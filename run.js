@@ -18,19 +18,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve frontend
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // Mount API
 app.use('/api', createApiRouter(db, createTransactionAtomic));
 
 // SPA fallback
-const fs = require('fs');
-app.get('*', (req, res, next) => {
+app.use((req, res, next) => {
+  // skip API routes
   if (req.path.startsWith('/api/')) return next();
-  const idx = path.join(__dirname, 'public', 'index.html');
-  if (fs.existsSync(idx)) return res.sendFile(idx);
-  next();
+
+  const indexFile = path.join(__dirname, 'frontend', 'index.html');
+  if (fs.existsSync(indexFile)) {
+    return res.sendFile(indexFile);
+  }
+
+  next(); // pass to 404 if index.html is missing
 });
+
 
 // Start server
 const server = app.listen(PORT, HOST, () => {
@@ -38,14 +43,25 @@ const server = app.listen(PORT, HOST, () => {
 });
 
 // Graceful shutdown
-const shutdown = signal => {
+const shutdown = (signal) => {
   console.log('Shutting down... signal=', signal);
-  server.close(() => {
-    console.log('HTTP server closed.');
-    db.close();
-    console.log('Database closed.');
-    process.exit(0);
-  });
+  try {
+    server.close(() => {
+      console.log('HTTP server closed.');
+      try {
+        db.close();
+        console.log('Database closed.');
+        process.exit(0);
+      } catch (err) {
+        console.error('Error closing DB:', err);
+        process.exit(1);
+      }
+    });
+  } catch (err) {
+    console.error('Error during shutdown:', err);
+    process.exit(1);
+  }
 };
+
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
