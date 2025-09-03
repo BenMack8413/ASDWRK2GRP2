@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/BenMack8413/ASDWRK2GRP2/issues"
   },
-  "homepage": "https://github.com/BenMack8413/ASDWRK2GRP2#readme"
+  "homepage": "https://github.com/BenMack8413/ASDWRK2GRP2#readme",
+  "devDependencies": {
+    "jest": "^30.1.3"
+  }
 }
