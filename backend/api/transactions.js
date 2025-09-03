@@ -1,6 +1,8 @@
 const express = require('express');
+const { createTransactionAtomic } = require('../db');
 
-module.exports = function createTransactionsRouter(db) {
+
+module.exports = function createTransactionsRouter(db, createTransactionAtomic) {
   const router = express.Router();
 
 
