@@ -1,4 +1,5 @@
 const express = require('express');
+const { addUser } = require('../db')
 
 
 module.exports = (db) => {
@@ -11,7 +12,7 @@ module.exports = (db) => {
         return res.status(400).json({ error: 'Missing required fields: name, email and password' });
       }
 
-      const newItem = createItem ? await createItem(payload) : payload;
+      const newItem = addUser ? await addUser(db, payload.username, payload.email, payload.password_hash) : payload;
       res.status(201).json({ message: 'Item created', data: newItem });
     } catch (err) {
       console.error(err);

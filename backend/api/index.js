@@ -1,7 +1,7 @@
 const express = require('express');
 const createTransactionsRouter = require('./transactions');
 
-module.exports = function createApiRouter(db, createTransactionAtomic) {
+module.exports = function createApiRouter(db/*, createTransactionAtomic*/) {
   const router = express.Router();
 
   // mount feature routers
