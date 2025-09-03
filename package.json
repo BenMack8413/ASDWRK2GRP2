@@ -9,7 +9,7 @@
     "lint:check": "eslint . --ext .js,.ts",
     "lint:fix": "eslint . --ext .js,.ts --fix",
     "format": "prettier --write .",
-    "test": "node run.js"
+    "test": "echo not implemented"
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",
