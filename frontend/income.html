@@ -858,16 +858,16 @@ const showIncomeFormBtn = document.getElementById('showIncomeForm');
 const incomeForm = document.getElementById('incomeForm');
 const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
 const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
-const incomeFrequency = document.getElementById('incomeFrequency');
 const incomeEntryForm = document.getElementById('incomeEntryForm');
+const incomeFrequency = document.getElementById('incomeFrequency');
 const recurringOptions = document.getElementById('recurringOptions');
 const incomeList = document.getElementById('incomeList');
 const searchIncome = document.getElementById('searchIncome');
 const sortIncome = document.getElementById('sortIncome');
 
 let incomes = [
-    { id: 1, source: 'Salary', amount: 2500.00, date: '2025-09-01', frequency: 'monthly', description: 'Monthly salary', recurring: true },
-    { id: 2, source: 'Social Media', amount: 750.00, date: '2025-08-28', frequency: 'one-time', description: 'Website design project', recurring: false },
+    { id: 1, source: 'Salary - Company Inc.', amount: 2500.00, date: '2025-09-01', frequency: 'monthly', description: 'Monthly salary', recurring: true },
+    { id: 2, source: 'Freelance Work', amount: 750.00, date: '2025-08-28', frequency: 'one-time', description: 'Website design project', recurring: false },
     { id: 3, source: 'Rental Income', amount: 1200.00, date: '2025-08-15', frequency: 'monthly', description: 'Apartment rental', recurring: true },
     { id: 4, source: 'Dividend Stocks', amount: 350.00, date: '2025-08-10', frequency: 'fortnightly', description: 'Investment dividends', recurring: true }
 ];
@@ -921,12 +921,13 @@ incomeEntryForm.addEventListener('submit', function(e) {
     alert('Income added successfully!');
 });
 
+
 function renderIncomes() {
 
     incomeList.innerHTML = '';
     
     let filteredIncomes = [...incomes];
-
+    
     const searchTerm = searchIncome.value.toLowerCase();
     if (searchTerm) {
         filteredIncomes = filteredIncomes.filter(income => 
@@ -934,7 +935,7 @@ function renderIncomes() {
             income.description.toLowerCase().includes(searchTerm)
         );
     }
-
+    
     const sortValue = sortIncome.value;
     filteredIncomes.sort((a, b) => {
         switch(sortValue) {
@@ -952,11 +953,11 @@ function renderIncomes() {
                 return new Date(b.date) - new Date(a.date);
         }
     });
-
+    
     filteredIncomes.forEach(income => {
         const row = document.createElement('tr');
         row.className = 'income-row';
-
+        
         const dateObj = new Date(income.date);
         const formattedDate = dateObj.toLocaleDateString('en-US', { 
             year: 'numeric', 
@@ -1006,4 +1007,48 @@ function renderIncomes() {
         });
     });
 }
+
+function getIconForSource(source) {
+    if (source.toLowerCase().includes('salary')) return 'fa-building';
+    if (source.toLowerCase().includes('freelance')) return 'fa-pencil-alt';
+    if (source.toLowerCase().includes('rental')) return 'fa-home';
+    if (source.toLowerCase().includes('dividend') || source.toLowerCase().includes('stock')) return 'fa-chart-line';
+    return 'fa-dollar-sign';
+}
+
+function editIncome(id) {
+    const income = incomes.find(i => i.id === id);
+    if (!income) return;
+    
+    document.getElementById('incomeSource').value = income.source;
+    document.getElementById('incomeAmount').value = income.amount;
+    document.getElementById('incomeDate').value = income.date;
+    document.getElementById('incomeFrequency').value = income.frequency;
+    document.getElementById('incomeDescription').value = income.description || '';
+    
+    if (income.frequency !== 'one-time') {
+        document.getElementById('setRecurring').checked = income.recurring;
+        recurringOptions.style.display = 'flex';
+    }
+    
+    incomeForm.classList.add('visible');
+    
+    incomes = incomes.filter(i => i.id !== id);
+}
+
+function deleteIncome(id) {
+    if (confirm('Are you sure you want to delete this income entry?')) {
+        incomes = incomes.filter(i => i.id !== id);
+        renderIncomes();
+    }
+}
+
+searchIncome.addEventListener('input', renderIncomes);
+sortIncome.addEventListener('change', renderIncomes);
+
+document.getElementById('incomeDate').valueAsDate = new Date();
+
+renderIncomes();
 </script>
+</body>
+</html>
