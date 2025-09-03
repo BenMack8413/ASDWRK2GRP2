@@ -1,6 +1,7 @@
 const express = require('express');
+const { createTransactionAtomic } = require('../db');
 
-module.exports = function createTransactionsRouter(db) {
+module.exports = function createTransactionsRouter(db, createTransactionAtomic) {
   const router = express.Router();
 
 
@@ -23,12 +24,12 @@ module.exports = function createTransactionsRouter(db) {
     const budget_id = Number(req.query.budget_id);
     if (!budget_id) return res.status(400).json({ error: 'budget_id query parameter is required' });
     
-    const txn = db
+    const transaction = db
       .prepare('SELECT * FROM transactions WHERE transaction_id = ? AND budget_id = ?')
       .get(transaction_id, budget_id);
 
-    if (!txn) return res.status(404).json({ error: 'transaction not found for this budget' });
-    res.json(txn);
+    if (!transaction) return res.status(404).json({ error: 'transaction not found for this budget' });
+    res.json(transaction);
   });
 
   // POST new transaction
