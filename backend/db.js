@@ -1,0 +1,68 @@
+const fs = require('fs');
+const path = require('path');
+const Database = require('better-sqlite3');
+
+const DB_FILE = process.env.DB_FILE || path.resolve(__dirname, 'mybudget.db');
+const SCHEMA_FILE = process.env.SCHEMA_FILE || path.resolve(__dirname, 'schema.sql');
+const SKIP_INIT = process.env.SKIP_DB_INIT === '1' || process.env.SKIP_DB_INIT === 'true';
+
+const db = new Database(DB_FILE);
+db.pragma('foreign_keys = ON');
+
+// Initialize schema if needed
+if (!SKIP_INIT) {
+  if (!fs.existsSync(SCHEMA_FILE)) {
+    console.error('schema.sql not found at', SCHEMA_FILE);
+    process.exit(1);
+  }
+  const schemaSql = fs.readFileSync(SCHEMA_FILE, 'utf8');
+  try {
+    db.exec('BEGIN;');
+    db.exec(schemaSql);
+    db.exec('COMMIT;');
+    db.prepare('INSERT INTO recalc_requests DEFAULT VALUES').run();
+    console.log('Database initialized and recalculation enqueued.');
+  } catch (err) {
+    db.exec('ROLLBACK;');
+    console.error('Failed to apply schema:', err);
+    process.exit(1);
+  }
+} else {
+  console.log('SKIP_DB_INIT enabled — not applying schema.');
+}
+
+// Helper: atomic transaction insertion
+const createTransactionAtomic = db.transaction(payload => {
+  const { budget_id, account_id, date, notes, type, lines = [], tag_ids = [] } = payload;
+  const insertTxn = db.prepare(
+    `INSERT INTO transactions (budget_id, account_id, date, amount, notes, type)
+     VALUES (@budget_id, @account_id, @date, 0, @notes, @type)`
+  );
+  const res = insertTxn.run({ budget_id, account_id, date, notes, type });
+  const transaction_id = res.lastInsertRowid;
+
+  const insertLine = db.prepare(
+    `INSERT INTO transaction_lines (transaction_id, category_id, amount, line_order, note)
+     VALUES (@transaction_id, @category_id, @amount, @line_order, @note)`
+  );
+  lines.forEach((line, i) => {
+    insertLine.run({
+      transaction_id,
+      category_id: line.category_id || null,
+      amount: line.amount,
+      line_order: line.line_order ?? (i + 1),
+      note: line.note || null
+    });
+  });
+
+  if (Array.isArray(tag_ids) && tag_ids.length) {
+    const insertTag = db.prepare(
+      `INSERT OR IGNORE INTO transaction_tags (transaction_id, tag_id) VALUES (?, ?)`
+    );
+    tag_ids.forEach(tag_id => insertTag.run(transaction_id, tag_id));
+  }
+
+  return transaction_id;
+});
+
+module.exports = { db, createTransactionAtomic };
