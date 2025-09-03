@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}"> -->
+    <!-- <script src="{{ url_for('serve_js', filename='script.js') }}"></script> -->
     <style>
 /* -------- Universal Root Start -------- */
 :root{
@@ -204,6 +205,75 @@ h3{
     display:grid; 
     place-items:center;
 }
+
+/* -------- Budget Header Start -------- */
+.budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding: 16px 0;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.header-left p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-date {
+    color: var(--muted);
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+.export-btn, .add-transaction-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 14px;
+}
+
+.export-btn {
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid #e2e8f0;
+}
+
+.export-btn:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e0;
+}
+
+.add-transaction-btn {
+    background-color: var(--accent);
+    color: white;
+}
+
+.add-transaction-btn:hover {
+    background-color: var(--accent-2);
+}
+
+/* -------- Budget Header End -------- */
 
 /* -------- Budget Start -------- */
 .budget-grid {
@@ -517,18 +587,41 @@ h3{
 
 @media (max-width:1800px){
     .sidebar{
-    position:static;
-    width:220px;
-    border-radius:20px;
-    padding:28px;
+        position:static;
+        width:220px;
+        border-radius:20px;
+        padding:28px;
 }
     .main{
-    margin-left:0; 
-    padding-right:16px;
+        margin-left:0; 
+        padding-right:16px;
 }
     .dashboard{
-    padding:16px
+        padding:16px
 }
+
+    .budget-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-right {
+        flex-wrap: wrap;
+    }
+    
+    .header-date {
+        order: 3;
+        width: 100%;
+        text-align: center;
+        margin-top: 8px;
+    }
 }
 /* -------- Budget End -------- */
 </style>
@@ -545,6 +638,7 @@ h3{
       <nav class="nav">
         <a onclick="location.href='/dashboard';">Dashboard</a>
         <a class="active" onclick="location.href='/budget';">Budget</a>
+        <a onclick="location.href='/expenses';">Income</a>
         <a onclick="location.href='/expenses';">Expenses</a>
         <a onclick="location.href='/reports';">Reports</a>
         <a onclick="location.href='/schedules';">Schedules</a>
@@ -558,9 +652,21 @@ h3{
 
     <!-- Main starts here -->
     <main class="main">
-        <div style="display:flex; justify-content:space-between; align-items:center">
-            <h3>Budget</h3>
-        </div>   
+        <!-- Budget Header Section -->
+        <div class="budget-header">
+            <div class="header-left">
+                <h1>Budget</h1>
+            </div>
+            <div class="header-right">
+                <button class="export-btn">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="add-transaction-btn">
+                    <i class="fas fa-plus"></i> Add Transaction
+                </button>
+            </div>
+        </div>
+        
         <div class="budget-grid">
             <div class="card budget-card">
                 <div class="budget-card-header">
@@ -692,7 +798,7 @@ h3{
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="budget-card-subtitle">Monthly</div>
-                        <div class="budget-card-title">March 13, 2024</div>
+                        <div class="budget-card-title">August 13, 2025</div>
                         <div class="stat-value">$3,400</div>
                         <div class="budget-card-subtitle">Budget</div>
                     </div>
@@ -700,14 +806,14 @@ h3{
                     <div class="stat-card">
                         <div class="budget-card-subtitle">Expected</div>
                         <div class="budget-card-title">Export</div>
-                        <div class="stat-value">$350.00</div>
+                        <div class="stat-value">$500.00</div>
                         <div class="budget-card-subtitle">Bill Sale</div>
                     </div>
 
                     <div class="stat-card">
                         <div class="budget-card-subtitle">Running Budget</div>
                         <div class="budget-card-title">Today</div>
-                        <div class="stat-value">$350.00</div>
+                        <div class="stat-value">$500.00</div>
                         <div class="budget-card-subtitle">The amount that can be spent</div>
                     </div>
                 </div>
@@ -725,17 +831,18 @@ h3{
                         <div>Status</div>
                     </div>
                     <div class="category-row">
-                        <div class="category-icon">
-
+                        <div class="category-icon icon-entertainment">
+                            <i class="fas fa-film"></i>
                         </div>
                         <div>Entertainment</div>
-                        <div>$48.00</div>
-                        <div>$28.00</div>
-                        <div>$25.00</div>
+                        <div>$50.00</div>
+                        <div>$30.00</div>
+                        <div>$20.00</div>
                         <div><span class="status-badge status-on-track">On Track</span></div>
                     </div>
                     <div class="category-row">
-                        <div class="category-icon">
+                        <div class="category-icon icon-transportation">
+                            <i class="fas fa-bus"></i>
                         </div>
                         <div>Transportation</div>
                         <div>$25.00</div>
@@ -747,11 +854,11 @@ h3{
                     <div class="category-chips">
                         <div class="category-chip">
                             <i class="fas fa-utensils"></i>
-                            <span>Eating & Drinking: $45.00</span>
+                            <span>Eating & Drinking: $50.00</span>
                         </div>
                         <div class="category-chip">
                             <i class="fas fa-graduation-cap"></i>
-                            <span>Education: $95.00</span>
+                            <span>Education: $100.00</span>
                         </div>
                     </div>
                 </div>
@@ -779,6 +886,14 @@ h3{
             });
             this.classList.add('active');
         });
+    });
+    
+    document.querySelector('.export-btn').addEventListener('click', function() {
+        alert('Exported to Excel');
+    });
+    
+    document.querySelector('.add-transaction-btn').addEventListener('click', function() {
+        alert('Add Transaction will be here');
     });
 /* -------- Budget End -------- */
 
