@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saving Goals</title>
+
+  <!-- Base app styles -->
+  <link rel="stylesheet" href="./css/style.css">
+  <!-- Page-specific styles -->
+  <link rel="stylesheet" href="./css/saving-goals.css">
+
+  <!-- Controller -->
+  <script defer src="./scripts/saving-goals.js"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="budget_name">My Budget</div>
+      <div><div class="balance">Menu</div></div>
+      <nav class="nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="budget.html">Budget</a>
+        <a href="chart.html">Charts</a>
+        <a href="saving-goals.html" class="active">Saving Goals</a>
+        <a href="upcoming-payments.html">Upcoming Payments</a>
+      </nav>      
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="page-header">
+        <h2>Saving Goals</h2>
+        <p class="subtext">Plan ahead, track progress, and stay motivated with your savings.</p>
+      </div>
+
+      <!-- Form + Summary -->
+      <div class="grid-2">
+        <!-- FORM CARD -->
+        <div class="card form-card">
+          <h3>Add / Edit Goal</h3>
+
+          <!-- Category quick-pick -->
+          <div class="category-picker" id="categoryPicker">
+            <!-- items injected by JS -->
+          </div>
+
+          <form id="goalForm" class="form-grid">
+            <input type="hidden" id="goalId">
+
+            <div class="input-group">
+              <label for="goalName">Goal Name</label>
+              <input id="goalName" placeholder="e.g., Europe Trip" required>
+            </div>
+
+            <div class="input-group">
+              <label for="targetAmount">Target Amount ($)</label>
+              <input id="targetAmount" type="number" min="0" step="0.01" placeholder="3000" required>
+            </div>
+
+            <div class="input-group">
+              <label for="currentSaved">Current Saved ($)</label>
+              <input id="currentSaved" type="number" min="0" step="0.01" value="0" required>
+            </div>
+
+            <div class="input-group">
+              <label for="deadline">Deadline</label>
+              <input id="deadline" type="date" required>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn primary" type="submit">+ Add Goal</button>
+              <button class="btn ghost" type="button" id="resetGoalForm">Reset</button>
+            </div>
+          </form>
+          <div class="hint">Tip: choose a category first, then fill the details.</div>
+        </div>
+
+        <!-- SUMMARY CARD -->
+        <div class="card">
+          <h3>Summary</h3>
+          <div class="summary">
+            <div class="summary-item">
+              <div class="label">Total Saved</div>
+              <div class="big-num" id="sumSaved">$0</div>
+            </div>
+            <div class="summary-item">
+              <div class="label">Total Target</div>
+              <div class="big-num" id="sumTarget">$0</div>
+            </div>
+            <div class="summary-item">
+              <div class="label">Goals</div>
+              <div class="big-num" id="sumCount">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div class="card">
+        <div class="list-header">
+          <h3>Your Goals</h3>
+          <select id="sortBy" class="select">
+            <option value="deadline">Sort by deadline</option>
+            <option value="progress">Sort by progress</option>
+            <option value="name">Sort by name</option>
+          </select>
+        </div>
+        <div id="goalsList" class="list"></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

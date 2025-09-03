@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expenses Chart</title>
+    <link rel="stylesheet" href="css/chart.css">
+</head>
+<body>
+    <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="budget.html">Budget</a></li>
+        <li><a href="chart.html" class="active">Charts</a></li>
+    </ul>
+
+    <h2>Expenses by Category</h2>
+    <div class="chart-container">
+        <canvas id="expensesChart"></canvas>
+    </div>
+
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Load custom JS -->
+    <script src="scripts/chart.js"></script>
+</body>
+</html>
