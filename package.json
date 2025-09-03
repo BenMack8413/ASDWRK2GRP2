@@ -1,5 +1,27 @@
 {
+  "name": "mybudget-app",
+  "version": "0.1.1",
+  "main": "run.js",
+  "scripts": {
+    "start": "node run.js",
+    "init-db": "node scripts/init-db.js",
+    "recalc": "node run.js --recalc"
+  },
   "dependencies": {
-    "better-sqlite3": "^12.2.0"
-  }
+    "better-sqlite3": "^12.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BenMack8413/ASDWRK2GRP2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BenMack8413/ASDWRK2GRP2/issues"
+  },
+  "homepage": "https://github.com/BenMack8413/ASDWRK2GRP2#readme"
 }
