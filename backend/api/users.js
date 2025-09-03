@@ -1,8 +1,8 @@
-import express from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import db from "../db.js";
-import { generateToken, requireAuth } from "../auth.js";
+const express = require("express");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const db = require("../db.js");
+const { generateToken, requireAuth } = require("../auth.js");
 
 module.exports = (db) => {
     const router = express.Router();
