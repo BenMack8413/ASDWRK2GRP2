@@ -28,12 +28,11 @@ function getDummyData(type, days = 7) {
   };
 }
 
-// add chart
+// add 
 function addChart() {
   const type = document.getElementById("chartType").value;
   const chartId = `chart-${chartCount++}`;
 
-  // create card
   const card = document.createElement("div");
   card.classList.add("chart-card");
   card.setAttribute("draggable", "true");
@@ -56,7 +55,6 @@ function addChart() {
 
   document.getElementById("chartsArea").appendChild(card);
 
-  // create chart
   const ctx = document.getElementById(chartId).getContext("2d");
   charts[chartId] = new Chart(ctx, {
     type,
@@ -65,7 +63,7 @@ function addChart() {
   });
 }
 
-// update chart range
+// update
 function updateChartRange(id, days) {
   if (charts[id]) {
     const chart = charts[id];
@@ -74,7 +72,7 @@ function updateChartRange(id, days) {
   }
 }
 
-// delete chart
+// delete
 function deleteChart(id, btn) {
   if (charts[id]) {
     charts[id].destroy();
