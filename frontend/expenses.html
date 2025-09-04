@@ -247,6 +247,40 @@
                 width: 100%;
                 border-collapse: collapse;
             }
+
+            .addExpenseButton {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+                font-size: 14px;
+            }
+
+            .expenseContainer {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 24px;
+                box-shadow: var(--card_shadow);
+                margin-bottom: 24px;
+            }
+
+            .expenseTable th {
+                text-align: left;
+                padding: 12px;
+                border-bottom: 2px solid #e2e8f0;
+                font-weight: 600;
+                color: var(--muted);
+            }
+
+            .expenseTable td {
+                padding: 15px;
+            }
+
             /* -------- Expenses End -------- */
         </style>
         <!-- CSS here for now -->
@@ -265,9 +299,7 @@
                     <a onclick="location.href='dashboard.html';">Dashboard</a>
                     <a onclick="location.href='budget.html';">Budget</a>
                     <a onclick="location.href='income.html';">Income</a>
-                    <a class="active" onclick="location.href='expenses.html';"
-                        >Expenses</a
-                    >
+                    <a class="active" onclick="location.href='expenses.html';">Expenses</a>
                     <!-- <a href="#">Charts</a> -->
                     <a onclick="location.href='/reports';">Reports</a>
                     <a onclick="location.href='/schedules';">Schedules</a>
@@ -280,27 +312,35 @@
             <!--LEFT SIDE BAR END HERE-->
 
             <main class="main">
-                <table class="expenseTable">
-                    <tr>
-                        <th>Amount</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Frequency</th>
-                    </tr>
-                    <tr>
-                        <td>$500</td>
-                        <td>Groceries</td>
-                        <td>Weekly grocery shopping</td>
-                        <td>Weekly</td>
-                    </tr>
-                    <tr>
-                        <td>$150</td>
-                        <td>Utilities</td>
-                        <td>Monthly utility bills</td>
-                        <td>Monthly</td>
-                    </tr>
+                <h1 class="title">Expense Tracking</h1>
+                <table class="expenseTable" id="expenseTable">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Frequency</th>
+                        </tr>
+                    </thead>
+                    <tbody class="expenseContainer">
+                        <tr>
+                            <td>$500</td>
+                            <td>Groceries</td>
+                            <td>Weekly grocery shopping</td>
+                            <td>1st January 2026</td>
+                            <td>Weekly</td>
+                        </tr>
+                        <tr>
+                            <td>$150</td>
+                            <td>Utilities</td>
+                            <td>Monthly utility bills</td>
+                            <td>13th January 2026</td>
+                            <td>Monthly</td>
+                        </tr>
+                    </tbody>
                 </table>
-                <button>Temp</button>
+                <button class="addExpenseButton" id="addExpense">+ Add Expense</button>
             </main>
         </div>
     </body>
