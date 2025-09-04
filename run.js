@@ -18,24 +18,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, 'frontend')));
-
 // Mount API
 app.use('/api', createApiRouter(db, createTransactionAtomic));
 
-// SPA fallback
-app.use((req, res, next) => {
-    // skip API routes
-    if (req.path.startsWith('/api/')) return next();
+// Serve static assets
+app.use('/css', express.static(path.join(__dirname, 'frontend', 'css')));
+app.use('/scripts', express.static(path.join(__dirname, 'frontend', 'scripts')));
+app.use('/images', express.static(path.join(__dirname, 'frontend', 'images')));
 
-    const indexFile = path.join(__dirname, 'frontend', 'index.html');
-    if (fs.existsSync(indexFile)) {
-        return res.sendFile(indexFile);
-    }
-
-    next(); // pass to 404 if index.html is missing
+// Serve HTML pages directly
+app.get('/:page.html', (req, res) => {
+    const htmlPath = path.join(__dirname, 'frontend', `${req.params.page}.html`);
+    if (fs.existsSync(htmlPath)) return res.sendFile(htmlPath);
+    res.status(404).send('Page not found');
 });
+
 
 // Start server
 const server = app.listen(PORT, HOST, () => {

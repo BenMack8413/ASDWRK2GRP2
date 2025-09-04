@@ -1,24 +1,22 @@
-require('dotenv').config();
-
-const JWT_SECRET = process.env.JWT_SECRET;
+const token_key = "auth_jwt_token";
 
 function saveToken(token, rememberMe = false) {
     if (rememberMe) {
-        localStorage.setItem(JWT_SECRET, token);
+        localStorage.setItem(token_key, token);
     } else {
-        sessionStorage.setItem(JWT_SECRET, token);
+        sessionStorage.setItem(token_key, token);
     }
 }
 
 function getToken() {
     return (
-        localStorage.getItem(JWT_SECRET) || sessionStorage.getItem(JWT_SECRET)
+        localStorage.getItem(token_key) || sessionStorage.getItem(token_key)
     );
 }
 
 function removeToken() {
-    localStorage.removeItem(JWT_SECRET);
-    sessionStorage.removeItem(JWT_SECRET);
+    localStorage.removeItem(token_key);
+    sessionStorage.removeItem(token_key);
 }
 
 function isLoggedIn() {
@@ -74,6 +72,7 @@ async function login(email, password, rememberMe = false) {
 
     if (response.ok && data.token) {
         saveToken(data.token, rememberMe);
+        window.location.href = '/dashboard.html';
         return data;
     } else {
         throw new Error(data.error || 'Login failed');
@@ -85,12 +84,11 @@ function logout() {
     window.location.href = '/login.html';
 }
 
-module.exports = {
-    saveToken,
-    getToken,
-    removeToken,
-    isLoggedIn,
-    authFetch,
-    login,
-    logout,
-};
+window.saveToken = saveToken;
+window.getToken = getToken;
+window.removeToken = removeToken;
+window.isLoggedIn = isLoggedIn;
+window.authFetch = authFetch;
+window.signup = signup;
+window.login = login;
+window.logout = logout;
