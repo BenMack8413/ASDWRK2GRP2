@@ -1,3 +1,83 @@
+/* -------- Charts Page Styles -------- */
+
+.charts-wrapper {
+  margin-left: 280px; /* match sidebar spacing */
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#chartsArea {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 18px;
+}
+
+.chart-card {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--card_shadow);
+  position: relative;
+  height: 300px;
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-card.dragging {
+  opacity: 0.6;
+  border: 2px dashed var(--accent);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.chart-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.delete-btn {
+  background: #f87171;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.delete-btn:hover {
+  background: #dc2626;
+}
+
+.add-chart-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.add-btn:hover {
+  background: var(--accent-2);
+}
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
