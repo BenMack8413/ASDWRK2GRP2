@@ -195,7 +195,9 @@ function getHiddenWidgets() {
 function saveHiddenState() {
     try {
         localStorage.setItem(HIDDEN_KEY, JSON.stringify(getHiddenWidgets()));
-    } catch (e) {console.error(e);}
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 function saveLayout() {
@@ -207,7 +209,9 @@ function saveLayout() {
         localStorage.setItem(LAYOUT_KEY, JSON.stringify(order));
         localStorage.setItem(HIDDEN_KEY, JSON.stringify(getHiddenWidgets()));
         alert('Layout saved');
-    } catch (e) {console.error(e);}
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 function loadLayout() {
@@ -227,7 +231,9 @@ function loadLayout() {
                 w.style.display = visible ? 'block' : 'none';
             });
         }
-    } catch (e) {console.error(e);}
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 function resetLayout() {
@@ -235,7 +241,9 @@ function resetLayout() {
         localStorage.removeItem(LAYOUT_KEY);
         localStorage.removeItem(HIDDEN_KEY);
         location.reload();
-    } catch (e) {console.error(e);}
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 (function init() {

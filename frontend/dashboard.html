@@ -110,17 +110,17 @@
                 min-width: 0;
                 padding-right: 28px;
             }
-.main{
-    margin-left: 260px;
-    width: calc(100% - 260px);
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    min-width:0;
-    padding: 0 28px;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
+            .main {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                min-width: 0;
+                padding: 0 28px;
+                min-height: 100vh;
+                box-sizing: border-box;
+            }
 
             .top_row {
                 display: flex;
@@ -152,12 +152,12 @@
                 gap: 18px;
             }
 
-.header-left h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a1a1a;
-}
+            .header-left h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #1a1a1a;
+            }
 
             .muted {
                 color: var(--muted);
@@ -175,12 +175,12 @@
                 margin-top: 6px;
             }
 
-.widgets{
-    display:grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap:18px;
-    margin-top: 18px;
-}
+            .widgets {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 18px;
+                margin-top: 18px;
+            }
 
             .widget {
                 background: var(--panel);
@@ -253,27 +253,27 @@
                     padding: 16px;
                 }
             }
-@media (max-width:1800px){
-    .sidebar{
-        position:static;
-        width:220px;
-        border-radius:20px;
-        padding:28px;
-    }
-    .main{
-        margin-left:0; 
-        width: 100%;
-        padding: 0 16px;
-    }
-    .dashboard{
-        padding:16px;
-        flex-direction: column;
-    }
-    
-    .widgets {
-        grid-template-columns: 1fr;
-    }
-}
+            @media (max-width: 1800px) {
+                .sidebar {
+                    position: static;
+                    width: 220px;
+                    border-radius: 20px;
+                    padding: 28px;
+                }
+                .main {
+                    margin-left: 0;
+                    width: 100%;
+                    padding: 0 16px;
+                }
+                .dashboard {
+                    padding: 16px;
+                    flex-direction: column;
+                }
+
+                .widgets {
+                    grid-template-columns: 1fr;
+                }
+            }
 
             /* -------- Dashboard End -------- */
         </style>
@@ -281,102 +281,128 @@
     </head>
     <!--HEADER COPY END HERE-->
 
-<body>
-  <div class="dashboard">
-    <!--LEFT SIDE BAR STARTS HERE-->
-    <aside class="sidebar">
-      <div class="budget_name">My Budget</div>
-      <div>
-        <div class="balance">Menu</div>
-      </div>
-      <nav class="nav">
-        <a class="active" onclick="location.href='/frontend/dashboard.html';">Dashboard</a>
-        <!-- <a class="active" onclick="location.href='/dashboard';">Dashboard</a> -->
-        <a onclick="location.href='/frontend/budget.html';">Budget</a>
-        <!-- <a onclick="location.href='/budget';">Budget</a> -->
-        <a onclick="location.href='/frontend/income.html';">Income</a>
-        <!-- <a onclick="location.href='/income';">Income</a> -->
-        <a onclick="location.href='expenses.html';">Expenses</a>
-        <!-- <a href="#">Charts</a> -->
-        <a onclick="location.href='/reports';">Reports</a>
-        <a onclick="location.href='/schedules';">Schedules</a>
-        <a onclick="location.href='/charts';">Charts</a>
-        <a onclick="location.href='/calendar';">Calendar</a>
-        <a onclick="location.href='/messages';">Messages</a>
-        <a onclick="location.href='/settings';">Settings</a>
-      </nav>
-    </aside>
-    <!--LEFT SIDE BAR END HERE-->
+    <body>
+        <div class="dashboard">
+            <!--LEFT SIDE BAR STARTS HERE-->
+            <aside class="sidebar">
+                <div class="budget_name">My Budget</div>
+                <div>
+                    <div class="balance">Menu</div>
+                </div>
+                <nav class="nav">
+                    <a
+                        class="active"
+                        onclick="location.href='/frontend/dashboard.html';"
+                        >Dashboard</a
+                    >
+                    <!-- <a class="active" onclick="location.href='/dashboard';">Dashboard</a> -->
+                    <a onclick="location.href='/frontend/budget.html';"
+                        >Budget</a
+                    >
+                    <!-- <a onclick="location.href='/budget';">Budget</a> -->
+                    <a onclick="location.href='/frontend/income.html';"
+                        >Income</a
+                    >
+                    <!-- <a onclick="location.href='/income';">Income</a> -->
+                    <a onclick="location.href='expenses.html';">Expenses</a>
+                    <!-- <a href="#">Charts</a> -->
+                    <a onclick="location.href='/reports';">Reports</a>
+                    <a onclick="location.href='/schedules';">Schedules</a>
+                    <a onclick="location.href='/charts';">Charts</a>
+                    <a onclick="location.href='/calendar';">Calendar</a>
+                    <a onclick="location.href='/messages';">Messages</a>
+                    <a onclick="location.href='/settings';">Settings</a>
+                </nav>
+            </aside>
+            <!--LEFT SIDE BAR END HERE-->
 
-    <!-- Main starts here -->
-    <main class="main">
-        <div style="display:flex; justify-content:space-between; align-items:center">
-            <h1>Dashboard</h1>
-        </div>
-        <div class="top_row">
-            <div class="card small">
-                <div class="widget_header">
-                    <div><h3>Current Balance</h3></div>
-                    <div class="balance_amount">$99,999</div>
+            <!-- Main starts here -->
+            <main class="main">
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    "
+                >
+                    <h1>Dashboard</h1>
                 </div>
-            </div>
-            <div class="card">
-                <h3 style="margin-bottom:8px">Latest transactions</h3>
-                <div id="miniTx" style="display:flex; flex-direction:column; gap:8px">
-                    <!-- small tx preview -->
-                </div>
-            </div>
-            <div class="card medium">
-                <div class="widget_header">
-                    <div>
-                        <h3>Income</h3>
-                        <div class="muted">Monthly trend</div>
+                <div class="top_row">
+                    <div class="card small">
+                        <div class="widget_header">
+                            <div><h3>Current Balance</h3></div>
+                            <div class="balance_amount">$99,999</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-bottom: 8px">Latest transactions</h3>
+                        <div
+                            id="miniTx"
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 8px;
+                            "
+                        >
+                            <!-- small tx preview -->
+                        </div>
+                    </div>
+                    <div class="card medium">
+                        <div class="widget_header">
+                            <div>
+                                <h3>Income</h3>
+                                <div class="muted">Monthly trend</div>
+                            </div>
+                        </div>
+                        <div class="chart-wrap" style="margin-top: 12px">
+                            <canvas id="incomeChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card half" style="flex: 0 0 360px">
+                        <h3>Payment history</h3>
+                        <div class="transactions" id="recentTx">
+                            <!-- recent transactions here-->
+                        </div>
                     </div>
                 </div>
-                <div class="chart-wrap" style="margin-top:12px">
-                    <canvas id="incomeChart"></canvas>
-                </div>
-            </div>
 
-                        <div class="card half" style="flex: 0 0 360px">
-                              <h3>Payment history</h3>
-                              <div class="transactions" id="recentTx">
-                                    <!-- recent transactions here-->
-                              </div>
-                        </div>
-                  </div>
-        
-                  <div class="widgets">
-                      <div
+                <div class="widgets">
+                    <div
                         class="widget"
                         draggable="true"
                         data-id="widget-pie"
                         id="widget-pie"
                     >
-                            <div class="widget-header">
-                                  <div>
-                                        <h3>Spending by category</h3>
-                                        <div class="muted">This month</div>
-                                  </div>
+                        <div class="widget-header">
+                            <div>
+                                <h3>Spending by category</h3>
+                                <div class="muted">This month</div>
                             </div>
-                            <div style="margin-top: 12px; height: 220px">
-                                  <canvas id="spendPie"></canvas>
-                            </div>
-                      </div>
+                        </div>
+                        <div style="margin-top: 12px; height: 220px">
+                            <canvas id="spendPie"></canvas>
+                        </div>
+                    </div>
 
-            <div class="widget" draggable="true" data-id="widget-activity" id="widget-activity">
-                <div class="widget-header">
-                    <div>
-                        <h3>Activity</h3>
-                        <div class="muted">Income vs Spending</div>
+                    <div
+                        class="widget"
+                        draggable="true"
+                        data-id="widget-activity"
+                        id="widget-activity"
+                    >
+                        <div class="widget-header">
+                            <div>
+                                <h3>Activity</h3>
+                                <div class="muted">Income vs Spending</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 12px; height: 280px">
+                            <canvas id="activityBar"></canvas>
+                        </div>
                     </div>
                 </div>
-                <div style="margin-top:12px; height:280px">
-                    <canvas id="activityBar"></canvas>
-                </div>
-            </div>
-        </div>
-    </main>
+            </main>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
