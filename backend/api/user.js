@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const db = require('../db.js');
+const {db, addUser} = require('../db.js');
 const { generateToken, requireAuth, verifyToken } = require('../auth.js');
 
 module.exports = (db) => {
@@ -9,15 +9,16 @@ module.exports = (db) => {
 
     router.post('/signup', async (req, res) => {
         try {
-            const payload = req.body;
-            if (!payload.username || !payload.email || payload.password_hash) {
+            const {username, email, password_hash} = req.body;
+            const password = password_hash;
+            if (!username || !email || !password_hash) {
                 return res.status(400).json({
                     error: 'Missing required fields: name, email and password',
                 });
             }
 
             const existing = db
-                .prepare('SELECT id FROM users WHERE email = ?')
+                .prepare('SELECT user_id FROM users WHERE email = ?')
                 .get(email);
             if (existing) {
                 return res
@@ -27,9 +28,7 @@ module.exports = (db) => {
 
             const hash = await bcrypt.hash(password, 10);
 
-            const userId = addUser
-                ? await addUser(db, payload.username, payload.email, hash)
-                : payload;
+            const userId = await addUser(db, username, email, hash);
             res.status(201).json({
                 message: 'User registered',
                 userId: userId,

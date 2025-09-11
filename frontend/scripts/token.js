@@ -52,13 +52,13 @@ async function signup(username, email, password, rememberMe) {
         const data = await response.json();
 
         if (response.ok) {
-            messageDiv.textContent = 'Signup successful! You can now log in.';
             login(email, password, rememberMe);
+            return 'Signup successful! You can now log in.';
         } else {
-            messageDiv.textContent = `Signup failed: ${data.error}`;
+            return `Signup failed: ${data.error}`;
         }
     } catch (err) {
-        messageDiv.textContent = `Error: ${err.message}`;
+        return `Error: ${err.message}`;
     }
 }
 
