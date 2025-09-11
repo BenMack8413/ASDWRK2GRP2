@@ -1,15 +1,15 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {db, addUser} = require('../db.js');
-const { generateToken, requireAuth, verifyToken } = require('../auth.js');
+const { db, addUser, deleteUser } = require('../db.js');
+const { generateToken, requireAuth } = require('../auth.js');
 
 module.exports = (db) => {
     const router = express.Router();
 
     router.post('/signup', async (req, res) => {
         try {
-            const {username, email, password_hash} = req.body;
+            const { username, email, password_hash } = req.body;
             const password = password_hash;
             if (!username || !email || !password_hash) {
                 return res.status(400).json({
@@ -83,27 +83,26 @@ module.exports = (db) => {
         res.json({ message: 'Authenticated user', user: req.user });
     });
 
-    // router.delete('/:id', async (req, res) => {
-    //     try {
-    //         const id = Number(req.params.id);
-    //         if (!id) return res.status(400).json({ error: 'Invalid id' });
+    router.delete('/:id', requireAuth, async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            if (Number.isNaN(id))
+                return res.status(400).json({ error: 'Invalid id' });
 
-    //         if (verifyToken(req,))
+            const deleted = deleteUser(db, id);
 
-    //         const deleted = deleteItem ? await deleteItem(id) : true;
-    //         if (!deleted)
-    //             return res.status(404).json({ error: 'Item not found' });
+            if (!deleted)
+                return res.status(404).json({ error: 'Item not found' });
 
-    //         res.status(200).json({ message: 'Item deleted' });
-    //     } catch (err) {
-    //         console.error(err);
-    //         res.status(500).json({
-    //             error: 'Failed to delete item',
-    //             detail: err.message,
-    //         });
-    //     }
-    // });
-
+            res.status(200).json({ message: 'Item deleted' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                error: 'Failed to delete item',
+                detail: err.message,
+            });
+        }
+    });
 
     return router;
 };

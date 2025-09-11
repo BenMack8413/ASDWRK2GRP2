@@ -1,7 +1,7 @@
 const express = require('express');
 const createTransactionsRouter = require('./transactions');
 const createUserRouter = require('./user');
-// const sampleApiRouter = require('./sampleapi'); 
+// const sampleApiRouter = require('./sampleapi');
 
 module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
     const router = express.Router();

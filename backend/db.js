@@ -83,8 +83,8 @@ function addUser(db, username, email, passwordHash) {
 
     try {
         const statement = db.prepare(`
-      INSERT INTO users (username, email, password_hash)
-      VALUES (?, ?, ?)
+        INSERT INTO users (username, email, password_hash)
+        VALUES (?, ?, ?)
     `);
         const info = statement.run(username, email, passwordHash);
         return info.lastInsertRowid; // the new user_id
@@ -97,4 +97,20 @@ function addUser(db, username, email, passwordHash) {
     }
 }
 
-module.exports = { db, createTransactionAtomic, addUser };
+function deleteUser(db, id) {
+    if (!id) throw new Error('User ID Required');
+
+    try {
+        const statement = db.prepare(`
+            DELETE FROM users WHERE user_id = ?
+        `);
+        const info = statement.run(id);
+
+        return info.changes > 0;
+    } catch (err) {
+        console.error(err);
+        throw new Error('Something went wrong when deleting user');
+    }
+}
+
+module.exports = { db, createTransactionAtomic, addUser, deleteUser };
