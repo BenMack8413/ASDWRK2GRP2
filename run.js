@@ -18,7 +18,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 // --- Serve all static frontend files from frontend/
 app.use(express.static(path.join(__dirname, 'frontend')));
 
@@ -28,17 +27,15 @@ app.use('/api', createApiRouter(db, createTransactionAtomic));
 // --- SPA / fallback: only return index.html for non-file, non-api requests
 // This prevents serving index.html to requests for /css/foo.css (those requests have an extension)
 app.use((req, res, next) => {
-  // Skip API requests
-  if (req.path.startsWith('/api')) return next();
+    // Skip API requests
+    if (req.path.startsWith('/api')) return next();
 
-  // Skip requests for files
-  if (path.extname(req.path)) return next();
+    // Skip requests for files
+    if (path.extname(req.path)) return next();
 
-  // Serve SPA index.html
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+    // Serve SPA index.html
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
-
-
 
 // Start server
 const server = app.listen(PORT, HOST, () => {
