@@ -1,4 +1,4 @@
-const token_key = "auth_jwt_token";
+const token_key = 'auth_jwt_token';
 
 function saveToken(token, rememberMe = false) {
     if (rememberMe) {
@@ -9,9 +9,7 @@ function saveToken(token, rememberMe = false) {
 }
 
 function getToken() {
-    return (
-        localStorage.getItem(token_key) || sessionStorage.getItem(token_key)
-    );
+    return localStorage.getItem(token_key) || sessionStorage.getItem(token_key);
 }
 
 function removeToken() {
