@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../db.js');
-const { generateToken, requireAuth } = require('../auth.js');
+const { generateToken, requireAuth, verifyToken } = require('../auth.js');
 
 module.exports = (db) => {
     const router = express.Router();
@@ -83,6 +83,28 @@ module.exports = (db) => {
     router.get('/me', requireAuth, (req, res) => {
         res.json({ message: 'Authenticated user', user: req.user });
     });
+
+    // router.delete('/:id', async (req, res) => {
+    //     try {
+    //         const id = Number(req.params.id);
+    //         if (!id) return res.status(400).json({ error: 'Invalid id' });
+
+    //         if (verifyToken(req,))
+
+    //         const deleted = deleteItem ? await deleteItem(id) : true;
+    //         if (!deleted)
+    //             return res.status(404).json({ error: 'Item not found' });
+
+    //         res.status(200).json({ message: 'Item deleted' });
+    //     } catch (err) {
+    //         console.error(err);
+    //         res.status(500).json({
+    //             error: 'Failed to delete item',
+    //             detail: err.message,
+    //         });
+    //     }
+    // });
+
 
     return router;
 };
