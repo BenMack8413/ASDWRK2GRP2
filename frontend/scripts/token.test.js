@@ -3,7 +3,6 @@
  */
 require('./token'); // executes file and populates window.*
 
-// use the window globals
 const {
   saveToken,
   getToken,
@@ -22,10 +21,17 @@ describe('auth utilities', () => {
     const token = 'test_jwt_token';
 
     beforeEach(() => {
-        localStorage.clear();
-        sessionStorage.clear();
-        jest.clearAllMocks();
-    });
+  // Clear storages
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Reset mocks first
+  jest.clearAllMocks();
+
+  // Recreate fetch mock after clearing mocks
+  global.fetch = jest.fn();
+  });
+  
 
     describe('saveToken / getToken', () => {
         it('saves token in localStorage when rememberMe is true', () => {
@@ -78,10 +84,9 @@ describe('auth utilities', () => {
         it('attaches token and resolves json on success', async () => {
             localStorage.setItem('auth_jwt_token', token);
 
-            const mockResponse = { data: 'ok' };
             fetch.mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve(mockResponse),
+                json: async () => ({ data: 'ok' }),
             });
 
             const result = await authFetch('/api/test');
@@ -93,7 +98,7 @@ describe('auth utilities', () => {
                     }),
                 })
             );
-            expect(result).toEqual(mockResponse);
+            expect(result).toEqual({ data: 'ok' });
         });
 
         it('removes token and throws error on 401/403', async () => {
@@ -102,6 +107,7 @@ describe('auth utilities', () => {
             fetch.mockResolvedValueOnce({
                 ok: false,
                 status: 401,
+                json: async () => ({ error: 'Bad request' }),
             });
 
             await expect(authFetch('/api/test')).rejects.toThrow('Request failed: 401');
@@ -114,7 +120,7 @@ describe('auth utilities', () => {
             const loginMock = jest.spyOn(global, 'login').mockResolvedValueOnce({});
             fetch.mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve({}),
+                json: async () => ({}),
             });
 
             const result = await signup('user', 'test@test.com', 'pass', true);
@@ -125,7 +131,7 @@ describe('auth utilities', () => {
         it('returns error message on failure', async () => {
             fetch.mockResolvedValueOnce({
                 ok: false,
-                json: () => Promise.resolve({ error: 'Bad request' }),
+                json: async () => ({ error: 'Bad request' }),
             });
 
             const result = await signup('user', 'test@test.com', 'pass');
@@ -134,27 +140,22 @@ describe('auth utilities', () => {
     });
 
     describe('login', () => {
-        beforeEach(() => {
-            delete global.window.location;
-            global.window.location = { href: '' };
-        });
-
         it('saves token and redirects on success', async () => {
             fetch.mockResolvedValueOnce({
                 ok: true,
-                json: () => Promise.resolve({ token }),
+                json: async () => ({ token }),
             });
 
             const result = await login('test@test.com', 'pass', true);
             expect(localStorage.getItem('auth_jwt_token')).toBe(token);
-            expect(window.location.href).toBe('/dashboard.html');
+            expect(window.location.assign).toHaveBeenCalledWith('/dashboard.html');
             expect(result.token).toBe(token);
         });
 
         it('throws error on failure', async () => {
             fetch.mockResolvedValueOnce({
                 ok: false,
-                json: () => Promise.resolve({ error: 'Invalid credentials' }),
+                json: async () => ({ error: 'Invalid credentials' }),
             });
 
             await expect(login('test@test.com', 'wrong')).rejects.toThrow('Invalid credentials');
@@ -162,16 +163,11 @@ describe('auth utilities', () => {
     });
 
     describe('logout', () => {
-        beforeEach(() => {
-            delete global.window.location;
-            global.window.location = { href: '' };
-        });
-
         it('removes token and redirects to login', () => {
             localStorage.setItem('auth_jwt_token', token);
             logout();
             expect(localStorage.getItem('auth_jwt_token')).toBeNull();
-            expect(window.location.href).toBe('/login.html');
+            expect(window.location.assign).toHaveBeenCalledWith('/login.html');
         });
     });
 });
