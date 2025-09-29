@@ -19,6 +19,12 @@ CREATE TABLE IF NOT EXISTS budgets (
   FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+INSERT OR IGNORE INTO users (user_id, username, email, password_hash)
+VALUES (1, 'demo', 'demo@example.com', 'hashedpassword123');
+
+INSERT OR IGNORE INTO budgets (budget_id, user_id, name, currency)
+VALUES (1, 1, 'Default Budget', 'USD');
+
 -- SETTINGS (one row per budget)
 CREATE TABLE IF NOT EXISTS settings (
   budget_id INTEGER PRIMARY KEY,
