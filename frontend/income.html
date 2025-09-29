@@ -1186,6 +1186,27 @@ function editIncomeLocal(id) {
 
   // remove local copy so submit will create a new one (server copy remains)
   incomes = incomes.filter(i => i.id !== id);
+  // ---- Update stats ----
+function updateIncomeStats() {
+  const totalMonthly = incomes.reduce((sum, i) => sum + (i.amount || 0), 0);
+  const sources = new Set(incomes.map(i => i.source)).size;
+
+  // For "Expected This Month", you could filter by current month:
+  const now = new Date();
+  const expectedThisMonth = incomes
+    .filter(i => {
+      const d = new Date(i.date);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    })
+    .reduce((sum, i) => sum + (i.amount || 0), 0);
+
+  document.querySelector('.stat-1 .stat-value').textContent = `$${totalMonthly.toFixed(2)}`;
+  document.querySelector('.stat-2 .stat-value').textContent = `$${expectedThisMonth.toFixed(2)}`;
+  document.querySelector('.stat-3 .stat-value').textContent = sources;
+}
+
+  updateIncomeStats();
+
   renderIncomes();
 }
 
