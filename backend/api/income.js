@@ -35,5 +35,57 @@ module.exports = function createIncomeRouter(/*db*/) {
 
     res.json(resp);
   });
-  
+
+
+  // Create a new income (creates transaction + one line)
+  router.post('/', (req, res) => {
+    try {
+      const { budget_id, amount, date, source, frequency, description, account_id } = req.body;
+      if (!budget_id || !amount || !date) {
+        return res.status(400).json({ error: 'budget_id, amount and date are required' });
+      }
+
+      const amount_cents = Math.round(Number(amount) * 100);
+      if (!Number.isFinite(amount_cents)) return res.status(400).json({ error: 'invalid amount' });
+
+      const payload = {
+        budget_id: Number(budget_id),
+        account_id: account_id ? Number(account_id) : null,
+        date: String(date),
+        notes: description || source || null,
+        type: 'income',
+        lines: [
+          {
+            category_id: null,
+            amount: amount_cents,
+            note: source || null
+          }
+        ],
+        tag_ids: []
+      };
+
+      const transaction_id = createTransactionAtomic(payload);
+
+      const txn = sharedDb
+        .prepare('SELECT * FROM transactions WHERE transaction_id = ? AND budget_id = ?')
+        .get(transaction_id, payload.budget_id);
+
+      const amountRow = sharedDb
+        .prepare('SELECT COALESCE(SUM(amount),0) AS amount_cents FROM transaction_lines WHERE transaction_id = ?')
+        .get(transaction_id);
+
+      res.status(201).json({
+        id: txn.transaction_id,
+        budget_id: txn.budget_id,
+        account_id: txn.account_id,
+        date: txn.date,
+        description: txn.notes,
+        amount: (amountRow.amount_cents || 0) / 100,
+        type: txn.type
+      });
+    } catch (err) {
+      console.error('Failed to create income:', err);
+      res.status(500).json({ error: 'internal error', detail: String(err.message || err) });
+    }
+  });
 };
