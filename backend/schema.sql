@@ -65,6 +65,26 @@ CREATE TABLE IF NOT EXISTS tags (
   FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE
 );
 
+-- INCOME
+CREATE TABLE IF NOT EXISTS incomes (
+  income_id   INTEGER PRIMARY KEY,
+  budget_id   INTEGER NOT NULL,
+  user_id     INTEGER,          
+  account_id  INTEGER,            
+  amount      INTEGER NOT NULL,   
+  source      TEXT,
+  date        TEXT NOT NULL,
+  frequency   TEXT,
+  notes       TEXT,
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id)   REFERENCES users(user_id)     ON DELETE SET NULL,
+  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_incomes_budget_date ON incomes(budget_id, date);
+
+
 -- TRANSACTIONS (header)
 CREATE TABLE IF NOT EXISTS transactions (
   transaction_id INTEGER PRIMARY KEY,
