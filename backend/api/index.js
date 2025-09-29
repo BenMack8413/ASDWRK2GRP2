@@ -9,6 +9,7 @@ module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
     // mount feature routers
     router.use('/transactions', createTransactionsRouter(db));
     router.use('/users', createUserRouter(db));
+    router.use('/income', createIncomeRouter(db));
 
     // router.use('/sampleApiRouter', sampleApiRouter(db));
 

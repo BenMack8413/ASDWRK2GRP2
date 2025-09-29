@@ -2,7 +2,7 @@
 const express = require('express');
 const { createTransactionAtomic, db: sharedDb } = require('../db'); // uses createTransactionAtomic exported from your db.js
 
-module.exports = function createIncomeRouter(/*db*/) {
+module.exports = function createIncomeRouter(db) {
   const router = express.Router();
 
   // List incomes for a budget
@@ -88,4 +88,22 @@ module.exports = function createIncomeRouter(/*db*/) {
       res.status(500).json({ error: 'internal error', detail: String(err.message || err) });
     }
   });
+
+  // Delete income (delete transaction)
+  router.delete('/:id', (req, res) => {
+    const transaction_id = Number(req.params.id);
+    const budget_id = Number(req.query.budget_id);
+    if (!transaction_id || !budget_id) {
+      return res.status(400).json({ error: 'transaction id and budget_id are required' });
+    }
+
+    const info = sharedDb
+      .prepare('DELETE FROM transactions WHERE transaction_id = ? AND budget_id = ?')
+      .run(transaction_id, budget_id);
+
+    if (info.changes === 0) return res.status(404).json({ error: 'not found' });
+    res.json({ ok: true });
+  });
+
+  return router;
 };
