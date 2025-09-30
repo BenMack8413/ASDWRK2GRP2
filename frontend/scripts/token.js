@@ -79,7 +79,7 @@ async function login(email, password, rememberMe = false) {
 
 function logout() {
     removeToken();
-    window.location.href = '/login.html';
+    window.location.href = '/index.html';
 }
 
 window.saveToken = saveToken;
