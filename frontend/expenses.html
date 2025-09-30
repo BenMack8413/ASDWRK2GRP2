@@ -315,42 +315,90 @@
 
             <main class="main">
                 <h1 class="title">Expense Tracking</h1>
+                <div class="expense-stats">
+                    <div class="stat-card stat-1">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-value" id="stat-total-expense">$0.00</div>
+                        <div class="stat-title">Total Monthly Expense</div>
+                    </div>
+                    <div class="stat-card stat-2">
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="stat-value" id="stat-expected-expense">$0.00</div>
+                        <div class="stat-title">Expected This Month</div>
+                    </div>
+                    <div class="stat-card stat-3">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="stat-value" id="stat-expense-sources">0</div>
+                        <div class="stat-title">Expense Sources</div>
+                    </div>
+                </div>
                 <table class="expenseTable" id="expenseTable">
                     <thead>
                         <tr>
+                            <th>Source</th>
                             <th>Amount</th>
-                            <th>Title</th>
-                            <th>Description</th>
                             <th>Date</th>
                             <th>Frequency</th>
+                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody class="expenseContainer">
                         <tr>
-                            <td>$500</td>
                             <td>Groceries</td>
+                            <td>$150.00</td>
+                            <td>2024-06-01</td>
+                            <td>Monthly</td>
                             <td>Weekly grocery shopping</td>
-                            <td>1st January 2026</td>
-                            <td>Weekly</td>
                         </tr>
                         <tr>
-                            <td>$150</td>
                             <td>Utilities</td>
-                            <td>Monthly utility bills</td>
-                            <td>13th January 2026</td>
+                            <td>$75.00</td>
+                            <td>2024-06-05</td>
                             <td>Monthly</td>
+                            <td>Electricity and water bills</td>
                         </tr>
                     </tbody>
                 </table>
                 <button class="addExpenseButton" id="addExpense">+ Add Expense</button>
 
                 <form id="expenseForm" style="display:none; margin-top:20px;">
-                    <input type="text" placeholder="Amount" name="amount" required />
-                    <input type="text" placeholder="Title" name="title" required />
-                    <input type="text" placeholder="Description" name="description" />
-                    <input type="date" name="date" required />
-                    <input type="text" placeholder="Frequency" name="frequency" />
-                    <button type="submit">Submit</button>
+                    <Label>
+                        <div class="formSub">Source</div>
+                        <input type="text" placeholder="Source" name="Source" required />
+                    </Label>
+                    <Label>
+                        <div class="formSub">Amount</div>
+                        <input type="text" placeholder="Amount" name="Amount" required />
+                    </Label>
+                    <Label>
+                        <div class="formSub">Date</div>
+                        <input type="date" name="date" required />
+                    </Label>
+                    <Label>
+                        <div class="formSub">Frequency</div>
+                        <select name="Frequency" required>
+                            <option value="" disabled selected>Select frequency</option>
+                            <option value="One-time">One-time</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                    </Label>
+                    <Label>
+                        <div class="formSub">Description</div>
+                        <input type="text" placeholder="Description" name="Description" />
+                    </Label>
+                    <Label>
+                        <div></div>
+                        <button type="submit">Submit</button>
+                    </Label>
                 </form>
             </main>
         </div>
@@ -365,6 +413,32 @@
                 } else {
                     expenseForm.style.display = 'none';
                 }
+            };
+
+            expenseForm.onsubmit = function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(expenseForm);
+                const source = formData.get('Source');
+                const amount = formData.get('Amount');
+                const date = formData.get('date');
+                const frequency = formData.get('Frequency');
+                const description = formData.get('Description');
+
+                const tableBody = document.querySelector('.expenseContainer');
+                const newRow = document.createElement('tr');
+
+                newRow.innerHTML = `
+                    <td>${source}</td>
+                    <td>$${parseFloat(amount).toFixed(2)}</td>
+                    <td>${date}</td>
+                    <td>${frequency}</td>
+                    <td>${description}</td>
+                `;
+
+                tableBody.appendChild(newRow);
+                expenseForm.reset();
+                expenseForm.style.display = 'none';
             };
 
         </script>
