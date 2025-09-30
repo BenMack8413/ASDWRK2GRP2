@@ -82,6 +82,37 @@ function logout() {
     window.location.href = '/index.html';
 }
 
+async function deleteUser(id) {
+  if (typeof id !== 'number' || Number.isNaN(id)) {
+    throw new TypeError('Invalid id (must be a number)');
+  }
+
+  const token = getToken();
+  if (!token) {
+    throw new Error('No auth token found. User not logged in.');
+  }
+
+  const response = await fetch(`/delete/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  let payload = {};
+  try { payload = await response.json(); } catch (e) {}
+
+  if (!response.ok) {
+    const err = new Error(payload.error || `Request failed (${response.status})`);
+    err.status = response.status;
+    err.detail = payload.detail;
+    throw err;
+  }
+
+  return payload;
+}
+
 window.saveToken = saveToken;
 window.getToken = getToken;
 window.removeToken = removeToken;
