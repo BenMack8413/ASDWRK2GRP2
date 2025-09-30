@@ -83,7 +83,7 @@ module.exports = (db) => {
         res.json({ message: 'Authenticated user', user: req.user });
     });
 
-    router.delete('/:id', requireAuth, async (req, res) => {
+    router.delete('/delete/:id', requireAuth, async (req, res) => {
         try {
             const id = Number(req.params.id);
             if (Number.isNaN(id))

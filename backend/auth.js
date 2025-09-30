@@ -29,4 +29,4 @@ function requireAuth(req, res, next) {
     });
 }
 
-module.exports = { generateToken, verifyToken, requireAuth };
+module.exports = { generateToken, requireAuth };
