@@ -338,6 +338,35 @@
                         <div class="stat-title">Expense Sources</div>
                     </div>
                 </div>
+                <div class="expenseHeader">
+                    <div class="list-controls">
+                            <input
+                                type="text"
+                                class="search-box"
+                                placeholder="Search expense..."
+                                id="searchExpense"
+                            />
+                            <select class="sort-select" id="sortExpense">
+                                <option value="date-desc">
+                                    Sort by: Date (Newest)
+                                </option>
+                                <option value="date-asc">
+                                    Sort by: Date (Oldest)
+                                </option>
+                                <option value="amount-desc">
+                                    Sort by: Amount (High to Low)
+                                </option>
+                                <option value="amount-asc">
+                                    Sort by: Amount (Low to High)
+                                </option>
+                                <option value="source">
+                                    Sort by: Source
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="expenseContainer">
                 <table class="expenseTable" id="expenseTable">
                     <thead>
                         <tr>
@@ -365,6 +394,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
                 <button class="addExpenseButton" id="addExpense">+ Add Expense</button>
 
                 <form id="expenseForm" style="display:none; margin-top:20px;">
@@ -406,6 +436,8 @@
 
             const addExpenseBtn = document.getElementById('addExpense');
             const expenseForm = document.getElementById('expenseForm');
+            const searchExpense = document.getElementById('searchExpense');
+            const sortExpense = document.getElementById('sortExpense');
 
             addExpenseBtn.onclick = function() {
                 if (expenseForm.style.display === 'none' || expenseForm.style.display === '') {
@@ -439,6 +471,63 @@
                 tableBody.appendChild(newRow);
                 expenseForm.reset();
                 expenseForm.style.display = 'none';
+            };
+
+            searchExpense.oninput = function() {
+                const filter = searchExpense.value.toLowerCase();
+                const rows = document.querySelectorAll('.expenseContainer tr');
+
+                rows.forEach(row => {
+                    const source = row.cells[0].textContent.toLowerCase();
+                    const amount = row.cells[1].textContent.toLowerCase();
+                    const date = row.cells[2].textContent.toLowerCase();
+                    const frequency = row.cells[3].textContent.toLowerCase();
+                    const description = row.cells[4].textContent.toLowerCase();
+
+                    if (source.includes(filter) || amount.includes(filter) || date.includes(filter) || frequency.includes(filter) || description.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            };
+
+            sortExpense.onchange = function() {
+                const criteria = sortExpense.value;
+                const tableBody = document.querySelector('.expenseContainer');
+                const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+                rows.sort((a, b) => {
+                    let valA, valB;
+
+                    switch (criteria) {
+                        case 'date-desc':
+                            valA = new Date(a.cells[2].textContent);
+                            valB = new Date(b.cells[2].textContent);
+                            return valB - valA;
+                        case 'date-asc':
+                            valA = new Date(a.cells[2].textContent);
+                            valB = new Date(b.cells[2].textContent);
+                            return valA - valB;
+                        case 'amount-desc':
+                            valA = parseFloat(a.cells[1].textContent.replace('$', ''));
+                            valB = parseFloat(b.cells[1].textContent.replace('$', ''));
+                            return valB - valA;
+                        case 'amount-asc':
+                            valA = parseFloat(a.cells[1].textContent.replace('$', ''));
+                            valB = parseFloat(b.cells[1].textContent.replace('$', ''));
+                            return valA - valB;
+                        case 'source':
+                            valA = a.cells[0].textContent.toLowerCase();
+                            valB = b.cells[0].textContent.toLowerCase();
+                            return valA.localeCompare(valB);
+                        default:
+                            return 0;
+                    }
+                });
+
+                tableBody.innerHTML = '';
+                rows.forEach(row => tableBody.appendChild(row));
             };
 
         </script>
