@@ -26,7 +26,7 @@ async function authFetch(url, options = {}) {
     if (!token) throw new Error('No token available');
 
     const headers = Object.assign({}, options.headers, {
-        Authorization: `Bearer ${token}`,
+        authorization: `Bearer ${token}`,
     });
 
     const response = await fetch(url, Object.assign({}, options, { headers }));
@@ -84,30 +84,38 @@ function logout() {
 
 async function deleteUser() {
     const token = getToken();
-    const id = token.id;
-    if (typeof id !== 'number' || Number.isNaN(id)) {
-        throw new TypeError('Invalid id (must be a number)');
-    }
-
     if (!token) {
         throw new Error('No auth token found. User not logged in.');
     }
-
+    const id = Number(token.id);
+    if (typeof id !== 'number') {
+            console.log(8);
+        throw new TypeError('Invalid id (must be a number)');
+    }
+    console.log(1);
+    if (!token) {
+        console.log(7);
+        throw new Error('No auth token found. User not logged in.');
+    }
+    console.log(2);
     const response = await fetch(`/delete/${id}`, {
         method: 'DELETE',
         headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`,
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
         },
     });
-
+    console.log(3);
     let payload = {};
     try {
         payload = await response.json();
     } catch (e) {
+        console.log(e.message);
+        console.log(payload);
+        console.log(response);
         return `Error: ${e.message}`;
     }
-
+    console.log(4);
     if (!response.ok) {
         const err = new Error(
             payload.error || `Request failed (${response.status})`,
@@ -116,7 +124,7 @@ async function deleteUser() {
         err.detail = payload.detail;
         throw err;
     }
-
+    console.log(5);
     return payload;
 }
 

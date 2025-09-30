@@ -38,7 +38,12 @@
                     id="account-controls"
                     style="display: flex; gap: 8px; align-items: center"
                 >
-                    <button id="logoutBtn" type="button" aria-label="Log out">
+                    <button 
+                        id="logoutBtn" 
+                        type="button" 
+                        aria-label="Log out"
+                        onclick="logout()"
+                    >
                         Log out
                     </button>
                     <button
@@ -46,6 +51,7 @@
                         type="button"
                         aria-label="Delete account"
                         style="background: #c0392b; color: #fff"
+                        onclick="deleteUser()"
                     >
                         Delete account
                     </button>
@@ -59,50 +65,10 @@
         </div>
     </body>
     <script src="/scripts/token.js"></script>
-    <script>
+    <!-- <script>
         const logoutBtn = document.getElementById('logoutBtn');
         const deleteBtn = document.getElementById('deleteBtn');
-        const msgEl = document.getElementById('acctMessage');
-
-        function showError(text) {
-            msgEl.textContent = text ?? '';
-            msgEl.style.color = '#b00020';
-        }
-        function clearMessage() {
-            msgEl.textContent = '';
-        }
-
-        async function onLogout() {
-            clearMessage();
-            try {
-                const res = window.logout;
-                // handle resolved error objects like { error: '...' }
-                if (res && (res.error || res.detail)) {
-                    showError(res.error ?? res.detail);
-                    return;
-                }
-                // success -> clear message (or show nothing)
-                clearMessage();
-            } catch (err) {
-                showError(err?.message ?? String(err));
-            }
-        }
-
-        async function onDelete() {
-            clearMessage();
-            try {
-                const res = await window.deleteUser;
-                if (res && (res.error || res.detail)) {
-                    showError(res.error ?? res.detail);
-                    return;
-                }
-                clearMessage();
-            } catch (err) {
-                showError(err?.message ?? String(err));
-            }
-        }
-
-        logoutBtn.addEventListener('click', onLogout);
-        deleteBtn.addEventListener('click', onDelete);
-    </script>
+        logoutBtn.addEventListener('click', logout());
+        deleteBtn.addEventListener('click', deleteUser());
+    </script> -->
 </html>
