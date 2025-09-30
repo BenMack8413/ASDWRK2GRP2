@@ -82,12 +82,13 @@ function logout() {
     window.location.href = '/index.html';
 }
 
-async function deleteUser(id) {
+async function deleteUser() {
+    const token = getToken();
+    const id = token.id;
     if (typeof id !== 'number' || Number.isNaN(id)) {
         throw new TypeError('Invalid id (must be a number)');
     }
 
-    const token = getToken();
     if (!token) {
         throw new Error('No auth token found. User not logged in.');
     }

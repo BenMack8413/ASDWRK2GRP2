@@ -27,13 +27,82 @@
                     <a onclick="location.href='chart.html';">Charts</a>
                     <a onclick="location.href='/calendar';">Calendar</a>
                     <a onclick="location.href='/messages';">Messages</a>
-                    <a class="active" onclick="location.href='/account';"
+                    <a class="active" onclick="location.href='/account.html';"
                         >Settings</a
                     >
                 </nav>
             </aside>
             <!--LEFT SIDE BAR END HERE-->
-            <main class="main"></main>
+            <main class="main">
+                <div
+                    id="account-controls"
+                    style="display: flex; gap: 8px; align-items: center"
+                >
+                    <button id="logoutBtn" type="button" aria-label="Log out">
+                        Log out
+                    </button>
+                    <button
+                        id="deleteBtn"
+                        type="button"
+                        aria-label="Delete account"
+                        style="background: #c0392b; color: #fff"
+                    >
+                        Delete account
+                    </button>
+                    <span
+                        id="acctMessage"
+                        aria-live="polite"
+                        style="margin-left: 12px; font-size: 0.95rem"
+                    ></span>
+                </div>
+            </main>
         </div>
     </body>
+    <script src="/scripts/token.js"></script>
+    <script>
+        const logoutBtn = document.getElementById('logoutBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const msgEl = document.getElementById('acctMessage');
+
+        function showError(text) {
+            msgEl.textContent = text ?? '';
+            msgEl.style.color = '#b00020';
+        }
+        function clearMessage() {
+            msgEl.textContent = '';
+        }
+
+        async function onLogout() {
+            clearMessage();
+            try {
+                const res = window.logout;
+                // handle resolved error objects like { error: '...' }
+                if (res && (res.error || res.detail)) {
+                    showError(res.error ?? res.detail);
+                    return;
+                }
+                // success -> clear message (or show nothing)
+                clearMessage();
+            } catch (err) {
+                showError(err?.message ?? String(err));
+            }
+        }
+
+        async function onDelete() {
+            clearMessage();
+            try {
+                const res = await window.deleteUser;
+                if (res && (res.error || res.detail)) {
+                    showError(res.error ?? res.detail);
+                    return;
+                }
+                clearMessage();
+            } catch (err) {
+                showError(err?.message ?? String(err));
+            }
+        }
+
+        logoutBtn.addEventListener('click', onLogout);
+        deleteBtn.addEventListener('click', onDelete);
+    </script>
 </html>
