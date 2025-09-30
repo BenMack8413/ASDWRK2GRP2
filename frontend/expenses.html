@@ -343,7 +343,21 @@
                     </tbody>
                 </table>
                 <button class="addExpenseButton" id="addExpense">+ Add Expense</button>
+
+                <form id="expenseForm" style="display:none; margin-top:20px;">
+                    <input type="text" placeholder="Amount" name="amount" required />
+                    <input type="text" placeholder="Title" name="title" required />
+                    <input type="text" placeholder="Description" name="description" />
+                    <input type="date" name="date" required />
+                    <input type="text" placeholder="Frequency" name="frequency" />
+                    <button type="submit">Submit</button>
+                </form>
             </main>
         </div>
+        <script>
+            document.getElementById('addExpense').onclick = function() {
+                document.getElementById('expenseForm').style.display = 'block';
+            };
+        </script>
     </body>
 </html>
