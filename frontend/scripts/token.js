@@ -103,7 +103,9 @@ async function deleteUser(id) {
     let payload = {};
     try {
         payload = await response.json();
-    } catch (e) {}
+    } catch (e) {
+        return `Error: ${e.message}`;
+    }
 
     if (!response.ok) {
         const err = new Error(
