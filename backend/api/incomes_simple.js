@@ -58,12 +58,10 @@ module.exports = function createSimpleIncomeRouter() {
                 .prepare('SELECT budget_id FROM budgets WHERE budget_id = ?')
                 .get(Number(budget_id));
             if (!budget)
-                return res
-                    .status(400)
-                    .json({
-                        error: 'budget_not_found',
-                        detail: `Budget ${budget_id} not found`,
-                    });
+                return res.status(400).json({
+                    error: 'budget_not_found',
+                    detail: `Budget ${budget_id} not found`,
+                });
 
             // Validate optional account if provided
             if (account_id != null) {
@@ -73,12 +71,10 @@ module.exports = function createSimpleIncomeRouter() {
                     )
                     .get(Number(account_id), Number(budget_id));
                 if (!acc) {
-                    return res
-                        .status(400)
-                        .json({
-                            error: 'account_not_found_or_mismatch',
-                            detail: `Account ${account_id} not found for budget ${budget_id}`,
-                        });
+                    return res.status(400).json({
+                        error: 'account_not_found_or_mismatch',
+                        detail: `Account ${account_id} not found for budget ${budget_id}`,
+                    });
                 }
             }
 

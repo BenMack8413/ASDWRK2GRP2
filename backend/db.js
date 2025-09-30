@@ -100,13 +100,15 @@ function addUser(db, username, email, passwordHash) {
 function deleteUser(db, id) {
     if (!id) throw new Error('User ID Required');
 
-    try {
-        const statement = db.prepare(`
-            DELETE FROM users WHERE user_id = ?
-        `);
-        const info = statement.run(id);
+    const idNum = Number(id);
+    if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
 
-        return info.changes > 0;
+    try {
+        const statement = db.prepare(`DELETE FROM users WHERE user_id = ?`);
+        const info = statement.run(idNum);
+        console.log('deleteUser debug:', { id: idNum, changes: info.changes });
+
+        return info.changes > 0; // true if a row was deleted
     } catch (err) {
         console.error(err);
         throw new Error('Something went wrong when deleting user');

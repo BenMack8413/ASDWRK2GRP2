@@ -17,6 +17,19 @@ function removeToken() {
     sessionStorage.removeItem(token_key);
 }
 
+function decodeToken(token) {
+    if (!token) return null;
+    try {
+        const base64Url = token.split('.')[1]; // payload part
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = atob(base64);
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error('Failed to decode token:', e);
+        return null;
+    }
+}
+
 function isLoggedIn() {
     return !!getToken();
 }
@@ -87,45 +100,41 @@ async function deleteUser() {
     if (!token) {
         throw new Error('No auth token found. User not logged in.');
     }
-    const id = Number(token.id);
+
+    const id = parseInt(decodeToken(token).id);
     if (typeof id !== 'number') {
-            console.log(8);
         throw new TypeError('Invalid id (must be a number)');
     }
-    console.log(1);
+
     if (!token) {
-        console.log(7);
         throw new Error('No auth token found. User not logged in.');
     }
-    console.log(2);
-    const response = await fetch(`/delete/${id}`, {
+
+    const response = await fetch(`/api/user/delete/${id}`, {
         method: 'DELETE',
         headers: {
-            authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            'authorization': `Bearer ${token}`,
         },
     });
-    console.log(3);
-    let payload = {};
-    try {
-        payload = await response.json();
-    } catch (e) {
-        console.log(e.message);
-        console.log(payload);
-        console.log(response);
-        return `Error: ${e.message}`;
+
+    let body = null;
+    const text = await response.text(); // read as text first
+    if (text) {
+        try {
+            body = JSON.parse(text); // try parse JSON
+        } catch {
+            body = text; // fallback to plain text
+        }
     }
-    console.log(4);
+
     if (!response.ok) {
-        const err = new Error(
-            payload.error || `Request failed (${response.status})`,
-        );
-        err.status = response.status;
-        err.detail = payload.detail;
-        throw err;
+        const msg =
+            (body && (body.error || body.message)) ||
+            `Request failed (${response.status})`;
+        throw new Error(msg);
     }
-    console.log(5);
-    return payload;
+    console.log('Deleted', response);
+    window.location.href = '/index.html'
 }
 
 window.saveToken = saveToken;

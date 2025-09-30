@@ -91,10 +91,10 @@ module.exports = (db) => {
 
             const deleted = deleteUser(db, id);
 
-            if (!deleted)
+            if (!deleted) {
                 return res.status(404).json({ error: 'Item not found' });
-
-            res.status(200).json({ message: 'Item deleted' });
+            }
+            return res.status(200).json({ message: 'Item deleted' });
         } catch (err) {
             console.error(err);
             res.status(500).json({
