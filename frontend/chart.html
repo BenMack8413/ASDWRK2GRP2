@@ -1,44 +1,44 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Charts</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/chart.css">
-</head>
-<body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="budget_name">My Budget</div>
-    <div><div class="balance">Menu</div></div>
-    <nav class="nav">
-      <a onclick="location.href='/dashboard';">Dashboard</a>
-      <a onclick="location.href='/budget';">Budget</a>
-      <a onclick="location.href='/reports';">Reports</a>
-      <a class="active" onclick="location.href='/charts';">Charts</a>
-    </nav>
-  </aside>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Charts</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="css/chart.css" />
+    </head>
+    <body>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="budget_name">My Budget</div>
+            <div><div class="balance">Menu</div></div>
+            <nav class="nav">
+                <a onclick="location.href='/dashboard';">Dashboard</a>
+                <a onclick="location.href='/budget';">Budget</a>
+                <a onclick="location.href='/reports';">Reports</a>
+                <a class="active" onclick="location.href='/charts';">Charts</a>
+            </nav>
+        </aside>
 
-  <!-- Charts Section -->
-  <div class="charts-wrapper">
-    <h2>Charts</h2>
+        <!-- Charts Section -->
+        <div class="charts-wrapper">
+            <h2>Charts</h2>
 
-    <!-- Controls to add charts -->
-    <div class="add-chart-controls">
-      <select id="chartType">
-        <option value="pie">Pie Chart</option>
-        <option value="bar">Bar Chart</option>
-        <option value="line">Line Chart</option>
-      </select>
-      <button class="add-btn" onclick="addChart()">Add Chart</button>
-    </div>
+            <!-- Controls to add charts -->
+            <div class="add-chart-controls">
+                <select id="chartType">
+                    <option value="pie">Pie Chart</option>
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                </select>
+                <button class="add-btn" onclick="addChart()">Add Chart</button>
+            </div>
 
-    <!-- Where charts appear -->
-    <div id="chartsArea"></div>
-  </div>
+            <!-- Where charts appear -->
+            <div id="chartsArea"></div>
+        </div>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="scripts/chart.js"></script>
-</body>
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="scripts/chart.js"></script>
+    </body>
 </html>

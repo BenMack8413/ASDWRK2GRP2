@@ -680,15 +680,9 @@
                     <div class="balance">Menu</div>
                 </div>
                 <nav class="nav">
-                    <a onclick="location.href='/dashboard.html';"
-                        >Dashboard</a
-                    >
-                    <a onclick="location.href='/budget.html';"
-                        >Budget</a
-                    >
-                    <a
-                        class="active"
-                        onclick="location.href='/income.html';"
+                    <a onclick="location.href='/dashboard.html';">Dashboard</a>
+                    <a onclick="location.href='/budget.html';">Budget</a>
+                    <a class="active" onclick="location.href='/income.html';"
                         >Income</a
                     >
                     <a onclick="location.href='expenses.html';">Expenses</a>
@@ -796,14 +790,18 @@
                         <div class="stat-icon">
                             <i class="fas fa-dollar-sign"></i>
                         </div>
-                        <div class="stat-value" id="stat-total-income">$0.00</div>
+                        <div class="stat-value" id="stat-total-income">
+                            $0.00
+                        </div>
                         <div class="stat-title">Total Monthly Income</div>
                     </div>
                     <div class="stat-card stat-2">
                         <div class="stat-icon">
                             <i class="fas fa-wallet"></i>
                         </div>
-                        <div class="stat-value" id="stat-expected-income">$0.00</div>
+                        <div class="stat-value" id="stat-expected-income">
+                            $0.00
+                        </div>
                         <div class="stat-title">Expected This Month</div>
                     </div>
                     <div class="stat-card stat-3">
@@ -861,167 +859,187 @@
         </div>
     </body>
 
-<script>
-/* ---- configuration ---- */
-const API_ROOT = '/api/incomes';
-const BUDGET_ID = 1;
+    <script>
+        /* ---- configuration ---- */
+        const API_ROOT = '/api/incomes';
+        const BUDGET_ID = 1;
 
-/* ---- DOM refs ---- */
-const showIncomeFormBtn = document.getElementById('showIncomeForm');
-const incomeForm = document.getElementById('incomeForm');
-const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
-const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
-const incomeEntryForm = document.getElementById('incomeEntryForm');
-const incomeFrequency = document.getElementById('incomeFrequency');
-const recurringOptions = document.getElementById('recurringOptions');
-const incomeList = document.getElementById('incomeList');
-const searchIncome = document.getElementById('searchIncome');
-const sortIncome = document.getElementById('sortIncome');
+        /* ---- DOM refs ---- */
+        const showIncomeFormBtn = document.getElementById('showIncomeForm');
+        const incomeForm = document.getElementById('incomeForm');
+        const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
+        const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
+        const incomeEntryForm = document.getElementById('incomeEntryForm');
+        const incomeFrequency = document.getElementById('incomeFrequency');
+        const recurringOptions = document.getElementById('recurringOptions');
+        const incomeList = document.getElementById('incomeList');
+        const searchIncome = document.getElementById('searchIncome');
+        const sortIncome = document.getElementById('sortIncome');
 
-showIncomeFormBtn.addEventListener('click', () => incomeForm.classList.add('visible'));
-function hideIncomeForm() { incomeForm.classList.remove('visible'); incomeEntryForm.reset(); }
-closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
-cancelIncomeFormBtn.addEventListener('click', hideIncomeForm);
-
-incomeFrequency.addEventListener('change', function () {
-  if (this.value !== 'one-time' && this.value !== '') recurringOptions.style.display = 'flex';
-  else recurringOptions.style.display = 'none';
-});
-
-/* ---- fetch / render ---- */
-let incomes = [];
-
-async function loadIncomes() {
-  try {
-    const res = await fetch(`${API_ROOT}?budget_id=${BUDGET_ID}`);
-    if (!res.ok) throw new Error('Failed to load incomes: ' + res.statusText);
-    incomes = await res.json();
-    renderIncomes();
-  } catch (err) {
-    console.error(err);
-    alert('Could not load incomes from server. See console for details.');
-  }
-}
-
-async function createIncome(payload) {
-  try {
-    const res = await fetch(API_ROOT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error('Create failed: ' + txt);
-    }
-    const created = await res.json();
-    incomes.unshift(created);
-    renderIncomes();
-    return created;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-async function deleteIncomeOnServer(id) {
-  try {
-    const res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, { method: 'DELETE' });
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error('Delete failed: ' + txt);
-    }
-    incomes = incomes.filter(i => i.id !== id);
-    renderIncomes();
-  } catch (err) {
-    console.error(err);
-    alert('Failed to delete item on server.');
-  }
-}
-
-/* ---- submit form handler ---- */
-incomeEntryForm.addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const source = document.getElementById('incomeSource').value;
-  const amount = parseFloat(document.getElementById('incomeAmount').value);
-  const date = document.getElementById('incomeDate').value;
-  const frequency = document.getElementById('incomeFrequency').value;
-  const description = document.getElementById('incomeDescription').value;
-  const isRecurring = document.getElementById('setRecurring').checked;
-
-  const payload = {
-    budget_id: BUDGET_ID,
-    amount,       
-    date,
-    source,
-    frequency,
-    description,
-    account_id: null
-  };
-
-  try {
-    await createIncome(payload);
-    hideIncomeForm();
-    alert('Income added successfully!');
-  } catch (err) {
-    alert('Failed to add income: ' + (err.message || err));
-  }
-});
-function updateIncomeStats(incomes) {
-  const now = new Date();
-  let totalIncome = 0;
-  let expectedThisMonth = 0;
-
-  incomes.forEach(i => {
-    const amount = i.amount || 0;
-    totalIncome += amount;
-
-    // Parse stored date
-    const incomeDate = new Date(i.date);
-
-    switch ((i.frequency || '').toLowerCase()) {
-      case 'monthly':
-        // Always add this month’s instance
-        if (incomeDate <= now) expectedThisMonth += amount;
-        break;
-      case 'weekly':
-        // Roughly 4 weeks per month
-        if (incomeDate <= now) expectedThisMonth += amount * 4;
-        break;
-      case 'yearly':
-        // Divide yearly into monthly
-        if (incomeDate <= now) expectedThisMonth += amount / 12;
-        break;
-      default:
-        // One-time incomes → only count if date is in this month
-        if (
-          incomeDate.getMonth() === now.getMonth() &&
-          incomeDate.getFullYear() === now.getFullYear()
-        ) {
-          expectedThisMonth += amount;
+        showIncomeFormBtn.addEventListener('click', () =>
+            incomeForm.classList.add('visible'),
+        );
+        function hideIncomeForm() {
+            incomeForm.classList.remove('visible');
+            incomeEntryForm.reset();
         }
-    }
-  });
+        closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
+        cancelIncomeFormBtn.addEventListener('click', hideIncomeForm);
 
-  // Unique sources
-  const sources = new Set(incomes.map(i => i.source)).size;
+        incomeFrequency.addEventListener('change', function () {
+            if (this.value !== 'one-time' && this.value !== '')
+                recurringOptions.style.display = 'flex';
+            else recurringOptions.style.display = 'none';
+        });
 
-  // Update DOM
-  document.getElementById('stat-total-income').textContent = `$${(totalIncome / 100).toFixed(2)}`;
-  document.getElementById('stat-expected-income').textContent = `$${(expectedThisMonth / 100).toFixed(2)}`;
-  document.getElementById('stat-income-sources').textContent = sources;
-}
+        /* ---- fetch / render ---- */
+        let incomes = [];
 
-/* ---- render logic (keeps your existing UI formatting) ---- */
-function renderIncomes() {
-  // clear existing rows
-  incomeList.innerHTML = '';
+        async function loadIncomes() {
+            try {
+                const res = await fetch(`${API_ROOT}?budget_id=${BUDGET_ID}`);
+                if (!res.ok)
+                    throw new Error(
+                        'Failed to load incomes: ' + res.statusText,
+                    );
+                incomes = await res.json();
+                renderIncomes();
+            } catch (err) {
+                console.error(err);
+                alert(
+                    'Could not load incomes from server. See console for details.',
+                );
+            }
+        }
 
-  incomes.forEach(income => {
-    const row = document.createElement('tr');
-    row.classList.add('income-row');
+        async function createIncome(payload) {
+            try {
+                const res = await fetch(API_ROOT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Create failed: ' + txt);
+                }
+                const created = await res.json();
+                incomes.unshift(created);
+                renderIncomes();
+                return created;
+            } catch (err) {
+                console.error(err);
+                throw err;
+            }
+        }
 
-    row.innerHTML = `
+        async function deleteIncomeOnServer(id) {
+            try {
+                const res = await fetch(
+                    `${API_ROOT}/${id}?budget_id=${BUDGET_ID}`,
+                    { method: 'DELETE' },
+                );
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Delete failed: ' + txt);
+                }
+                incomes = incomes.filter((i) => i.id !== id);
+                renderIncomes();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete item on server.');
+            }
+        }
+
+        /* ---- submit form handler ---- */
+        incomeEntryForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const source = document.getElementById('incomeSource').value;
+            const amount = parseFloat(
+                document.getElementById('incomeAmount').value,
+            );
+            const date = document.getElementById('incomeDate').value;
+            const frequency = document.getElementById('incomeFrequency').value;
+            const description =
+                document.getElementById('incomeDescription').value;
+            const isRecurring = document.getElementById('setRecurring').checked;
+
+            const payload = {
+                budget_id: BUDGET_ID,
+                amount,
+                date,
+                source,
+                frequency,
+                description,
+                account_id: null,
+            };
+
+            try {
+                await createIncome(payload);
+                hideIncomeForm();
+                alert('Income added successfully!');
+            } catch (err) {
+                alert('Failed to add income: ' + (err.message || err));
+            }
+        });
+        function updateIncomeStats(incomes) {
+            const now = new Date();
+            let totalIncome = 0;
+            let expectedThisMonth = 0;
+
+            incomes.forEach((i) => {
+                const amount = i.amount || 0;
+                totalIncome += amount;
+
+                // Parse stored date
+                const incomeDate = new Date(i.date);
+
+                switch ((i.frequency || '').toLowerCase()) {
+                    case 'monthly':
+                        // Always add this month’s instance
+                        if (incomeDate <= now) expectedThisMonth += amount;
+                        break;
+                    case 'weekly':
+                        // Roughly 4 weeks per month
+                        if (incomeDate <= now) expectedThisMonth += amount * 4;
+                        break;
+                    case 'yearly':
+                        // Divide yearly into monthly
+                        if (incomeDate <= now) expectedThisMonth += amount / 12;
+                        break;
+                    default:
+                        // One-time incomes → only count if date is in this month
+                        if (
+                            incomeDate.getMonth() === now.getMonth() &&
+                            incomeDate.getFullYear() === now.getFullYear()
+                        ) {
+                            expectedThisMonth += amount;
+                        }
+                }
+            });
+
+            // Unique sources
+            const sources = new Set(incomes.map((i) => i.source)).size;
+
+            // Update DOM
+            document.getElementById('stat-total-income').textContent =
+                `$${(totalIncome / 100).toFixed(2)}`;
+            document.getElementById('stat-expected-income').textContent =
+                `$${(expectedThisMonth / 100).toFixed(2)}`;
+            document.getElementById('stat-income-sources').textContent =
+                sources;
+        }
+
+        /* ---- render logic (keeps your existing UI formatting) ---- */
+        function renderIncomes() {
+            // clear existing rows
+            incomeList.innerHTML = '';
+
+            incomes.forEach((income) => {
+                const row = document.createElement('tr');
+                row.classList.add('income-row');
+
+                row.innerHTML = `
       <td>
         <div class="income-source">
           <div class="source-icon"><i class="fas fa-wallet"></i></div>
@@ -1041,21 +1059,20 @@ function renderIncomes() {
       </td>
     `;
 
-    incomeList.appendChild(row);
-  });
+                incomeList.appendChild(row);
+            });
 
-  // update stats each time
-  updateIncomeStats(incomes);
-}
+            // update stats each time
+            updateIncomeStats(incomes);
+        }
 
-/* ---- wire inputs ---- */
-searchIncome.addEventListener('input', renderIncomes);
-sortIncome.addEventListener('change', renderIncomes);
-document.getElementById('incomeDate').valueAsDate = new Date();
-document.addEventListener('DOMContentLoaded', loadIncomes);
+        /* ---- wire inputs ---- */
+        searchIncome.addEventListener('input', renderIncomes);
+        sortIncome.addEventListener('change', renderIncomes);
+        document.getElementById('incomeDate').valueAsDate = new Date();
+        document.addEventListener('DOMContentLoaded', loadIncomes);
 
-/* ---- initial load ---- */
-loadIncomes();
-</script>
-
+        /* ---- initial load ---- */
+        loadIncomes();
+    </script>
 </html>
