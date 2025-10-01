@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { db, addUser, deleteUser } = require('../db.js');
+const { db, addUser, deleteUser, getAccountInfo } = require('../db.js');
 const { generateToken, requireAuth } = require('../auth.js');
 
 module.exports = (db) => {
@@ -83,11 +83,35 @@ module.exports = (db) => {
         res.json({ message: 'Authenticated user', user: req.user });
     });
 
+    router.get('/information/:id', requireAuth, (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            if (Number.isNaN(id)) {
+                return res.status(400).json({ error: 'Invalid id' });
+            }
+
+            const info = getAccountInfo(db, id);
+
+            if (!info) {
+                return res.status(404).json({ error: 'Account info not found' });
+            }
+            return info;
+
+        } catch (e) {
+            console.err(e);
+            res.status(500).json({
+                error: 'Failed to retrieve account information',
+                detail: err.message,
+            });
+        }
+    });
+
     router.delete('/delete/:id', requireAuth, async (req, res) => {
         try {
             const id = Number(req.params.id);
-            if (Number.isNaN(id))
+            if (Number.isNaN(id)) {
                 return res.status(400).json({ error: 'Invalid id' });
+            }
 
             const deleted = deleteUser(db, id);
 
