@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 function generateToken(user, rememberMe) {
     return jwt.sign(
-        { id: user.id, email: user.email, username: user.username },
+        { id: user.user_id, email: user.email, username: user.username },
         JWT_SECRET,
         { expiresIn: rememberMe ? '30d' : '1h' },
     );
