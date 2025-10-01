@@ -467,7 +467,7 @@
 
             function searchExpenses() {
                 const filter = searchExpense.value.toLowerCase();
-                const rows = document.querySelectorAll('.expenseContainer tr');
+                const rows = expenseTableBody.querySelectorAll('tr');
 
                 rows.forEach(row => {
                     const [source, amount, date, frequency, description] = Array.from(row.cells).map(c => c.textContent.toLowerCase());
