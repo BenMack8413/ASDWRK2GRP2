@@ -19,6 +19,12 @@ CREATE TABLE IF NOT EXISTS budgets (
   FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+INSERT OR IGNORE INTO users (user_id, username, email, password_hash)
+VALUES (1, 'demo', 'demo@example.com', 'hashedpassword123');
+
+INSERT OR IGNORE INTO budgets (budget_id, user_id, name, currency)
+VALUES (1, 1, 'Default Budget', 'USD');
+
 -- SETTINGS (one row per budget)
 CREATE TABLE IF NOT EXISTS settings (
   user_id INTEGER PRIMARY KEY,
@@ -64,6 +70,26 @@ CREATE TABLE IF NOT EXISTS tags (
   UNIQUE(budget_id, name),
   FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE
 );
+
+-- INCOME
+CREATE TABLE IF NOT EXISTS incomes (
+  income_id   INTEGER PRIMARY KEY,
+  budget_id   INTEGER NOT NULL,
+  user_id     INTEGER,          
+  account_id  INTEGER,            
+  amount      INTEGER NOT NULL,   
+  source      TEXT,
+  date        TEXT NOT NULL,
+  frequency   TEXT,
+  notes       TEXT,
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id)   REFERENCES users(user_id)     ON DELETE SET NULL,
+  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_incomes_budget_date ON incomes(budget_id, date);
+
 
 -- TRANSACTIONS (header)
 CREATE TABLE IF NOT EXISTS transactions (
