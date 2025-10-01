@@ -9,7 +9,7 @@
         "lint:check": "eslint . --ext .js,.ts",
         "lint:fix": "eslint . --ext .js,.ts --fix",
         "format": "prettier --write .",
-        "test": "jest"
+        "test": "jest backend"
     },
     "dependencies": {
         "bcrypt": "^6.0.0",
