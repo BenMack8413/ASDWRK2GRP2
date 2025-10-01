@@ -103,6 +103,24 @@ CREATE TABLE IF NOT EXISTS transaction_tags (
   FOREIGN KEY(tag_id)         REFERENCES tags(tag_id)         ON DELETE CASCADE
 );
 
+-- CHARTS
+CREATE TABLE IF NOT EXISTS charts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL,
+    config TEXT NOT NULL
+);
+
+-- CHART_CONFIGS
+CREATE TABLE IF NOT EXISTS chart_configs (
+  config_id   INTEGER PRIMARY KEY,
+  budget_id   INTEGER NOT NULL,
+  name        TEXT NOT NULL,
+  type        TEXT NOT NULL, -- e.g. 'pie', 'bar'
+  config_json TEXT NOT NULL, -- serialized filters, ranges, options
+  created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE
+);
+
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_transactions_budget_date ON transactions(budget_id, date);
 CREATE INDEX IF NOT EXISTS idx_transaction_lines_transaction ON transaction_lines(transaction_id);
@@ -110,6 +128,7 @@ CREATE INDEX IF NOT EXISTS idx_transaction_lines_category ON transaction_lines(c
 CREATE INDEX IF NOT EXISTS idx_accounts_budget ON accounts(budget_id);
 CREATE INDEX IF NOT EXISTS idx_categories_budget ON categories(budget_id);
 CREATE INDEX IF NOT EXISTS idx_tags_budget ON tags(budget_id);
+
 
 --------------------------------------------------------------------------------
 -- Triggers: budget consistency checks (keep references within same budget)
