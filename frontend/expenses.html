@@ -133,7 +133,7 @@
             /* -------- Dashboard End -------- */
 
            /* -------- Expenses Styling (to match Income) -------- */
-            .expense-stats {
+            .expenseStats {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 18px;
@@ -359,7 +359,7 @@
 
             <main class="main">
                 <h1 class="title">Expense Tracking</h1>
-                <div class="expense-stats">
+                <div class="expenseStats">
                     <div class="stat-card stat-1">
                         <div class="stat-icon">
                             <i class="fas fa-dollar-sign"></i>
@@ -427,19 +427,19 @@
                 <button class="addExpenseButton" id="addExpense">+ Add Expense</button>
 
                 <form id="expenseForm" style="display:none; margin-top:20px;">
-                    <Label>
+                    <label>
                         <div class="formSub">Source</div>
                         <input type="text" placeholder="Source" name="Source" required />
-                    </Label>
-                    <Label>
+                    </label>
+                    <label>
                         <div class="formSub">Amount</div>
                         <input type="text" placeholder="Amount" name="Amount" required />
-                    </Label>
-                    <Label>
+                    </label>
+                    <label>
                         <div class="formSub">Date</div>
                         <input type="date" name="date" required />
-                    </Label>
-                    <Label>
+                    </label>
+                    <label>
                         <div class="formSub">Frequency</div>
                         <select name="Frequency" required>
                             <option value="" disabled selected>Select frequency</option>
@@ -449,15 +449,14 @@
                             <option value="Monthly">Monthly</option>
                             <option value="Yearly">Yearly</option>
                         </select>
-                    </Label>
-                    <Label>
+                    </label>
+                    <label>
                         <div class="formSub">Description</div>
                         <input type="text" placeholder="Description" name="Description" />
-                    </Label>
-                    <Label>
-                        <div></div>
+                    </label>
+                    <label>
                         <button type="submit">Submit</button>
-                    </Label>
+                    </label>
                 </form>
             </main>
         </div>
@@ -479,32 +478,67 @@
                 }
             };
 
-            expenseForm.onsubmit = function(event) {
-                event.preventDefault();
+            function loadExpenses() {
+                const stored = localStorage.getItem('expenses');
+                if (stored) {
+                    try {
+                        expenses = JSON.parse(stored).map(e => ({
+                        source: e.source || '',
+                        amount: Number(e.amount || 0),
+                        date: e.date || '',
+                        frequency: e.frequency || 'One-time',
+                        description: e.description || ''
+                        }));
+                    } catch (err) {
+                        console.error('Failed to parse stored expenses', err);
+                        expenses = [];
+                    }
+                }
+                // Placeholder for loading expenses from a backend or local storage
+                // It loads this if no info is found in local storage
+                // Remove this when there is actual backend implementation with the database
+                else {
+                    expenses = [
+                        { source: 'Rent', amount: 1200, date: '2024-06-01', frequency: 'Monthly', description: 'June Rent' },
+                        { source: 'Groceries', amount: 300, date: '2024-06-05', frequency: 'Weekly', description: 'Weekly groceries' },
+                        { source: 'Utilities', amount: 150, date: '2024-06-03', frequency: 'Monthly', description: 'Electricity and water' },
+                    ];
+                    localStorage.setItem('expenses', JSON.stringify(expenses));
+                }
+                renderExpenses();
+            }
 
+            function renderExpenses() {
+                expenseTableBody.innerHTML = '';
+                expenses.forEach((expense, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${expense.source}</td>
+                        <td>$${expense.amount.toFixed(2)}</td>
+                        <td>${expense.date}</td>
+                        <td>${expense.frequency}</td>
+                        <td>${expense.description || ''}</td>
+                    `;
+                    expenseTableBody.appendChild(row);
+                });
+                updateCards();
+            }
+
+            function formSubmission() {
+                event.preventDefault();
                 const formData = new FormData(expenseForm);
+
                 const source = formData.get('Source');
-                const amount = formData.get('Amount');
+                const amount = parseFloat(formData.get('Amount'));
                 const date = formData.get('date');
                 const frequency = formData.get('Frequency');
                 const description = formData.get('Description');
 
-                const tableBody = document.querySelector('.expenseContainer');
-                const newRow = document.createElement('tr');
-
-                newRow.innerHTML = `
-                    <td>${source}</td>
-                    <td>$${parseFloat(amount).toFixed(2)}</td>
-                    <td>${date}</td>
-                    <td>${frequency}</td>
-                    <td>${description}</td>
-                `;
-
                 expenses.push({ source, amount, date, frequency, description });
+
                 localStorage.setItem('expenses', JSON.stringify(expenses));
 
-
-                expenseTableBody.appendChild(newRow);
+                renderExpenses();
                 expenseForm.reset();
                 expenseForm.style.display = 'none';
             };
@@ -544,62 +578,88 @@
                 renderExpenses();
             }
 
-            function loadExpenses() {
-                const stored = localStorage.getItem('expenses');
-                if (stored) {
-                    expenses = JSON.parse(stored);
-                }
-                // Placeholder for loading expenses from a backend or local storage
-                else {
-                    expenses = [
-                        { source: 'Rent', amount: 1200, date: '2024-06-01', frequency: 'Monthly', description: 'June Rent' },
-                        { source: 'Groceries', amount: 300, date: '2024-06-05', frequency: 'Weekly', description: 'Weekly groceries' },
-                        { source: 'Utilities', amount: 150, date: '2024-06-03', frequency: 'Monthly', description: 'Electricity and water' },
-                    ];
-                    localStorage.setItem('expenses', JSON.stringify(expenses));
-                }
-                renderExpenses();
-            }
-
-            function renderExpenses() {
-                expenseTableBody.innerHTML = '';
-                expenses.forEach(expense => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${expense.source}</td>
-                        <td>$${expense.amount.toFixed(2)}</td>
-                        <td>${expense.date}</td>
-                        <td>${expense.frequency}</td>
-                        <td>${expense.description}</td>
-                    `;
-                    expenseTableBody.appendChild(row);
-                });
-            }
-
             function updateCards() {
-                // Calculate total monthly expense
-                const totalMonthly = expenses.reduce((sum, exp) => {
-                    if (exp.frequency === 'Monthly' || exp.frequency === 'One-time') {
-                        return sum + parseFloat(exp.amount);
-                    } else if (exp.frequency === 'Weekly') {
-                        return sum + parseFloat(exp.amount) * 4;
-                    } else if (exp.frequency === 'Daily') {
-                        return sum + parseFloat(exp.amount) * 30;
-                    } else if (exp.frequency === 'Yearly') {
-                        return sum + parseFloat(exp.amount) / 12;
+                const frequencyMap = {
+                    "One-time": 1,
+                    "Daily": 30,
+                    "Weekly": 4,
+                    "Monthly": 1,
+                    "Yearly": 1/12
+                };
+
+                // Calculate total monthly expense minus any one time expenses
+                const totalMonthly = expenses.reduce((sum, e) => {
+                    const freq = frequencyMap[e.frequency] || 0;
+                    return sum + (parseFloat(e.amount) * freq);
+                }, 0);
+
+                const expectedThisMonth = expenses.reduce((sum, e) => {
+                    const date = new Date(e.date);
+                    const now = new Date();
+                    const sameMonth = date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                    if (sameMonth) {
+                        return sum + parseFloat(e.amount);
                     }
                     return sum;
                 }, 0);
+
+
+                const sources = new Set(expenses.map(e => e.source));
+                const numSources = sources.size;
 
                 document.getElementById('stat-total-expense').textContent = `$${totalMonthly.toFixed(2)}`;
                 document.getElementById('stat-expected-expense').textContent = `$${expectedThisMonth.toFixed(2)}`;
                 document.getElementById('stat-expense-sources').textContent = numSources;
             }
 
-            window.onload = loadExpenses;
+            function addTestExpense() {
+
+                const randomAmount = (Math.random() * 1000 + 10).toFixed(2);
+
+                const now = new Date();
+                const daysAgo = Math.floor(Math.random() * 90);
+                const randomDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+                const dateStr = randomDate.toISOString().split('T')[0];
+
+                const testExpense = {
+                    source: 'Test Source',
+                    amount: parseFloat(randomAmount),
+                    date: dateStr,
+                    frequency: 'Monthly',
+                    description: 'Test expense'
+                };
+                expenses.push(testExpense);
+                localStorage.setItem('expenses', JSON.stringify(expenses));
+                renderExpenses();
+            }
+
+            function clearExpenses() {
+                localStorage.removeItem('expenses');
+                expenses = [];
+                renderExpenses();
+                updateCards();
+            }
+
             sortExpense.onchange = sortExpenses;
             searchExpense.oninput = searchExpenses;
+            expenseForm.onsubmit = formSubmission;
 
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'l' || e.key === 'L') {
+                    addTestExpense();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'l' || e.key === 'L') {
+                    addTestExpense();
+                }
+                if (e.key === 'o' || e.key === 'O') {
+                    clearExpenses();
+                }
+            });
+
+            loadExpenses();
         </script>
     </body>
 </html>
