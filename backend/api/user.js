@@ -93,15 +93,16 @@ module.exports = (db) => {
             const info = getAccountInfo(db, id);
 
             if (!info) {
-                return res.status(404).json({ error: 'Account info not found' });
+                return res
+                    .status(404)
+                    .json({ error: 'Account info not found' });
             }
-            return info;
-
+            return res.json(info);
         } catch (e) {
-            console.err(e);
+            console.error(e);
             res.status(500).json({
                 error: 'Failed to retrieve account information',
-                detail: err.message,
+                detail: e.message,
             });
         }
     });

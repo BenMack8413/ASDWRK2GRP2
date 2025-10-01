@@ -122,15 +122,25 @@ function getAccountInfo(db, id) {
     if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
 
     try {
-        const statement = db.prepare(`GET username, email, date_created FROM users WHERE user_id = ?`);
-        const info = statement.run(idNum);
-        console.log('accountInfo fetched:', {id: idNum, information: info});
+        const statement = db.prepare(
+            `SELECT username, email, date_created FROM users WHERE user_id = ?`,
+        );
+        const info = statement.get(idNum);
+        console.log('accountInfo fetched:', { id: idNum, information: info });
 
         return info;
     } catch (err) {
         console.error(err);
-        throw new Error('Something went wrong when retrieving user information');
+        throw new Error(
+            'Something went wrong when retrieving user information',
+        );
     }
 }
 
-module.exports = { db, createTransactionAtomic, addUser, deleteUser, getAccountInfo };
+module.exports = {
+    db,
+    createTransactionAtomic,
+    addUser,
+    deleteUser,
+    getAccountInfo,
+};
