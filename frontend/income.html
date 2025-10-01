@@ -856,11 +856,11 @@
     </body>
 
 <script>
-/* ---- configuration ---- */
+
 const API_ROOT = '/api/incomes';
 const BUDGET_ID = 1;
 
-/* ---- DOM refs ---- */
+
 const showIncomeFormBtn = document.getElementById('showIncomeForm');
 const incomeForm = document.getElementById('incomeForm');
 const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
@@ -882,9 +882,9 @@ const inputDescription = document.getElementById('incomeDescription');
 const inputRecurringCheckbox = document.getElementById('setRecurring');
 
 /* ---- edit state ---- */
-let editingIncomeId = null; // when null -> creating new, otherwise editing existing
+let editingIncomeId = null; 
 
-/* ---- helpers ---- */
+
 function openIncomeFormForCreate() {
   editingIncomeId = null;
   formHeaderTitle.textContent = 'Add New Income';
@@ -892,7 +892,7 @@ function openIncomeFormForCreate() {
   incomeEntryForm.reset();
   recurringOptions.style.display = 'none';
   incomeForm.classList.add('visible');
-  // default date to today if empty
+
   if (!inputDate.value) inputDate.valueAsDate = new Date();
 }
 
@@ -900,17 +900,17 @@ function openIncomeFormForEdit(income) {
   editingIncomeId = income.id;
   formHeaderTitle.textContent = 'Edit Income';
   submitBtn.textContent = 'Save Changes';
-  // populate fields (use empty-string fallbacks)
+
   inputSource.value = income.source || '';
   inputAmount.value = (typeof income.amount === 'number') ? income.amount.toFixed(2) : '';
-  // server likely stores date as YYYY-MM-DD already
+
   inputDate.value = income.date ? income.date.split('T')[0] : '';
   inputFrequency.value = income.frequency || '';
   inputDescription.value = income.description || income.notes || '';
   inputRecurringCheckbox.checked = false;
   recurringOptions.style.display = (inputFrequency.value && inputFrequency.value !== 'one-time') ? 'flex' : 'none';
   incomeForm.classList.add('visible');
-  // focus first input for convenience
+
   inputSource.focus();
 }
 
@@ -918,13 +918,12 @@ function hideIncomeForm() {
   incomeForm.classList.remove('visible');
   editingIncomeId = null;
   incomeEntryForm.reset();
-  // restore create state
+
   formHeaderTitle.textContent = 'Add New Income';
   submitBtn.textContent = 'Add Income';
   recurringOptions.style.display = 'none';
 }
 
-/* ---- wire basic form open/close ---- */
 showIncomeFormBtn.addEventListener('click', openIncomeFormForCreate);
 closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
 cancelIncomeFormBtn.addEventListener('click', function (e) { e.preventDefault(); hideIncomeForm(); });
@@ -934,7 +933,6 @@ incomeFrequency.addEventListener('change', function () {
   else recurringOptions.style.display = 'none';
 });
 
-/* ---- fetch / render ---- */
 let incomes = [];
 
 async function loadIncomes() {
@@ -945,7 +943,6 @@ async function loadIncomes() {
     renderIncomes();
   } catch (err) {
     console.error(err);
-    // avoid spamming user with alerts while testing; use alert if you prefer
     // alert('Could not load incomes from server. See console for details.');
   }
 }
@@ -973,7 +970,7 @@ async function createIncome(payload) {
 }
 
 async function updateIncomeOnServer(id, payload) {
-  // try a PUT first (common), then PATCH fallback. Returns updated item if server returns it.
+
   try {
     let res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
       method: 'PUT',
@@ -982,7 +979,6 @@ async function updateIncomeOnServer(id, payload) {
     });
     if (res.ok) return await res.json();
 
-    // fallback to PATCH
     res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -990,11 +986,10 @@ async function updateIncomeOnServer(id, payload) {
     });
     if (res.ok) return await res.json();
 
-    // If PUT/PATCH both not supported, throw a controlled error for caller to handle.
     const text = await res.text().catch(() => '');
     throw new Error(`Update not supported or failed: ${res.status} ${text}`);
   } catch (err) {
-    // propagate so caller can fallback (create new + delete old)
+
     throw err;
   }
 }
@@ -1014,7 +1009,7 @@ async function deleteIncomeOnServer(id) {
   }
 }
 
-/* ---- submit form handler ---- */
+
 incomeEntryForm.addEventListener('submit', async function (e) {
   e.preventDefault();
 
@@ -1043,28 +1038,28 @@ incomeEntryForm.addEventListener('submit', async function (e) {
 
   try {
     if (editingIncomeId == null) {
-      // create flow
+
       await createIncome(payload);
       hideIncomeForm();
       alert('Income added successfully!');
     } else {
-      // edit flow: try updating on server first
+
       try {
         const updated = await updateIncomeOnServer(editingIncomeId, payload);
-        // if server returns updated item, update local list
+
         if (updated && updated.id) {
           incomes = incomes.map(i => (i.id === updated.id ? updated : i));
         } else {
-          // if server didn't return, be conservative: reload list
+
           await loadIncomes();
         }
         hideIncomeForm();
         alert('Income updated successfully!');
       } catch (updateErr) {
-        // fallback: create new record and delete old one (best-effort)
+
         console.warn('Update failed, falling back to recreate+delete:', updateErr);
         const created = await createIncome(payload);
-        // delete old record if it exists on server
+
         try {
           await deleteIncomeOnServer(editingIncomeId);
         } catch (delErr) {
@@ -1082,7 +1077,6 @@ incomeEntryForm.addEventListener('submit', async function (e) {
   }
 });
 
-/* ---- stats and render logic ---- */
 function updateIncomeStats(incomes) {
   const now = new Date();
   let totalIncome = 0;
@@ -1092,7 +1086,6 @@ function updateIncomeStats(incomes) {
     const amount = i.amount || 0;
     totalIncome += amount;
 
-    // Parse stored date
     const incomeDate = new Date(i.date);
 
     switch ((i.frequency || '').toLowerCase()) {
@@ -1122,7 +1115,6 @@ function updateIncomeStats(incomes) {
   document.getElementById('stat-income-sources').textContent = sources;
 }
 
-/* ---- render incomes and wire edit buttons ---- */
 function renderIncomes() {
   incomeList.innerHTML = '';
 
@@ -1150,17 +1142,14 @@ function renderIncomes() {
       </td>
     `;
 
-    // Fill text nodes
     row.querySelector('.income-source-text').textContent = income.source || '';
     row.querySelector('.income-amount').textContent = `$${(income.amount || 0).toFixed(2)}`;
     row.querySelector('.income-date').textContent = new Date(income.date).toLocaleDateString();
 
-    // wire edit button
     row.querySelector('.edit-btn').addEventListener('click', () => {
       openIncomeFormForEdit(income);
     });
 
-    // wire delete button (client-side UI + server call)
     row.querySelector('.delete-btn').addEventListener('click', async () => {
       if (!confirm('Delete this income?')) return;
       try {
@@ -1177,21 +1166,20 @@ function renderIncomes() {
   updateIncomeStats(incomes);
 }
 
-/* ---- search / sort (existing simple hooks) ---- */
 searchIncome.addEventListener('input', () => {
   const q = searchIncome.value.trim().toLowerCase();
   if (!q) { renderIncomes(); return; }
   const filtered = incomes.filter(i => (i.source || '').toLowerCase().includes(q) || (i.description || i.notes || '').toLowerCase().includes(q));
-  // temporarily show filtered list
+
   const prev = incomes;
   incomes = filtered;
   renderIncomes();
-  incomes = prev; // restore original array
+  incomes = prev;
 });
 
 sortIncome.addEventListener('change', () => {
   const mode = sortIncome.value;
-  // simple sort implementation on the local array
+
   incomes.sort((a, b) => {
     if (mode === 'date-desc') return new Date(b.date) - new Date(a.date);
     if (mode === 'date-asc') return new Date(a.date) - new Date(b.date);
@@ -1203,11 +1191,9 @@ sortIncome.addEventListener('change', () => {
   renderIncomes();
 });
 
-/* ---- initial setup ---- */
 document.getElementById('incomeDate').valueAsDate = new Date();
 document.addEventListener('DOMContentLoaded', loadIncomes);
 loadIncomes();
 </script>
-
 
 </html>
