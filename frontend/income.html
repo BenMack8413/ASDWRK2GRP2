@@ -796,14 +796,14 @@
                         <div class="stat-icon">
                             <i class="fas fa-dollar-sign"></i>
                         </div>
-                        <div class="stat-value" id="stat-total-income">$0.00</div>
+                        <div class="stat-value" id="stat-total-income">$0</div>
                         <div class="stat-title">Total Monthly Income</div>
                     </div>
                     <div class="stat-card stat-2">
                         <div class="stat-icon">
                             <i class="fas fa-wallet"></i>
                         </div>
-                        <div class="stat-value" id="stat-expected-income">$0.00</div>
+                        <div class="stat-value" id="stat-expected-income">$0</div>
                         <div class="stat-title">Expected This Month</div>
                     </div>
                     <div class="stat-card stat-3">
@@ -1007,8 +1007,8 @@ function updateIncomeStats(incomes) {
   const sources = new Set(incomes.map(i => i.source)).size;
 
   // Update DOM
-  document.getElementById('stat-total-income').textContent = `$${(totalIncome / 100).toFixed(2)}`;
-  document.getElementById('stat-expected-income').textContent = `$${(expectedThisMonth / 100).toFixed(2)}`;
+  document.getElementById('stat-total-income').textContent = `$${(totalIncome).toFixed(2)}`;
+  document.getElementById('stat-expected-income').textContent = `$${(expectedThisMonth).toFixed(2)}`;
   document.getElementById('stat-income-sources').textContent = sources;
 }
 
