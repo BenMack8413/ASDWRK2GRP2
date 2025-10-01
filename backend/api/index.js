@@ -3,6 +3,9 @@ const createTransactionsRouter = require('./transactions');
 const createUserRouter = require('./user');
 const createIncomeRouter = require('./income');
 const createSimpleIncomeRouter = require('./incomes_simple');
+const createSavingGoalsRouter = require('./savingGoals');
+const createUpcomingPaymentsRouter = require('./upcomingPayments');
+
 // const sampleApiRouter = require('./sampleapi');
 
 module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
