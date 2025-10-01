@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS budgets (
 
 -- SETTINGS (one row per budget)
 CREATE TABLE IF NOT EXISTS settings (
-  budget_id INTEGER PRIMARY KEY,
+  user_id INTEGER PRIMARY KEY,
   data      TEXT,
-  FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE
+  FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- ACCOUNTS (scoped to budget)
@@ -350,4 +350,14 @@ BEGIN
   ), 0);
 END;
 
+CREATE TRIGGER IF NOT EXISTS users_after_insert_insert_default_settings
+AFTER INSERT ON users
+FOR EACH ROW
+BEGIN
+  INSERT OR IGNORE INTO settings (user_id, data)
+  VALUES (
+    NEW.user_id,
+    '{"theme":"dark"}'
+  );
+END;
 -- End of schema

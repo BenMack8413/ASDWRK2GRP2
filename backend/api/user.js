@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { db, addUser, deleteUser, getAccountInfo } = require('../db.js');
+const {addUser, deleteUser, getAccountInfo } = require('../db.js');
 const { generateToken, requireAuth } = require('../auth.js');
 
 module.exports = (db) => {
