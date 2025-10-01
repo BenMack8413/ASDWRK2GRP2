@@ -63,8 +63,12 @@ async function signup(username, email, password, rememberMe) {
         const data = await response.json();
 
         if (response.ok) {
-            login(email, password, rememberMe);
-            return 'Signup successful! You can now log in.';
+            try {
+                await login(email, password, rememberMe);
+                return 'Signup successful! You can now log in.';
+            } catch (loginError) {
+                return 'Signup successful, but login failed. Please try logging in manually.';
+            }
         } else {
             return `Signup failed: ${data.error}`;
         }
@@ -180,4 +184,4 @@ window.login = login;
 window.logout = logout;
 window.deleteUser = deleteUser;
 
-// module.exports = { getToken };
+module.exports = { signup, login };
