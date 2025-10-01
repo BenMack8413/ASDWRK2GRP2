@@ -872,10 +872,62 @@ const incomeList = document.getElementById('incomeList');
 const searchIncome = document.getElementById('searchIncome');
 const sortIncome = document.getElementById('sortIncome');
 
-showIncomeFormBtn.addEventListener('click', () => incomeForm.classList.add('visible'));
-function hideIncomeForm() { incomeForm.classList.remove('visible'); incomeEntryForm.reset(); }
+const formHeaderTitle = incomeForm.querySelector('.form-header h3');
+const submitBtn = incomeEntryForm.querySelector('button[type="submit"]');
+const inputSource = document.getElementById('incomeSource');
+const inputAmount = document.getElementById('incomeAmount');
+const inputDate = document.getElementById('incomeDate');
+const inputFrequency = document.getElementById('incomeFrequency');
+const inputDescription = document.getElementById('incomeDescription');
+const inputRecurringCheckbox = document.getElementById('setRecurring');
+
+/* ---- edit state ---- */
+let editingIncomeId = null; // when null -> creating new, otherwise editing existing
+
+/* ---- helpers ---- */
+function openIncomeFormForCreate() {
+  editingIncomeId = null;
+  formHeaderTitle.textContent = 'Add New Income';
+  submitBtn.textContent = 'Add Income';
+  incomeEntryForm.reset();
+  recurringOptions.style.display = 'none';
+  incomeForm.classList.add('visible');
+  // default date to today if empty
+  if (!inputDate.value) inputDate.valueAsDate = new Date();
+}
+
+function openIncomeFormForEdit(income) {
+  editingIncomeId = income.id;
+  formHeaderTitle.textContent = 'Edit Income';
+  submitBtn.textContent = 'Save Changes';
+  // populate fields (use empty-string fallbacks)
+  inputSource.value = income.source || '';
+  inputAmount.value = (typeof income.amount === 'number') ? income.amount.toFixed(2) : '';
+  // server likely stores date as YYYY-MM-DD already
+  inputDate.value = income.date ? income.date.split('T')[0] : '';
+  inputFrequency.value = income.frequency || '';
+  inputDescription.value = income.description || income.notes || '';
+  inputRecurringCheckbox.checked = false;
+  recurringOptions.style.display = (inputFrequency.value && inputFrequency.value !== 'one-time') ? 'flex' : 'none';
+  incomeForm.classList.add('visible');
+  // focus first input for convenience
+  inputSource.focus();
+}
+
+function hideIncomeForm() {
+  incomeForm.classList.remove('visible');
+  editingIncomeId = null;
+  incomeEntryForm.reset();
+  // restore create state
+  formHeaderTitle.textContent = 'Add New Income';
+  submitBtn.textContent = 'Add Income';
+  recurringOptions.style.display = 'none';
+}
+
+/* ---- wire basic form open/close ---- */
+showIncomeFormBtn.addEventListener('click', openIncomeFormForCreate);
 closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
-cancelIncomeFormBtn.addEventListener('click', hideIncomeForm);
+cancelIncomeFormBtn.addEventListener('click', function (e) { e.preventDefault(); hideIncomeForm(); });
 
 incomeFrequency.addEventListener('change', function () {
   if (this.value !== 'one-time' && this.value !== '') recurringOptions.style.display = 'flex';
@@ -893,7 +945,8 @@ async function loadIncomes() {
     renderIncomes();
   } catch (err) {
     console.error(err);
-    alert('Could not load incomes from server. See console for details.');
+    // avoid spamming user with alerts while testing; use alert if you prefer
+    // alert('Could not load incomes from server. See console for details.');
   }
 }
 
@@ -909,11 +962,39 @@ async function createIncome(payload) {
       throw new Error('Create failed: ' + txt);
     }
     const created = await res.json();
+    // add to local list
     incomes.unshift(created);
     renderIncomes();
     return created;
   } catch (err) {
     console.error(err);
+    throw err;
+  }
+}
+
+async function updateIncomeOnServer(id, payload) {
+  // try a PUT first (common), then PATCH fallback. Returns updated item if server returns it.
+  try {
+    let res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) return await res.json();
+
+    // fallback to PATCH
+    res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) return await res.json();
+
+    // If PUT/PATCH both not supported, throw a controlled error for caller to handle.
+    const text = await res.text().catch(() => '');
+    throw new Error(`Update not supported or failed: ${res.status} ${text}`);
+  } catch (err) {
+    // propagate so caller can fallback (create new + delete old)
     throw err;
   }
 }
@@ -936,16 +1017,23 @@ async function deleteIncomeOnServer(id) {
 /* ---- submit form handler ---- */
 incomeEntryForm.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const source = document.getElementById('incomeSource').value;
-  const amount = parseFloat(document.getElementById('incomeAmount').value);
-  const date = document.getElementById('incomeDate').value;
-  const frequency = document.getElementById('incomeFrequency').value;
-  const description = document.getElementById('incomeDescription').value;
-  const isRecurring = document.getElementById('setRecurring').checked;
+
+  const source = inputSource.value.trim();
+  const amountRaw = inputAmount.value;
+  const amount = parseFloat(amountRaw);
+  const date = inputDate.value;
+  const frequency = inputFrequency.value;
+  const description = inputDescription.value;
+  const isRecurring = inputRecurringCheckbox.checked;
+
+  if (!date || !Number.isFinite(amount)) {
+    alert('Please provide valid date and amount.');
+    return;
+  }
 
   const payload = {
     budget_id: BUDGET_ID,
-    amount,       
+    amount,
     date,
     source,
     frequency,
@@ -954,13 +1042,47 @@ incomeEntryForm.addEventListener('submit', async function (e) {
   };
 
   try {
-    await createIncome(payload);
-    hideIncomeForm();
-    alert('Income added successfully!');
+    if (editingIncomeId == null) {
+      // create flow
+      await createIncome(payload);
+      hideIncomeForm();
+      alert('Income added successfully!');
+    } else {
+      // edit flow: try updating on server first
+      try {
+        const updated = await updateIncomeOnServer(editingIncomeId, payload);
+        // if server returns updated item, update local list
+        if (updated && updated.id) {
+          incomes = incomes.map(i => (i.id === updated.id ? updated : i));
+        } else {
+          // if server didn't return, be conservative: reload list
+          await loadIncomes();
+        }
+        hideIncomeForm();
+        alert('Income updated successfully!');
+      } catch (updateErr) {
+        // fallback: create new record and delete old one (best-effort)
+        console.warn('Update failed, falling back to recreate+delete:', updateErr);
+        const created = await createIncome(payload);
+        // delete old record if it exists on server
+        try {
+          await deleteIncomeOnServer(editingIncomeId);
+        } catch (delErr) {
+          console.warn('Failed to delete old income after fallback create:', delErr);
+        }
+        hideIncomeForm();
+        alert('Income updated (by creating a new record).');
+      }
+    }
   } catch (err) {
-    alert('Failed to add income: ' + (err.message || err));
+    console.error(err);
+    alert('Failed to save income: ' + (err.message || err));
+  } finally {
+    editingIncomeId = null;
   }
 });
+
+/* ---- stats and render logic ---- */
 function updateIncomeStats(incomes) {
   const now = new Date();
   let totalIncome = 0;
@@ -975,19 +1097,15 @@ function updateIncomeStats(incomes) {
 
     switch ((i.frequency || '').toLowerCase()) {
       case 'monthly':
-        // Always add this month’s instance
         if (incomeDate <= now) expectedThisMonth += amount;
         break;
       case 'weekly':
-        // Roughly 4 weeks per month
         if (incomeDate <= now) expectedThisMonth += amount * 4;
         break;
       case 'yearly':
-        // Divide yearly into monthly
         if (incomeDate <= now) expectedThisMonth += amount / 12;
         break;
       default:
-        // One-time incomes → only count if date is in this month
         if (
           incomeDate.getMonth() === now.getMonth() &&
           incomeDate.getFullYear() === now.getFullYear()
@@ -997,18 +1115,15 @@ function updateIncomeStats(incomes) {
     }
   });
 
-  // Unique sources
   const sources = new Set(incomes.map(i => i.source)).size;
 
-  // Update DOM
   document.getElementById('stat-total-income').textContent = `$${(totalIncome).toFixed(2)}`;
   document.getElementById('stat-expected-income').textContent = `$${(expectedThisMonth).toFixed(2)}`;
   document.getElementById('stat-income-sources').textContent = sources;
 }
 
-/* ---- render logic (keeps your existing UI formatting) ---- */
+/* ---- render incomes and wire edit buttons ---- */
 function renderIncomes() {
-  // clear existing rows
   incomeList.innerHTML = '';
 
   incomes.forEach(income => {
@@ -1019,37 +1134,80 @@ function renderIncomes() {
       <td>
         <div class="income-source">
           <div class="source-icon"><i class="fas fa-wallet"></i></div>
-          <div>${income.source}</div>
+          <div class="income-source-text"></div>
         </div>
       </td>
-      <td class="income-amount">$${income.amount.toFixed(2)}</td>
-      <td>${new Date(income.date).toLocaleDateString()}</td>
+      <td class="income-amount"></td>
+      <td class="income-date"></td>
       <td>
         <span class="income-frequency">${income.frequency || 'One-time'}</span>
       </td>
       <td>
         <div class="income-actions">
-          <button class="edit-btn"><i class="fas fa-edit"></i></button>
-          <button class="delete-btn" onclick="deleteIncomeOnServer(${income.id})"><i class="fas fa-trash"></i></button>
+          <button class="edit-btn" type="button" title="Edit"><i class="fas fa-edit"></i></button>
+          <button class="delete-btn" type="button" title="Delete"><i class="fas fa-trash"></i></button>
         </div>
       </td>
     `;
 
+    // Fill text nodes
+    row.querySelector('.income-source-text').textContent = income.source || '';
+    row.querySelector('.income-amount').textContent = `$${(income.amount || 0).toFixed(2)}`;
+    row.querySelector('.income-date').textContent = new Date(income.date).toLocaleDateString();
+
+    // wire edit button
+    row.querySelector('.edit-btn').addEventListener('click', () => {
+      openIncomeFormForEdit(income);
+    });
+
+    // wire delete button (client-side UI + server call)
+    row.querySelector('.delete-btn').addEventListener('click', async () => {
+      if (!confirm('Delete this income?')) return;
+      try {
+        await deleteIncomeOnServer(income.id);
+      } catch (err) {
+        console.error(err);
+        alert('Failed to delete income.');
+      }
+    });
+
     incomeList.appendChild(row);
   });
 
-  // update stats each time
   updateIncomeStats(incomes);
 }
 
-/* ---- wire inputs ---- */
-searchIncome.addEventListener('input', renderIncomes);
-sortIncome.addEventListener('change', renderIncomes);
+/* ---- search / sort (existing simple hooks) ---- */
+searchIncome.addEventListener('input', () => {
+  const q = searchIncome.value.trim().toLowerCase();
+  if (!q) { renderIncomes(); return; }
+  const filtered = incomes.filter(i => (i.source || '').toLowerCase().includes(q) || (i.description || i.notes || '').toLowerCase().includes(q));
+  // temporarily show filtered list
+  const prev = incomes;
+  incomes = filtered;
+  renderIncomes();
+  incomes = prev; // restore original array
+});
+
+sortIncome.addEventListener('change', () => {
+  const mode = sortIncome.value;
+  // simple sort implementation on the local array
+  incomes.sort((a, b) => {
+    if (mode === 'date-desc') return new Date(b.date) - new Date(a.date);
+    if (mode === 'date-asc') return new Date(a.date) - new Date(b.date);
+    if (mode === 'amount-desc') return (b.amount || 0) - (a.amount || 0);
+    if (mode === 'amount-asc') return (a.amount || 0) - (b.amount || 0);
+    if (mode === 'source') return (a.source || '').localeCompare(b.source || '');
+    return 0;
+  });
+  renderIncomes();
+});
+
+/* ---- initial setup ---- */
 document.getElementById('incomeDate').valueAsDate = new Date();
 document.addEventListener('DOMContentLoaded', loadIncomes);
-
-/* ---- initial load ---- */
 loadIncomes();
 </script>
+
 
 </html>
