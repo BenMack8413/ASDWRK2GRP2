@@ -14,7 +14,6 @@ beforeAll(() => {
   const schemaSql = fs.readFileSync(schemaPath, 'utf8');
   db.exec(schemaSql);
 
-  // Ensure seed rows we need exist
   db.prepare(
     `INSERT OR IGNORE INTO accounts (account_id, budget_id, name, currency, balance)
      VALUES (?, ?, ?, ?, ?)`
@@ -91,7 +90,6 @@ describe('Income DB layer', () => {
       VALUES (1, 1, '2025-01-03', 0, 'Category header', 'income')
     `).run().lastInsertRowid;
 
-    // Use NULL for category_id to avoid foreign key failure
     db.prepare(`
       INSERT INTO transaction_lines (transaction_id, category_id, amount, line_order, note)
       VALUES (?, ?, ?, ?, ?)
