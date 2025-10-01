@@ -61,14 +61,26 @@
                         style="margin-left: 12px; font-size: 0.95rem"
                     ></span>
                 </div>
+                <div class="account-information">
+                    <h2>Account Information</h2>
+                    <div class="info-row">
+                        <span class="label">Username:</span>
+                        <span id="username" class="value"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Email:</span>
+                        <span id="email" class="value"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Creation Date:</span>
+                        <span id="creationDate" class="value"></span>
+                    </div>
+                </div>
             </main>
         </div>
     </body>
     <script src="/scripts/token.js"></script>
-    <!-- <script>
-        const logoutBtn = document.getElementById('logoutBtn');
-        const deleteBtn = document.getElementById('deleteBtn');
-        logoutBtn.addEventListener('click', logout());
-        deleteBtn.addEventListener('click', deleteUser());
-    </script> -->
+    <script>
+          window.onload = loadAccountInfo();
+    </script>
 </html>

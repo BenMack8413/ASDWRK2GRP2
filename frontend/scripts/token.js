@@ -113,7 +113,7 @@ async function deleteUser() {
     const response = await fetch(`/api/user/delete/${id}`, {
         method: 'DELETE',
         headers: {
-            'authorization': `Bearer ${token}`,
+            authorization: `Bearer ${token}`,
         },
     });
 
@@ -134,7 +134,40 @@ async function deleteUser() {
         throw new Error(msg);
     }
     console.log('Deleted', response);
-    window.location.href = '/index.html'
+    window.location.href = '/index.html';
+}
+
+async function loadAccountInfo() {
+    try {
+        const token = getToken();
+        if (!token) {
+            throw new Error('No auth token found. User not logged in.');
+        }
+
+        const id = parseInt(decodeToken(token).id);
+        if (typeof id !== 'number') {
+            throw new TypeError('Invalid id (must be a number)');
+        }
+
+        if (!token) {
+            throw new Error('No auth token found. User not logged in.');
+        }
+
+        const response = await fetch(`/api/user/information/${id}`, {
+            headers: {
+                authorization: `Bearer ${token}`,
+            },
+        });
+        const user = await response.json();
+
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('email').textContent = user.email;
+        document.getElementById('creationDate').textContent = new Date(
+            user.date_created,
+        ).toLocaleDateString();
+    } catch (err) {
+        console.error('Failed to load account info', err);
+    }
 }
 
 window.saveToken = saveToken;
