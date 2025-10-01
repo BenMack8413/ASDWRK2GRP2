@@ -350,14 +350,4 @@ BEGIN
   ), 0);
 END;
 
-CREATE TRIGGER IF NOT EXISTS users_after_insert_insert_default_settings
-AFTER INSERT ON users
-FOR EACH ROW
-BEGIN
-  INSERT OR IGNORE INTO settings (user_id, data)
-  VALUES (
-    NEW.user_id,
-    '{"theme":"dark"}'
-  );
-END;
 -- End of schema

@@ -118,17 +118,16 @@ function deleteUser(db, id) {
 
 function getAccountInfo(db, id) {
     if (!id) throw new Error('User ID Required');
-    
+
     const idNum = Number(id);
     if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
-    
+
     try {
         const statement = db.prepare(
             `SELECT username, email, date_created FROM users WHERE user_id = ?`,
         );
         const info = statement.get(idNum);
-        console.log('accountInfo fetched:', { id: idNum, information: info });
-        
+
         return info;
     } catch (err) {
         console.error(err);
@@ -145,21 +144,20 @@ function getUserSettings(db, id) {
     if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
 
     try {
-        const statement = db.prepare(
-            `SELECT data FROM settings WHERE user_id = ?`,
-        );
-        const row = statement.get(idNum);
+            const statement = db.prepare(
+                `SELECT data FROM settings WHERE user_id = ?`,
+            );
+            const row = statement.get(idNum);
 
-        if (!row) {
-            return { settings: null };
-        }
+            if (!row) {
+                return { settings: null };
+            }
 
-        return { settings: JSON.parse(settings) };
+            console.log({ settings: JSON.parse(row.data) });
+            return { settings: JSON.parse(row.data) };
     } catch (e) {
         console.error(e);
-        throw new error(
-            'Something went wrong when retrieving user settings',
-        )
+        throw new Error('Something went wrong when retrieving user settings');
     }
 }
 
@@ -181,16 +179,18 @@ function updateUserSettings(db, id, settingsObj) {
             VALUES (?, ?)
             ON CONFLICT(user_id) DO UPDATE SET
                 data = excluded.data
-            `
+            `,
         );
         const info = statement.run(idNum, text);
 
-        return {ok: true, changes: info.changes, lastInsertRowid: info.lastInsertRowid };
+        return {
+            ok: true,
+            changes: info.changes,
+            lastInsertRowid: info.lastInsertRowid,
+        };
     } catch (e) {
         console.error(e);
-        throw new Error(
-            'Something went wrong when retrieving user settings',
-        )
+        throw new Error('Something went wrong when retrieving user settings');
     }
 }
 
@@ -201,5 +201,5 @@ module.exports = {
     deleteUser,
     getAccountInfo,
     getUserSettings,
-    updateUserSettings
+    updateUserSettings,
 };
