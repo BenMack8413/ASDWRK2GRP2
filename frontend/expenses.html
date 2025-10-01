@@ -377,22 +377,7 @@
                             <th>Description</th>
                         </tr>
                     </thead>
-                    <tbody class="expenseContainer">
-                        <tr>
-                            <td>Groceries</td>
-                            <td>$150.00</td>
-                            <td>2024-06-01</td>
-                            <td>Monthly</td>
-                            <td>Weekly grocery shopping</td>
-                        </tr>
-                        <tr>
-                            <td>Utilities</td>
-                            <td>$75.00</td>
-                            <td>2024-06-05</td>
-                            <td>Monthly</td>
-                            <td>Electricity and water bills</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="expenseTableBody"></tbody>
                 </table>
                 </div>
                 <button class="addExpenseButton" id="addExpense">+ Add Expense</button>
@@ -438,6 +423,9 @@
             const expenseForm = document.getElementById('expenseForm');
             const searchExpense = document.getElementById('searchExpense');
             const sortExpense = document.getElementById('sortExpense');
+            const expenseTableBody = document.getElementById('expenseTableBody');
+
+            let expenses = [];
 
             addExpenseBtn.onclick = function() {
                 if (expenseForm.style.display === 'none' || expenseForm.style.display === '') {
@@ -468,67 +456,85 @@
                     <td>${description}</td>
                 `;
 
-                tableBody.appendChild(newRow);
+                expenses.push({ source, amount, date, frequency, description });
+                localStorage.setItem('expenses', JSON.stringify(expenses));
+
+
+                expenseTableBody.appendChild(newRow);
                 expenseForm.reset();
                 expenseForm.style.display = 'none';
             };
 
-            searchExpense.oninput = function() {
+            function searchExpenses() {
                 const filter = searchExpense.value.toLowerCase();
                 const rows = document.querySelectorAll('.expenseContainer tr');
 
                 rows.forEach(row => {
-                    const source = row.cells[0].textContent.toLowerCase();
-                    const amount = row.cells[1].textContent.toLowerCase();
-                    const date = row.cells[2].textContent.toLowerCase();
-                    const frequency = row.cells[3].textContent.toLowerCase();
-                    const description = row.cells[4].textContent.toLowerCase();
+                    const [source, amount, date, frequency, description] = Array.from(row.cells).map(c => c.textContent.toLowerCase());
 
-                    if (source.includes(filter) || amount.includes(filter) || date.includes(filter) || frequency.includes(filter) || description.includes(filter)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+                    row.style.display = 
+                        (source.includes(filter) || amount.includes(filter) || date.includes(filter) || frequency.includes(filter) || description.includes(filter))
+                        ? '' 
+                        : 'none';
                 });
             };
 
-            sortExpense.onchange = function() {
+            function sortExpenses() {
                 const criteria = sortExpense.value;
-                const tableBody = document.querySelector('.expenseContainer');
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
-
-                rows.sort((a, b) => {
-                    let valA, valB;
-
+                expenses.sort((a, b) => {
                     switch (criteria) {
                         case 'date-desc':
-                            valA = new Date(a.cells[2].textContent);
-                            valB = new Date(b.cells[2].textContent);
-                            return valB - valA;
+                            return new Date(b.date) - new Date(a.date);
                         case 'date-asc':
-                            valA = new Date(a.cells[2].textContent);
-                            valB = new Date(b.cells[2].textContent);
-                            return valA - valB;
+                            return new Date(a.date) - new Date(b.date);
                         case 'amount-desc':
-                            valA = parseFloat(a.cells[1].textContent.replace('$', ''));
-                            valB = parseFloat(b.cells[1].textContent.replace('$', ''));
-                            return valB - valA;
+                            return b.amount - a.amount;
                         case 'amount-asc':
-                            valA = parseFloat(a.cells[1].textContent.replace('$', ''));
-                            valB = parseFloat(b.cells[1].textContent.replace('$', ''));
-                            return valA - valB;
+                            return a.amount - b.amount;
                         case 'source':
-                            valA = a.cells[0].textContent.toLowerCase();
-                            valB = b.cells[0].textContent.toLowerCase();
-                            return valA.localeCompare(valB);
+                            return a.source.localeCompare(b.source);
                         default:
                             return 0;
                     }
                 });
+                renderExpenses();
+            }
 
-                tableBody.innerHTML = '';
-                rows.forEach(row => tableBody.appendChild(row));
-            };
+            function loadExpenses() {
+                const stored = localStorage.getItem('expenses');
+                if (stored) {
+                    expenses = JSON.parse(stored);
+                }
+                // Placeholder for loading expenses from a backend or local storage
+                else {
+                    expenses = [
+                        { source: 'Rent', amount: 1200, date: '2024-06-01', frequency: 'Monthly', description: 'June Rent' },
+                        { source: 'Groceries', amount: 300, date: '2024-06-05', frequency: 'Weekly', description: 'Weekly groceries' },
+                        { source: 'Utilities', amount: 150, date: '2024-06-03', frequency: 'Monthly', description: 'Electricity and water' },
+                    ];
+                    localStorage.setItem('expenses', JSON.stringify(expenses));
+                }
+                renderExpenses();
+            }
+
+            function renderExpenses() {
+                expenseTableBody.innerHTML = '';
+                expenses.forEach(expense => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${expense.source}</td>
+                        <td>$${expense.amount.toFixed(2)}</td>
+                        <td>${expense.date}</td>
+                        <td>${expense.frequency}</td>
+                        <td>${expense.description}</td>
+                    `;
+                    expenseTableBody.appendChild(row);
+                });
+            }
+
+            window.onload = loadExpenses;
+            sortExpense.onchange = sortExpenses;
+            searchExpense.oninput = searchExpenses;
 
         </script>
     </body>
