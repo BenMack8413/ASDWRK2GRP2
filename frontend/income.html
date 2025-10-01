@@ -51,7 +51,7 @@
                 display: flex;
                 min-height: 100vh;
                 gap: 24px;
-                padding: 28px 0;
+                padding: 0;
                 align-items: stretch;
                 width: 100%;
             }
@@ -790,18 +790,14 @@
                         <div class="stat-icon">
                             <i class="fas fa-dollar-sign"></i>
                         </div>
-                        <div class="stat-value" id="stat-total-income">
-                            $0.00
-                        </div>
+                        <div class="stat-value" id="stat-total-income">$0</div>
                         <div class="stat-title">Total Monthly Income</div>
                     </div>
                     <div class="stat-card stat-2">
                         <div class="stat-icon">
                             <i class="fas fa-wallet"></i>
                         </div>
-                        <div class="stat-value" id="stat-expected-income">
-                            $0.00
-                        </div>
+                        <div class="stat-value" id="stat-expected-income">$0</div>
                         <div class="stat-title">Expected This Month</div>
                     </div>
                     <div class="stat-card stat-3">
@@ -965,137 +961,92 @@ incomeEntryForm.addEventListener('submit', async function (e) {
     alert('Failed to add income: ' + (err.message || err));
   }
 });
+function updateIncomeStats(incomes) {
+  const now = new Date();
+  let totalIncome = 0;
+  let expectedThisMonth = 0;
 
-/* ---- render logic (keeps your existing UI formatting) ---- */
-function renderIncomes() {
-  incomeList.innerHTML = '';
+  incomes.forEach(i => {
+    const amount = i.amount || 0;
+    totalIncome += amount;
 
-  let filtered = [...incomes];
+    // Parse stored date
+    const incomeDate = new Date(i.date);
 
-  const searchTerm = searchIncome.value.toLowerCase();
-  if (searchTerm) {
-    filtered = filtered.filter(i => 
-      (i.description || '').toLowerCase().includes(searchTerm) ||
-      (i.source || '').toLowerCase().includes(searchTerm)
-    );
-  }
-
-  const sortValue = sortIncome.value;
-  filtered.sort((a,b) => {
-    switch (sortValue) {
-      case 'date-asc': return new Date(a.date) - new Date(b.date);
-      case 'date-desc': return new Date(b.date) - new Date(a.date);
-      case 'amount-asc': return a.amount - b.amount;
-      case 'amount-desc': return b.amount - a.amount;
-      case 'source': return (a.source || '').localeCompare(b.source || '');
-      default: return new Date(b.date) - new Date(a.date);
+    switch ((i.frequency || '').toLowerCase()) {
+      case 'monthly':
+        // Always add this month’s instance
+        if (incomeDate <= now) expectedThisMonth += amount;
+        break;
+      case 'weekly':
+        // Roughly 4 weeks per month
+        if (incomeDate <= now) expectedThisMonth += amount * 4;
+        break;
+      case 'yearly':
+        // Divide yearly into monthly
+        if (incomeDate <= now) expectedThisMonth += amount / 12;
+        break;
+      default:
+        // One-time incomes → only count if date is in this month
+        if (
+          incomeDate.getMonth() === now.getMonth() &&
+          incomeDate.getFullYear() === now.getFullYear()
+        ) {
+          expectedThisMonth += amount;
+        }
     }
   });
 
-  filtered.forEach(income => {
+  // Unique sources
+  const sources = new Set(incomes.map(i => i.source)).size;
+
+  // Update DOM
+  document.getElementById('stat-total-income').textContent = `$${(totalIncome).toFixed(2)}`;
+  document.getElementById('stat-expected-income').textContent = `$${(expectedThisMonth).toFixed(2)}`;
+  document.getElementById('stat-income-sources').textContent = sources;
+}
+
+/* ---- render logic (keeps your existing UI formatting) ---- */
+function renderIncomes() {
+  // clear existing rows
+  incomeList.innerHTML = '';
+
+  incomes.forEach(income => {
     const row = document.createElement('tr');
-    row.className = 'income-row';
-
-    const dateObj = new Date(income.date);
-    const formattedDate = dateObj.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
-
-    let frequencyClass = '';
-    if (income.frequency === 'monthly') frequencyClass = 'frequency-monthly';
-    else if (income.frequency === 'weekly') frequencyClass = 'frequency-weekly';
-    else if (income.frequency === 'fortnightly') frequencyClass = 'frequency-fortnightly';
+    row.classList.add('income-row');
 
     row.innerHTML = `
       <td>
         <div class="income-source">
-          <div class="source-icon">
-            <i class="fas ${getIconForSource(income.source)}"></i>
-          </div>
-          <div>${income.source || (income.description || 'Income')}</div>
+          <div class="source-icon"><i class="fas fa-wallet"></i></div>
+          <div>${income.source}</div>
         </div>
       </td>
-      <td class="income-amount">$${Number(income.amount || 0).toFixed(2)}</td>
-      <td>${formattedDate}</td>
-      <td><span class="income-frequency ${frequencyClass}">${(income.frequency || '').charAt(0).toUpperCase() + (income.frequency || '').slice(1)}</span></td>
+      <td class="income-amount">$${income.amount.toFixed(2)}</td>
+      <td>${new Date(income.date).toLocaleDateString()}</td>
+      <td>
+        <span class="income-frequency">${income.frequency || 'One-time'}</span>
+      </td>
       <td>
         <div class="income-actions">
-          <button class="edit-btn" data-id="${income.id}"><i class="fas fa-edit"></i></button>
-          <button class="delete-btn" data-id="${income.id}"><i class="fas fa-trash"></i></button>
+          <button class="edit-btn"><i class="fas fa-edit"></i></button>
+          <button class="delete-btn" onclick="deleteIncomeOnServer(${income.id})"><i class="fas fa-trash"></i></button>
         </div>
       </td>
     `;
+
     incomeList.appendChild(row);
   });
 
-  document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = Number(btn.getAttribute('data-id'));
-      editIncomeLocal(id);
-    });
-  });
-
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = Number(btn.getAttribute('data-id'));
-      if (confirm('Delete this income?')) deleteIncomeOnServer(id);
-    });
-  });
-}
-
-/* ---- small helpers ---- */
-function getIconForSource(source) {
-  if (!source) return 'fa-dollar-sign';
-  if (source.toLowerCase().includes('salary')) return 'fa-building';
-  if (source.toLowerCase().includes('freelance')) return 'fa-pencil-alt';
-  if (source.toLowerCase().includes('rental')) return 'fa-home';
-  if (source.toLowerCase().includes('dividend') || source.toLowerCase().includes('stock')) return 'fa-chart-line';
-  return 'fa-dollar-sign';
-}
-
-// basic edit: shows form populated; user must save to create a new transaction (server retains old until user deletes)
-function editIncomeLocal(id) {
-  const income = incomes.find(i => i.id === id);
-  if (!income) return;
-  document.getElementById('incomeSource').value = income.source || '';
-  document.getElementById('incomeAmount').value = income.amount || '';
-  document.getElementById('incomeDate').value = income.date || '';
-  document.getElementById('incomeFrequency').value = income.frequency || '';
-  document.getElementById('incomeDescription').value = income.description || '';
-  if (income.frequency && income.frequency !== 'one-time') {
-    document.getElementById('setRecurring').checked = !!income.recurring;
-    recurringOptions.style.display = 'flex';
-  }
-  incomeForm.classList.add('visible');
-
-  // remove local copy so submit will create a new one (server copy remains)
-  incomes = incomes.filter(i => i.id !== id);
-  // ---- Update stats ----
-function updateIncomeStats() {
-  const totalMonthly = incomes.reduce((sum, i) => sum + (i.amount || 0), 0);
-  const sources = new Set(incomes.map(i => i.source)).size;
-
-  // For "Expected This Month", you could filter by current month:
-  const now = new Date();
-  const expectedThisMonth = incomes
-    .filter(i => {
-      const d = new Date(i.date);
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    })
-    .reduce((sum, i) => sum + (i.amount || 0), 0);
-
-  document.querySelector('.stat-1 .stat-value').textContent = `$${totalMonthly.toFixed(2)}`;
-  document.querySelector('.stat-2 .stat-value').textContent = `$${expectedThisMonth.toFixed(2)}`;
-  document.querySelector('.stat-3 .stat-value').textContent = sources;
-}
-
-  updateIncomeStats();
-
-  renderIncomes();
+  // update stats each time
+  updateIncomeStats(incomes);
 }
 
 /* ---- wire inputs ---- */
 searchIncome.addEventListener('input', renderIncomes);
 sortIncome.addEventListener('change', renderIncomes);
 document.getElementById('incomeDate').valueAsDate = new Date();
+document.addEventListener('DOMContentLoaded', loadIncomes);
 
 /* ---- initial load ---- */
 loadIncomes();
