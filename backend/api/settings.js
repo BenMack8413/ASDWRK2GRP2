@@ -25,8 +25,8 @@ module.exports = (db) => {
                     .json({ error: 'Invalid payload; expected JSON object' });
             }
 
-            const currentSettings = getUserSettings(db, req.user.id);
-            const updatedSettings = { ...currentSettings, ...req.body };
+            const currentSettings = getUserSettings(db, req.user.id) || {};
+            const updatedSettings = req.body;
             updateUserSettings(db, req.user.id, updatedSettings);
             return res.json({ ok: true, settings: updatedSettings });
         } catch (err) {

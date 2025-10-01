@@ -1,9 +1,5 @@
-// const { getToken } = require('./token');
-
 const SETTINGS_ENDPOINT = '/api/settings';
 const DEFAULTS = {
-    theme: 'light',
-    items_per_page: 20,
     dark_mode: false,
     language: 'en',
 };
@@ -27,6 +23,12 @@ function setStatus(text, type = 'info') {
 function applyTheme(theme) {
     document.body.classList.remove('theme-light', 'theme-dark');
     document.body.classList.add('theme-' + theme);
+}
+
+function stripSettingsKey(obj) {
+  if (!obj || typeof obj !== 'object') return {};
+  const { settings, ...rest } = obj;
+  return rest;
 }
 
 function createInput(key, value) {
@@ -122,6 +124,7 @@ async function saveSettings() {
     try {
         const token = getToken();
         setStatus('Saving...');
+        const sanitizedPatch = stripSettingsKey(pendingChanges);
         const resp = await fetch(SETTINGS_ENDPOINT, {
             method: 'POST',
             credentials: 'include',

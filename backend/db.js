@@ -107,7 +107,7 @@ function deleteUser(db, id) {
     try {
         const statement = db.prepare(`DELETE FROM users WHERE user_id = ?`);
         const info = statement.run(idNum);
-        console.log('deleteUser debug:', { id: idNum, changes: info.changes });
+        console.log('deleteUser:', { id: idNum, changes: info.changes });
 
         return info.changes > 0; // true if a row was deleted
     } catch (err) {
@@ -153,12 +153,18 @@ function getUserSettings(db, id) {
                 return { settings: null };
             }
 
-            console.log({ settings: JSON.parse(row.data) });
-            return { settings: JSON.parse(row.data) };
+            const parsed = JSON.parse(row.data);
+            return stripSettingsKey(parsed);
     } catch (e) {
         console.error(e);
         throw new Error('Something went wrong when retrieving user settings');
     }
+}
+
+function stripSettingsKey(obj) {
+  if (!obj || typeof obj !== 'object') return {};
+  const { settings, ...rest } = obj;
+  return rest;
 }
 
 function updateUserSettings(db, id, settingsObj) {
