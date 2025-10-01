@@ -179,3 +179,5 @@ window.signup = signup;
 window.login = login;
 window.logout = logout;
 window.deleteUser = deleteUser;
+
+// module.exports = { getToken };

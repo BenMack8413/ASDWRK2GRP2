@@ -76,11 +76,22 @@
                         <span id="creationDate" class="value"></span>
                     </div>
                 </div>
+                <div class="card">
+                    <h1>User Settings</h1>
+                    <div id="settingsContainer"></div>
+                    <button id="saveBtn">Save All</button>
+                    <span class="status" id="statusText">—</span>
+                </div>
             </main>
         </div>
     </body>
     <script src="/scripts/token.js"></script>
+    <script src="/scripts/settings.js"></script>
     <script>
-          window.onload = loadAccountInfo();
+        window.onload = loadAccountInfo();
+        document
+            .getElementById('saveBtn')
+            .addEventListener('click', saveSettings);
+        window.addEventListener('DOMContentLoaded', fetchSettings);
     </script>
 </html>
