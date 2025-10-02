@@ -1,116 +1,157 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Charts</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Charts</title>
 
-    <!-- Base styles -->
-    <link rel="stylesheet" href="./css/style.css" />
-    <!-- Page-specific styles -->
-    <link rel="stylesheet" href="./css/chart.css" />
+        <!-- Base styles -->
+        <link rel="stylesheet" href="./css/style.css" />
+        <!-- Page-specific styles -->
+        <link rel="stylesheet" href="./css/chart.css" />
 
-    <!-- Utilities -->
-    <script src="./scripts/category-utils.js"></script>
-    <!-- Controller -->
-    <script defer src="./scripts/chart.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <div class="dashboard">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="budget_name">My Budget</div>
-        <div><div class="balance">Menu</div></div>
-        <nav class="nav">
-          <a href="dashboard.html">Dashboard</a>
-          <a href="budget.html">Budget</a>
-          <a href="chart.html" class="active">Charts</a>
-          <a href="categories.html">Categories</a>
-          <a href="saving-goals.html">Saving Goals</a>
-          <a href="upcoming-payments.html">Upcoming Payments</a>
-        </nav>
-      </aside>
+        <!-- Utilities -->
+        <script src="./scripts/category-utils.js"></script>
+        <!-- Controller -->
+        <script defer src="./scripts/chart.js"></script>
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="budget_name">My Budget</div>
+                <div><div class="balance">Menu</div></div>
+                <nav class="nav">
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="budget.html">Budget</a>
+                    <a href="chart.html" class="active">Charts</a>
+                    <a href="categories.html">Categories</a>
+                    <a href="saving-goals.html">Saving Goals</a>
+                    <a href="upcoming-payments.html">Upcoming Payments</a>
+                </nav>
+            </aside>
 
-      <!-- Main -->
-      <main class="main">
-        <!-- Page header -->
-        <div class="page-header">
-          <h2>Charts</h2>
-          <p class="subtext">
-            Visualize your spending with category totals, tags, and more.
-          </p>
+            <!-- Main -->
+            <main class="main">
+                <!-- Page header -->
+                <div class="page-header">
+                    <h2>Charts</h2>
+                    <p class="subtext">
+                        Visualize your spending with category totals, tags, and
+                        more.
+                    </p>
+                </div>
+
+                <!-- Controls -->
+                <div class="card">
+                    <div class="controls">
+                        <button id="addChartBtn" class="btn primary">
+                            + Add Chart
+                        </button>
+                    </div>
+
+                    <!-- Chart Configuration Form (hidden by default) -->
+                    <div
+                        id="chartForm"
+                        class="chart-form"
+                        style="display: none"
+                    >
+                        <h3>Configure New Chart</h3>
+
+                        <div class="form-group">
+                            <label for="chartName">Chart Name</label>
+                            <input
+                                type="text"
+                                id="chartName"
+                                class="form-input"
+                                placeholder="e.g., Monthly Spending"
+                                required
+                            />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="chartType">Chart Type</label>
+                                <select id="chartType" class="form-input">
+                                    <option value="pie">Pie Chart</option>
+                                    <option value="bar">Bar Chart</option>
+                                    <option value="line">Line Chart</option>
+                                    <option value="doughnut">
+                                        Doughnut Chart
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dataSource">Data Source</label>
+                                <select id="dataSource" class="form-input">
+                                    <option value="expenses-by-category">
+                                        Expenses by Category
+                                    </option>
+                                    <option value="expenses-by-tag">
+                                        Expenses by Tag
+                                    </option>
+                                    <option value="account-balance">
+                                        Account Balance Over Time
+                                    </option>
+                                    <option value="income-vs-expenses">
+                                        Income vs Expenses
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startDate">Start Date</label>
+                                <input
+                                    type="date"
+                                    id="startDate"
+                                    class="form-input"
+                                    required
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="endDate">End Date</label>
+                                <input
+                                    type="date"
+                                    id="endDate"
+                                    class="form-input"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Tag filter (only shown for expenses-by-tag) -->
+                        <div
+                            class="form-group"
+                            id="tagFilterGroup"
+                            style="display: none"
+                        >
+                            <label for="tagFilter">Filter by Tag</label>
+                            <select id="tagFilter" class="form-input">
+                                <option value="">All Tags</option>
+                                <!-- Tags will be populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button id="cancelChartBtn" class="btn secondary">
+                                Cancel
+                            </button>
+                            <button id="saveChartBtn" class="btn primary">
+                                Create Chart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts area -->
+                <div id="chartsArea" class="charts-grid"></div>
+            </main>
         </div>
-
-        <!-- Controls -->
-        <div class="card">
-          <div class="controls">
-            <button id="addChartBtn" class="btn primary">+ Add Chart</button>
-          </div>
-
-          <!-- Chart Configuration Form (hidden by default) -->
-          <div id="chartForm" class="chart-form" style="display: none;">
-            <h3>Configure New Chart</h3>
-            
-            <div class="form-group">
-              <label for="chartName">Chart Name</label>
-              <input type="text" id="chartName" class="form-input" placeholder="e.g., Monthly Spending" required>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="chartType">Chart Type</label>
-                <select id="chartType" class="form-input">
-                  <option value="pie">Pie Chart</option>
-                  <option value="bar">Bar Chart</option>
-                  <option value="line">Line Chart</option>
-                  <option value="doughnut">Doughnut Chart</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="dataSource">Data Source</label>
-                <select id="dataSource" class="form-input">
-                  <option value="expenses-by-category">Expenses by Category</option>
-                  <option value="expenses-by-tag">Expenses by Tag</option>
-                  <option value="account-balance">Account Balance Over Time</option>
-                  <option value="income-vs-expenses">Income vs Expenses</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="startDate">Start Date</label>
-                <input type="date" id="startDate" class="form-input" required>
-              </div>
-
-              <div class="form-group">
-                <label for="endDate">End Date</label>
-                <input type="date" id="endDate" class="form-input" required>
-              </div>
-            </div>
-
-            <!-- Tag filter (only shown for expenses-by-tag) -->
-            <div class="form-group" id="tagFilterGroup" style="display: none;">
-              <label for="tagFilter">Filter by Tag</label>
-              <select id="tagFilter" class="form-input">
-                <option value="">All Tags</option>
-                <!-- Tags will be populated dynamically -->
-              </select>
-            </div>
-
-            <div class="form-actions">
-              <button id="cancelChartBtn" class="btn secondary">Cancel</button>
-              <button id="saveChartBtn" class="btn primary">Create Chart</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Charts area -->
-        <div id="chartsArea" class="charts-grid"></div>
-      </main>
-    </div>
-  </body>
+    </body>
 </html>
