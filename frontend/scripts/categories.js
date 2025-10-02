@@ -321,3 +321,12 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
     document.head.appendChild(style);
 });
+
+// At the bottom
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    loadCategories,
+    renderCategories,
+    saveCategory,
+  };
+}

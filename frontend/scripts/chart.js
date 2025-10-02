@@ -362,3 +362,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         .getElementById('dataSource')
         .addEventListener('change', handleDataSourceChange);
 });
+
+// Add this for Jest tests
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    loadCharts,
+    renderChart,
+    addChart,
+    deleteChart,
+  };
+}
