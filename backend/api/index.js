@@ -4,8 +4,6 @@ const createUserRouter = require('./user');
 const createIncomeRouter = require('./income');
 const createSimpleIncomeRouter = require('./incomes_simple');
 const createSettingRouter = require('./settings');
-const createSavingGoalsRouter = require('./savingGoals');
-const createUpcomingPaymentsRouter = require('./upcomingPayments');
 
 // const sampleApiRouter = require('./sampleapi');
 
@@ -18,8 +16,6 @@ module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
     router.use('/income', createIncomeRouter(db));
     router.use('/incomes', createSimpleIncomeRouter());
     router.use('/settings', createSettingRouter(db));
-    router.use('/saving-goals', createSavingGoalsRouter(db));
-    router.use('/upcoming-payments', createUpcomingPaymentsRouter(db));
 
     // router.use('/sampleApiRouter', sampleApiRouter(db));
 
