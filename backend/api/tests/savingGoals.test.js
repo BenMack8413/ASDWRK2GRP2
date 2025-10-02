@@ -2,6 +2,11 @@ const request = require('supertest');
 const express = require('express');
 const createSavingGoalsRouter = require('../savingGoals');
 
+const { TextEncoder, TextDecoder } = require('util');
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+
+
 // Mock DB
 const mockDb = {
   all: (query, params, cb) => cb(null, [{ id: 1, name: 'Test Goal', target_amount: 1000, current_amount: 100 }]),

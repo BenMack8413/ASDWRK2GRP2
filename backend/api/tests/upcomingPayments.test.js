@@ -2,6 +2,11 @@ const request = require('supertest');
 const express = require('express');
 const createUpcomingPaymentsRouter = require('../upcomingPayments');
 
+const { TextEncoder, TextDecoder } = require('util');
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+
+
 // Mock DB
 const mockDb = {
   all: (query, params, cb) => cb(null, [{ id: 1, description: 'Rent', due_date: '2025-10-01', amount: 500 }]),
