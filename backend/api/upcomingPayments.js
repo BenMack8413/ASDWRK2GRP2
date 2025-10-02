@@ -17,7 +17,8 @@ module.exports = function createUpcomingPaymentsRouter(db) {
     // POST new upcoming payment
     router.post('/', (req, res) => {
         const { description, dueDate, amount } = req.body;
-        const query = 'INSERT INTO upcoming_payments (description, due_date, amount) VALUES (?, ?, ?)';
+        const query =
+            'INSERT INTO upcoming_payments (description, due_date, amount) VALUES (?, ?, ?)';
         db.run(query, [description, dueDate, amount], function (err) {
             if (err) {
                 return res.status(500).json({ error: err.message });

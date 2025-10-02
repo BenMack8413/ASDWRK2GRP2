@@ -26,9 +26,9 @@ function applyTheme(theme) {
 }
 
 function stripSettingsKey(obj) {
-  if (!obj || typeof obj !== 'object') return {};
-  const { settings, ...rest } = obj;
-  return rest;
+    if (!obj || typeof obj !== 'object') return {};
+    const { settings, ...rest } = obj;
+    return rest;
 }
 
 function createInput(key, value) {
