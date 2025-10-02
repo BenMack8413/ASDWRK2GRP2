@@ -644,16 +644,10 @@
             expenseForm.onsubmit = formSubmission;
 
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'l' || e.key === 'L') {
+                if (e.key === '[') {
                     addTestExpense();
                 }
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'l' || e.key === 'L') {
-                    addTestExpense();
-                }
-                if (e.key === 'o' || e.key === 'O') {
+                if (e.key === ']') {
                     clearExpenses();
                 }
             });
