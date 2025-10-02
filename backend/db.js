@@ -144,17 +144,17 @@ function getUserSettings(db, id) {
     if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
 
     try {
-            const statement = db.prepare(
-                `SELECT data FROM settings WHERE user_id = ?`,
-            );
-            const row = statement.get(idNum);
+        const statement = db.prepare(
+            `SELECT data FROM settings WHERE user_id = ?`,
+        );
+        const row = statement.get(idNum);
 
-            if (!row) {
-                return { settings: null };
-            }
+        if (!row) {
+            return { settings: null };
+        }
 
-            const parsed = JSON.parse(row.data);
-            return stripSettingsKey(parsed);
+        const parsed = JSON.parse(row.data);
+        return stripSettingsKey(parsed);
     } catch (e) {
         console.error(e);
         throw new Error('Something went wrong when retrieving user settings');
@@ -162,9 +162,9 @@ function getUserSettings(db, id) {
 }
 
 function stripSettingsKey(obj) {
-  if (!obj || typeof obj !== 'object') return {};
-  const { settings, ...rest } = obj;
-  return rest;
+    if (!obj || typeof obj !== 'object') return {};
+    const { settings, ...rest } = obj;
+    return rest;
 }
 
 function updateUserSettings(db, id, settingsObj) {
