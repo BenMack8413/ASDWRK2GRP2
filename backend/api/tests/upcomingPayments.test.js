@@ -27,13 +27,11 @@ describe('Upcoming Payments API', () => {
     });
 
     it('should create a new upcoming payment', async () => {
-        const res = await request(app)
-            .post('/api/upcoming-payments')
-            .send({
-                description: 'Electricity',
-                dueDate: '2025-11-01',
-                amount: 150,
-            });
+        const res = await request(app).post('/api/upcoming-payments').send({
+            description: 'Electricity',
+            dueDate: '2025-11-01',
+            amount: 150,
+        });
 
         expect(res.statusCode).toBe(200);
         expect(res.body).toHaveProperty('id');
