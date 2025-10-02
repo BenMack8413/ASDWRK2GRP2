@@ -48,7 +48,7 @@ module.exports = function createChartRouter(db) {
     });
   });
 
-  router.post('/configs', express.json(), (req, res) => {
+  router.post('/configs', (req, res) => {
     const { budgetId, name, type, config } = req.body;
     db.run(
       `INSERT INTO chart_configs (budget_id, name, type, config_json) VALUES (?, ?, ?, ?)`,
