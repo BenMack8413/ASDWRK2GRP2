@@ -3,4 +3,10 @@ const { CreateTransactionAtomic, db: sharedDb } = require ('../db');
 
 module.exports = function createExpenseRouter(db) {
     const router = express.Router();
+
+    router.get('/', (req, res) => {
+
+    });
+
+    return router;
 }
