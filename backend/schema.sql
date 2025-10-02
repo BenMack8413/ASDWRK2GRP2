@@ -395,4 +395,65 @@ BEGIN
   ), 0);
 END;
 
+-- For charts showcase
+
+-- Sample accounts
+INSERT OR IGNORE INTO accounts (account_id, budget_id, name, currency, balance) VALUES
+(1, 1, 'Checking Account', 'USD', 200000);  -- $2000.00 in cents
+
+-- Sample categories
+INSERT OR IGNORE INTO categories (category_id, budget_id, name, type) VALUES
+(1, 1, 'Groceries', 'expense'),
+(2, 1, 'Transportation', 'expense'),
+(3, 1, 'Dining Out', 'expense'),
+(4, 1, 'Salary', 'income'),
+(5, 1, 'Utilities', 'expense'),
+(6, 1, 'Entertainment', 'expense');
+
+-- Sample payees
+INSERT OR IGNORE INTO payees (payee_id, budget_id, name) VALUES
+(1, 1, 'Supermarket'),
+(2, 1, 'Gas Station'),
+(3, 1, 'Restaurant'),
+(4, 1, 'Employer'),
+(5, 1, 'Electric Company'),
+(6, 1, 'Internet Provider');
+
+-- Sample tags
+INSERT OR IGNORE INTO tags (tag_id, budget_id, name) VALUES
+(1, 1, 'Essential'),
+(2, 1, 'Discretionary'),
+(3, 1, 'Monthly Bill');
+
+-- Sample transactions (amounts in cents)
+INSERT OR IGNORE INTO transactions (transaction_id, budget_id, account_id, payee_id, date, amount, notes, type) VALUES
+(1, 1, 1, 1, '2025-09-15', -15000, 'Weekly grocery shopping', 'expense'),
+(2, 1, 1, 2, '2025-09-18', -4500, 'Gas for car', 'expense'),
+(3, 1, 1, 3, '2025-09-20', -8000, 'Dinner out', 'expense'),
+(4, 1, 1, 4, '2025-09-22', 250000, 'Monthly salary', 'income'),
+(5, 1, 1, 5, '2025-09-25', -12000, 'Electric bill', 'expense'),
+(6, 1, 1, 6, '2025-09-28', -6000, 'Internet bill', 'expense'),
+(7, 1, 1, 1, '2025-09-30', -18000, 'Monthly grocery shopping', 'expense'),
+(8, 1, 1, 3, '2025-10-01', -6500, 'Lunch meeting', 'expense');
+
+-- Transaction lines (matching the transactions above, amounts in cents)
+INSERT OR IGNORE INTO transaction_lines (transaction_id, category_id, amount, line_order) VALUES
+(1, 1, -15000, 1),   -- Groceries
+(2, 2, -4500, 1),    -- Transportation
+(3, 3, -8000, 1),    -- Dining Out
+(4, 4, 250000, 1),   -- Salary
+(5, 5, -12000, 1),   -- Utilities
+(6, 5, -6000, 1),    -- Utilities
+(7, 1, -18000, 1),   -- Groceries
+(8, 3, -6500, 1);    -- Dining Out
+
+-- Transaction tags
+INSERT OR IGNORE INTO transaction_tags (transaction_id, tag_id) VALUES
+(1, 1),  -- Groceries = Essential
+(2, 1),  -- Gas = Essential
+(3, 2),  -- Dining = Discretionary
+(5, 3),  -- Electric = Monthly Bill
+(6, 3),  -- Internet = Monthly Bill
+(7, 1);  -- Groceries = Essential
+
 -- End of schema
