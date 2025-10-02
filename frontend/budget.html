@@ -1,661 +1,685 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}"> -->
-    <!-- <script src="{{ url_for('serve_js', filename='script.js') }}"></script> -->
-
-    <!-- CSS here for now -->
-<style>
-/* -------- Universal Root Start -------- */
-:root{
-    --bg:#f3f6fb;
-    --panel:#ffffff;
-    --accent:#1062cd;
-    --accent-2:#083880;
-    --muted:#8b94a6;
-    --card_shadow: 0 6px 18px rgba(32,41,78,0.06);
-}
-*{box-sizing:border-box}
-body{
-    margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    background: linear-gradient(180deg,var(--bg), var(--panel)); color:#111;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
-/* -------- Universal Root End -------- */
-
-/* -------- Dashboard Start -------- */
-.dashboard{
-    display:flex;
-    min-height:100vh;
-    gap:24px;
-    padding:28px 0;
-    align-items:stretch;
-    width: 100%;
-}
-
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    bottom:0;
-    width:260px;
-    padding:32px 28px;     
-    background:linear-gradient(180deg,var(--accent),var(--accent-2));
-    color:#fff;
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    z-index:50;
-}
-
-.budget_name{
-    font-weight:700;
-}
-
-.balance{
-    font-size:20px; 
-    opacity:0.9;
-}
-
-.balance_amount{
-    font-size:28px; 
-    font-weight:700; 
-    margin-top:6px;
-}
-
-.nav{
-    display:flex; 
-    flex-direction:column; 
-    gap:12px; 
-    margin-top:6px;
-}
-
-.nav a{
-    color:rgba(255, 255, 255, 0.9); 
-    text-decoration:none; display:flex; gap:10px; 
-    align-items:center; 
-    padding:8px 10px; 
-    border-radius:10px;
-}
-
-.nav a.active{
-    background:rgba(255,255,255,0.08);
-}
-
-.main{
-    margin-left: 260px;
-    width: calc(100% - 260px);
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    min-width:0;
-    padding: 0 28px;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
-
-.top_row{
-    display:flex; 
-    gap:18px; 
-    align-items:flex-start;
-}
-
-.card{
-    background:var(--panel); 
-    border-radius:14px; padding:18px; 
-    box-shadow:var(--card_shadow);
-}
-.card.small{
-    flex:0 0 260px;
-}
-
-.card.medium{
-    flex:1;
-}
-
-.card.half{
-    flex:0 0 420px;
-}
-
-.grid{
-    display:grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap:18px;
-}
-
-.header-left h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a1a1a;
-}
-
-.muted{
-    color:var(--muted); 
-    font-size:13px;
-}
-
-.big-num{
-    font-size:26px; 
-    font-weight:700;
-}
-
-.sub{
-    font-size:13px; 
-    color:var(--muted); 
-    margin-top:6px;
-}
-
-.widgets{
-    display:grid; 
-    grid-template-columns: 1fr; 
-    gap:18px;
-}
-
-.widget{
-    background:var(--panel); 
-    padding:18px; 
-    border-radius:14px; 
-    box-shadow:var(--card_shadow);
-}
-
-.widget.dragging{
-    opacity:0.6;
-}
-
-.widget-header{
-    display:flex; 
-    align-items:center; 
-    justify-content:space-between; 
-    gap:8px;
-}
-
-.chart-wrap{
-    height:240px;
-}
-
-.layout-controls{
-    display:flex; 
-    gap:8px; 
-    align-items:center;
-}
-
-.transactions{
-    display:flex; 
-    flex-direction:column; 
-    gap:12px; 
-    padding:12px;
-}
-
-.tx{
-    display:flex; 
-    align-items:center; 
-    justify-content:space-between; 
-    gap:12px;
-}
-
-.tx.meta{
-    display:flex; 
-    gap:10px; 
-    align-items:center;
-}
-
-.dot{
-    width:36px; 
-    height:36px; 
-    border-radius:10px; 
-    display:grid; 
-    place-items:center;
-}
-
-/* -------- Budget Header Start -------- */
-.budget-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-    padding: 16px 0;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.header-date {
-    color: var(--muted);
-    font-size: 14px;
-    margin-right: 8px;
-}
-
-.export-btn, .add-transaction-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-    font-size: 14px;
-}
-
-.export-btn {
-    background-color: transparent;
-    color: var(--accent);
-    border: 1px solid #e2e8f0;
-}
-
-.export-btn:hover {
-    background-color: #f8fafc;
-    border-color: #cbd5e0;
-}
-
-.add-transaction-btn {
-    background-color: var(--accent);
-    color: white;
-}
-
-.add-transaction-btn:hover {
-    background-color: var(--accent-2);
-}
-
-/* -------- Budget Header End -------- */
-
-/* -------- Budget Start -------- */
-.budget-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin-bottom: 24px;
-}
-
-.budget-card {
-    display: flex;
-    flex-direction: column;
-    height: 180px;
-}
-
-.budget-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.budget-card-title {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.budget-card-amount {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 8px 0;
-}
-
-.budget-card-subtitle {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.progress-bar {
-    height: 6px;
-    background-color: #e9ecef;
-    border-radius: 3px;
-    overflow: hidden;
-    margin: 12px 0;
-}
-
-.progress {
-    height: 100%;
-    border-radius: 3px;
-}
-
-.progress-groceries {
-    width: 65%;
-    background-color: #4361ee;
-}
-
-.progress-shopping {
-    width: 45%;
-    background-color: #4895ef;
-}
-
-.progress-home {
-    width: 30%;
-    background-color: #4cc9f0;
-}
-
-.savings-card {
-    background: linear-gradient(135deg, #4361ee, #3f37c9);
-    color: white;
-    height: 180px;
-}
-
-.savings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.bank-name {
-    font-weight: 600;
-}
-
-.savings-date {
-    font-size: 13px;
-    opacity: 0.9;
-}
-
-.savings-amount {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 8px 0;
-}
-
-.savings-change {
-    display: flex;
-    gap: 16px;
-    font-size: 13px;
-}
-
-.change-positive {
-    color: #90ee90;
-}
-
-.main-content {
-    display: flex;
-    gap: 24px;
-}
-
-.left-column {
-    flex: 7;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.right-column {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.chart-container {
-    background: var(--panel);
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: var(--card_shadow);
-    height: 300px;
-}
-
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.time-filters {
-    display: flex;
-    gap: 8px;
-}
-
-.filter-btn {
-    padding: 6px 12px;
-    border-radius: 16px;
-    border: 1px solid #ddd;
-    background: white;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.filter-btn.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-}
-
-.month-scroller {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 16px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-}
-
-.month {
-    text-align: center;
-    min-width: 50px;
-    font-size: 12px;
-}
-
-.month.active {
-    color: var(--accent);
-    font-weight: 600;
-}
-
-.month-bar {
-    height: 100px;
-    width: 30px;
-    background: #e9ecef;
-    border-radius: 15px;
-    margin: 0 auto 8px;
-    position: relative;
-    overflow: hidden;
-}
-
-.month-progress {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    border-radius: 15px;
-    background: var(--accent);
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    margin-bottom: 24px;
-}
-
-.stat-card {
-    background: var(--panel);
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: var(--card_shadow);
-    height: 140px;
-}
-
-.stat-value {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 8px 0;
-}
-
-.budget-category {
-    background: var(--panel);
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: var(--card_shadow);
-    height: 300px;
-    overflow-y: auto;
-}
-
-.category-header {
-    display: grid;
-    grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr;
-    padding: 12px 0;
-    font-weight: 600;
-    border-bottom: 1px solid #eee;
-    font-size: 13px;
-}
-
-.category-row {
-    display: grid;
-    grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr;
-    padding: 12px 0;
-    border-bottom: 1px solid #f5f5f5;
-    font-size: 14px;
-    align-items: center;
-}
-
-.category-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-}
-
-.icon-entertainment {
-    background-color: #8b5cf6;
-}
-
-.icon-transportation {
-    background-color: #3b82f6;
-}
-
-.icon-eating {
-    background-color: #ec4899;
-}
-
-.icon-education {
-    background-color: #10b981;
-}
-
-.status-badge {
-    padding: 4px 10px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.status-on-track {
-    background: #e7f5ef;
-    color: #0ca678;
-}
-
-.status-near-limit {
-    background: #fff4e6;
-    color: #f76707;
-}
-
-.category-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 16px;
-}
-
-.category-chip {
-    padding: 10px 16px;
-    background: white;
-    border-radius: 24px;
-    box-shadow: var(--card_shadow);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    font-size: 13px;
-}
-
-.category-chip i {
-    color: var(--accent);
-}
-
-@media (max-width:1800px){
-    .sidebar{
-        position:static;
-        width:220px;
-        border-radius:20px;
-        padding:28px;
-    }
-    .main{
-        margin-left:0; 
-        width: 100%;
-        padding: 0 16px;
-    }
-    .dashboard{
-        padding:16px;
-        flex-direction: column;
-    }
-    
-    .budget-header {
-        flex-direction: column;
-        gap: 16px;
-    }
-    
-    .header-right {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .budget-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .main-content {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 1024px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .header-right {
-        flex-wrap: wrap;
-    }
-    
-    .header-date {
-        order: 3;
-        width: 100%;
-        text-align: center;
-        margin-top: 8px;
-    }
-    
-    .budget-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .category-header, .category-row {
-        grid-template-columns: 30px 1fr 1fr 1fr;
-        overflow-x: auto;
-    }
-    
-    .category-header div:nth-child(5),
-    .category-header div:nth-child(6),
-    .category-row div:nth-child(5),
-    .category-row div:nth-child(6) {
-        display: none;
-    }
-}
-/* -------- Budget End -------- */
-</style>
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Budget</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <!-- <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}"> -->
+        <!-- <script src="{{ url_for('serve_js', filename='script.js') }}"></script> -->
+
+        <!-- CSS here for now -->
+        <style>
+            /* -------- Universal Root Start -------- */
+            :root {
+                --bg: #f3f6fb;
+                --panel: #ffffff;
+                --accent: #1062cd;
+                --accent-2: #083880;
+                --muted: #8b94a6;
+                --card_shadow: 0 6px 18px rgba(32, 41, 78, 0.06);
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    'Segoe UI',
+                    Roboto,
+                    'Helvetica Neue',
+                    Arial;
+                background: linear-gradient(180deg, var(--bg), var(--panel));
+                color: #111;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+            /* -------- Universal Root End -------- */
+
+            /* -------- Dashboard Start -------- */
+            .dashboard {
+                display: flex;
+                min-height: 100vh;
+                gap: 24px;
+                padding: 28px 0;
+                align-items: stretch;
+                width: 100%;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 260px;
+                padding: 32px 28px;
+                background: linear-gradient(
+                    180deg,
+                    var(--accent),
+                    var(--accent-2)
+                );
+                color: #fff;
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                z-index: 50;
+            }
+
+            .budget_name {
+                font-weight: 700;
+            }
+
+            .balance {
+                font-size: 20px;
+                opacity: 0.9;
+            }
+
+            .balance_amount {
+                font-size: 28px;
+                font-weight: 700;
+                margin-top: 6px;
+            }
+
+            .nav {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-top: 6px;
+            }
+
+            .nav a {
+                color: rgba(255, 255, 255, 0.9);
+                text-decoration: none;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                padding: 8px 10px;
+                border-radius: 10px;
+            }
+
+            .nav a.active {
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+            .main {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                min-width: 0;
+                padding: 0 28px;
+                min-height: 100vh;
+                box-sizing: border-box;
+            }
+
+            .top_row {
+                display: flex;
+                gap: 18px;
+                align-items: flex-start;
+            }
+
+            .card {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 18px;
+                box-shadow: var(--card_shadow);
+            }
+            .card.small {
+                flex: 0 0 260px;
+            }
+
+            .card.medium {
+                flex: 1;
+            }
+
+            .card.half {
+                flex: 0 0 420px;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+
+            .header-left h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #1a1a1a;
+            }
+
+            .muted {
+                color: var(--muted);
+                font-size: 13px;
+            }
+
+            .big-num {
+                font-size: 26px;
+                font-weight: 700;
+            }
+
+            .sub {
+                font-size: 13px;
+                color: var(--muted);
+                margin-top: 6px;
+            }
+
+            .widgets {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .widget {
+                background: var(--panel);
+                padding: 18px;
+                border-radius: 14px;
+                box-shadow: var(--card_shadow);
+            }
+
+            .widget.dragging {
+                opacity: 0.6;
+            }
+
+            .widget-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .chart-wrap {
+                height: 240px;
+            }
+
+            .layout-controls {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .transactions {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+            }
+
+            .tx {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            .tx.meta {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .dot {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                display: grid;
+                place-items: center;
+            }
+
+            /* -------- Budget Header Start -------- */
+            .budget-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 24px;
+                padding: 16px 0;
+            }
+
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .header-date {
+                color: var(--muted);
+                font-size: 14px;
+                margin-right: 8px;
+            }
+
+            .export-btn,
+            .add-transaction-btn {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+                font-size: 14px;
+            }
+
+            .export-btn {
+                background-color: transparent;
+                color: var(--accent);
+                border: 1px solid #e2e8f0;
+            }
+
+            .export-btn:hover {
+                background-color: #f8fafc;
+                border-color: #cbd5e0;
+            }
+
+            .add-transaction-btn {
+                background-color: var(--accent);
+                color: white;
+            }
+
+            .add-transaction-btn:hover {
+                background-color: var(--accent-2);
+            }
+
+            /* -------- Budget Header End -------- */
+
+            /* -------- Budget Start -------- */
+            .budget-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 18px;
+                margin-bottom: 24px;
+            }
+
+            .budget-card {
+                display: flex;
+                flex-direction: column;
+                height: 180px;
+            }
+
+            .budget-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+
+            .budget-card-title {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .budget-card-amount {
+                font-size: 24px;
+                font-weight: 700;
+                margin: 8px 0;
+            }
+
+            .budget-card-subtitle {
+                color: var(--muted);
+                font-size: 13px;
+            }
+
+            .progress-bar {
+                height: 6px;
+                background-color: #e9ecef;
+                border-radius: 3px;
+                overflow: hidden;
+                margin: 12px 0;
+            }
+
+            .progress {
+                height: 100%;
+                border-radius: 3px;
+            }
+
+            .progress-groceries {
+                width: 65%;
+                background-color: #4361ee;
+            }
+
+            .progress-shopping {
+                width: 45%;
+                background-color: #4895ef;
+            }
+
+            .progress-home {
+                width: 30%;
+                background-color: #4cc9f0;
+            }
+
+            .savings-card {
+                background: linear-gradient(135deg, #4361ee, #3f37c9);
+                color: white;
+                height: 180px;
+            }
+
+            .savings-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .bank-name {
+                font-weight: 600;
+            }
+
+            .savings-date {
+                font-size: 13px;
+                opacity: 0.9;
+            }
+
+            .savings-amount {
+                font-size: 24px;
+                font-weight: 700;
+                margin: 8px 0;
+            }
+
+            .savings-change {
+                display: flex;
+                gap: 16px;
+                font-size: 13px;
+            }
+
+            .change-positive {
+                color: #90ee90;
+            }
+
+            .main-content {
+                display: flex;
+                gap: 24px;
+            }
+
+            .left-column {
+                flex: 7;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .right-column {
+                flex: 3;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .chart-container {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 18px;
+                box-shadow: var(--card_shadow);
+                height: 300px;
+            }
+
+            .chart-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .time-filters {
+                display: flex;
+                gap: 8px;
+            }
+
+            .filter-btn {
+                padding: 6px 12px;
+                border-radius: 16px;
+                border: 1px solid #ddd;
+                background: white;
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .filter-btn.active {
+                background: var(--accent);
+                color: white;
+                border-color: var(--accent);
+            }
+
+            .month-scroller {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 16px;
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+
+            .month {
+                text-align: center;
+                min-width: 50px;
+                font-size: 12px;
+            }
+
+            .month.active {
+                color: var(--accent);
+                font-weight: 600;
+            }
+
+            .month-bar {
+                height: 100px;
+                width: 30px;
+                background: #e9ecef;
+                border-radius: 15px;
+                margin: 0 auto 8px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .month-progress {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                border-radius: 15px;
+                background: var(--accent);
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px;
+                margin-bottom: 24px;
+            }
+
+            .stat-card {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 18px;
+                box-shadow: var(--card_shadow);
+                height: 140px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+                font-weight: 700;
+                margin: 8px 0;
+            }
+
+            .budget-category {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 18px;
+                box-shadow: var(--card_shadow);
+                height: 300px;
+                overflow-y: auto;
+            }
+
+            .category-header {
+                display: grid;
+                grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr;
+                padding: 12px 0;
+                font-weight: 600;
+                border-bottom: 1px solid #eee;
+                font-size: 13px;
+            }
+
+            .category-row {
+                display: grid;
+                grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr;
+                padding: 12px 0;
+                border-bottom: 1px solid #f5f5f5;
+                font-size: 14px;
+                align-items: center;
+            }
+
+            .category-icon {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 14px;
+            }
+
+            .icon-entertainment {
+                background-color: #8b5cf6;
+            }
+
+            .icon-transportation {
+                background-color: #3b82f6;
+            }
+
+            .icon-eating {
+                background-color: #ec4899;
+            }
+
+            .icon-education {
+                background-color: #10b981;
+            }
+
+            .status-badge {
+                padding: 4px 10px;
+                border-radius: 16px;
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .status-on-track {
+                background: #e7f5ef;
+                color: #0ca678;
+            }
+
+            .status-near-limit {
+                background: #fff4e6;
+                color: #f76707;
+            }
+
+            .category-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 16px;
+            }
+
+            .category-chip {
+                padding: 10px 16px;
+                background: white;
+                border-radius: 24px;
+                box-shadow: var(--card_shadow);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-weight: 500;
+                font-size: 13px;
+            }
+
+            .category-chip i {
+                color: var(--accent);
+            }
+
+            @media (max-width: 1800px) {
+                .sidebar {
+                    position: static;
+                    width: 220px;
+                    border-radius: 20px;
+                    padding: 28px;
+                }
+                .main {
+                    margin-left: 0;
+                    width: 100%;
+                    padding: 0 16px;
+                }
+                .dashboard {
+                    padding: 16px;
+                    flex-direction: column;
+                }
+
+                .budget-header {
+                    flex-direction: column;
+                    gap: 16px;
+                }
+
+                .header-right {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .budget-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .main-content {
+                    flex-direction: column;
+                }
+            }
+
+            @media (max-width: 1024px) {
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .header-right {
+                    flex-wrap: wrap;
+                }
+
+                .header-date {
+                    order: 3;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: 8px;
+                }
+
+                .budget-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .category-header,
+                .category-row {
+                    grid-template-columns: 30px 1fr 1fr 1fr;
+                    overflow-x: auto;
+                }
+
+                .category-header div:nth-child(5),
+                .category-header div:nth-child(6),
+                .category-row div:nth-child(5),
+                .category-row div:nth-child(6) {
+                    display: none;
+                }
+            }
+            /* -------- Budget End -------- */
+        </style>
+    </head>
 
 <body>
   <div class="dashboard">
@@ -674,258 +698,320 @@ body{
         <a onclick="location.href='chart.html';">Charts</a>
         <a onclick="location.href='/calendar';">Calendar</a>
         <a onclick="location.href='/messages';">Messages</a>
-        <a onclick="location.href='/account';">Settings</a>
+        <a onclick="location.href='/settings';">Settings</a>
       </nav>
     </aside>
     <!--LEFT SIDE BAR END HERE-->
 
-    <!-- Main starts here -->
-    <main class="main">
-        <!-- Budget Header Section -->
-        <div class="budget-header">
-            <div class="header-left">
-                <h1>Budget</h1>
-            </div>
-            <div class="header-right">
-                <button class="export-btn">
-                    <i class="fas fa-download"></i> Export
-                </button>
-                <button class="add-transaction-btn">
-                    <i class="fas fa-plus"></i> Add Transaction
-                </button>
-            </div>
-        </div>
-        
-        <div class="budget-grid">
-            <div class="card budget-card">
-                <div class="budget-card-header">
-                    <div class="budget-card-title">Groceries</div>
-                    <i class="fas fa-shopping-basket" style="color: #4361ee;"></i>
-                </div>
-                <div class="budget-card-amount">$358.00</div>
-                <div class="budget-card-subtitle">Budget</div>
-                <div class="progress-bar">
-                    <div class="progress progress-groceries"></div>
-                </div>
-                <div class="budget-card-subtitle">65% of monthly budget</div>
-            </div>
-
-            <div class="card budget-card">
-                <div class="budget-card-header">
-                    <div class="budget-card-title">Shopping</div>
-                    <i class="fas fa-shopping-bag" style="color: #4895ef;"></i>
-                </div>
-                <div class="budget-card-amount">$246.00</div>
-                <div class="budget-card-subtitle">Budget</div>
-                <div class="progress-bar">
-                    <div class="progress progress-shopping"></div>
-                </div>
-                <div class="budget-card-subtitle">45% of monthly budget</div>
-            </div>
-
-            <div class="card budget-card">
-                <div class="budget-card-header">
-                    <div class="budget-card-title">Home needs</div>
-                    <i class="fas fa-home" style="color: #4cc9f0;"></i>
-                </div>
-                <div class="budget-card-amount">$136.00</div>
-                <div class="budget-card-subtitle">Budget</div>
-                <div class="progress-bar">
-                    <div class="progress progress-home"></div>
-                </div>
-                <div class="budget-card-subtitle">30% of monthly budget</div>
-            </div>
-
-            <div class="card savings-card">
-                <div class="savings-header">
-                    <div class="bank-name">Bank Jago</div>
-                    <div class="savings-date">12 Mar 2024</div>
-                </div>
-                <div class="savings-amount">$645.00</div>
-                <div class="savings-change">
-                    <div class="change-positive">+$445.00</div>
-                    <div>Allocation Budget</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <div class="left-column">
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <div class="time-filters">
-                            <button class="filter-btn active">Monthly</button>
-                            <button class="filter-btn">Weekly</button>
-                            <button class="filter-btn">Export</button>
-                        </div>
+            <!-- Main starts here -->
+            <main class="main">
+                <!-- Budget Header Section -->
+                <div class="budget-header">
+                    <div class="header-left">
+                        <h1>Budget</h1>
                     </div>
-
-                    <div class="month-scroller">
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 40%"></div>
-                            </div>
-                            Jan
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 60%"></div>
-                            </div>
-                            Feb
-                        </div>
-                        <div class="month active">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 85%"></div>
-                            </div>
-                            Mar
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 30%"></div>
-                            </div>
-                            Apr
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 25%"></div>
-                            </div>
-                            May
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 50%"></div>
-                            </div>
-                            Jun
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 70%"></div>
-                            </div>
-                            Jul
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 65%"></div>
-                            </div>
-                            Aug
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 45%"></div>
-                            </div>
-                            Sep
-                        </div>
-                        <div class="month">
-                            <div class="month-bar">
-                                <div class="month-progress" style="height: 35%"></div>
-                            </div>
-                            Oct
-                        </div>
+                    <div class="header-right">
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="add-transaction-btn">
+                            <i class="fas fa-plus"></i> Add Transaction
+                        </button>
                     </div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="budget-card-subtitle">Monthly</div>
-                        <div class="budget-card-title">August 13, 2025</div>
-                        <div class="stat-value">$3,400</div>
+                <div class="budget-grid">
+                    <div class="card budget-card">
+                        <div class="budget-card-header">
+                            <div class="budget-card-title">Groceries</div>
+                            <i
+                                class="fas fa-shopping-basket"
+                                style="color: #4361ee"
+                            ></i>
+                        </div>
+                        <div class="budget-card-amount">$358.00</div>
                         <div class="budget-card-subtitle">Budget</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="budget-card-subtitle">Expected</div>
-                        <div class="budget-card-title">Export</div>
-                        <div class="stat-value">$500.00</div>
-                        <div class="budget-card-subtitle">Bill Sale</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="budget-card-subtitle">Running Budget</div>
-                        <div class="budget-card-title">Today</div>
-                        <div class="stat-value">$500.00</div>
-                        <div class="budget-card-subtitle">The amount that can be spent</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="right-column">
-                <div class="budget-category">
-                    <h3 style="margin-bottom: 16px;">Budget Category</h3>
-                    <div class="category-header">
-                        <div></div>
-                        <div>Budget</div>
-                        <div>Monthly Limit</div>
-                        <div>Spent Today</div>
-                        <div>Remaining</div>
-                        <div>Status</div>
-                    </div>
-                    <div class="category-row">
-                        <div class="category-icon icon-entertainment">
-                            <i class="fas fa-film"></i>
+                        <div class="progress-bar">
+                            <div class="progress progress-groceries"></div>
                         </div>
-                        <div>Entertainment</div>
-                        <div>$50.00</div>
-                        <div>$30.00</div>
-                        <div>$20.00</div>
-                        <div><span class="status-badge status-on-track">On Track</span></div>
-                    </div>
-                    <div class="category-row">
-                        <div class="category-icon icon-transportation">
-                            <i class="fas fa-bus"></i>
+                        <div class="budget-card-subtitle">
+                            65% of monthly budget
                         </div>
-                        <div>Transportation</div>
-                        <div>$25.00</div>
-                        <div>$15.00</div>
-                        <div>$10.00</div>
-                        <div><span class="status-badge status-near-limit">Near Limit</span></div>
                     </div>
 
-                    <div class="category-chips">
-                        <div class="category-chip">
-                            <i class="fas fa-utensils"></i>
-                            <span>Eating & Drinking: $50.00</span>
+                    <div class="card budget-card">
+                        <div class="budget-card-header">
+                            <div class="budget-card-title">Shopping</div>
+                            <i
+                                class="fas fa-shopping-bag"
+                                style="color: #4895ef"
+                            ></i>
                         </div>
-                        <div class="category-chip">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Education: $100.00</span>
+                        <div class="budget-card-amount">$246.00</div>
+                        <div class="budget-card-subtitle">Budget</div>
+                        <div class="progress-bar">
+                            <div class="progress progress-shopping"></div>
+                        </div>
+                        <div class="budget-card-subtitle">
+                            45% of monthly budget
+                        </div>
+                    </div>
+
+                    <div class="card budget-card">
+                        <div class="budget-card-header">
+                            <div class="budget-card-title">Home needs</div>
+                            <i class="fas fa-home" style="color: #4cc9f0"></i>
+                        </div>
+                        <div class="budget-card-amount">$136.00</div>
+                        <div class="budget-card-subtitle">Budget</div>
+                        <div class="progress-bar">
+                            <div class="progress progress-home"></div>
+                        </div>
+                        <div class="budget-card-subtitle">
+                            30% of monthly budget
+                        </div>
+                    </div>
+
+                    <div class="card savings-card">
+                        <div class="savings-header">
+                            <div class="bank-name">Bank Jago</div>
+                            <div class="savings-date">12 Mar 2024</div>
+                        </div>
+                        <div class="savings-amount">$645.00</div>
+                        <div class="savings-change">
+                            <div class="change-positive">+$445.00</div>
+                            <div>Allocation Budget</div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="main-content">
+                    <div class="left-column">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="time-filters">
+                                    <button class="filter-btn active">
+                                        Monthly
+                                    </button>
+                                    <button class="filter-btn">Weekly</button>
+                                    <button class="filter-btn">Export</button>
+                                </div>
+                            </div>
+
+                            <div class="month-scroller">
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 40%"
+                                        ></div>
+                                    </div>
+                                    Jan
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 60%"
+                                        ></div>
+                                    </div>
+                                    Feb
+                                </div>
+                                <div class="month active">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 85%"
+                                        ></div>
+                                    </div>
+                                    Mar
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 30%"
+                                        ></div>
+                                    </div>
+                                    Apr
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 25%"
+                                        ></div>
+                                    </div>
+                                    May
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 50%"
+                                        ></div>
+                                    </div>
+                                    Jun
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 70%"
+                                        ></div>
+                                    </div>
+                                    Jul
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 65%"
+                                        ></div>
+                                    </div>
+                                    Aug
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 45%"
+                                        ></div>
+                                    </div>
+                                    Sep
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div
+                                            class="month-progress"
+                                            style="height: 35%"
+                                        ></div>
+                                    </div>
+                                    Oct
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="budget-card-subtitle">Monthly</div>
+                                <div class="budget-card-title">
+                                    August 13, 2025
+                                </div>
+                                <div class="stat-value">$3,400</div>
+                                <div class="budget-card-subtitle">Budget</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="budget-card-subtitle">Expected</div>
+                                <div class="budget-card-title">Export</div>
+                                <div class="stat-value">$500.00</div>
+                                <div class="budget-card-subtitle">
+                                    Bill Sale
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="budget-card-subtitle">
+                                    Running Budget
+                                </div>
+                                <div class="budget-card-title">Today</div>
+                                <div class="stat-value">$500.00</div>
+                                <div class="budget-card-subtitle">
+                                    The amount that can be spent
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-column">
+                        <div class="budget-category">
+                            <h3 style="margin-bottom: 16px">Budget Category</h3>
+                            <div class="category-header">
+                                <div></div>
+                                <div>Budget</div>
+                                <div>Monthly Limit</div>
+                                <div>Spent Today</div>
+                                <div>Remaining</div>
+                                <div>Status</div>
+                            </div>
+                            <div class="category-row">
+                                <div class="category-icon icon-entertainment">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                                <div>Entertainment</div>
+                                <div>$50.00</div>
+                                <div>$30.00</div>
+                                <div>$20.00</div>
+                                <div>
+                                    <span class="status-badge status-on-track"
+                                        >On Track</span
+                                    >
+                                </div>
+                            </div>
+                            <div class="category-row">
+                                <div class="category-icon icon-transportation">
+                                    <i class="fas fa-bus"></i>
+                                </div>
+                                <div>Transportation</div>
+                                <div>$25.00</div>
+                                <div>$15.00</div>
+                                <div>$10.00</div>
+                                <div>
+                                    <span class="status-badge status-near-limit"
+                                        >Near Limit</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="category-chips">
+                                <div class="category-chip">
+                                    <i class="fas fa-utensils"></i>
+                                    <span>Eating & Drinking: $50.00</span>
+                                </div>
+                                <div class="category-chip">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Education: $100.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-    </main>
-  </div>
 
-<script>
-
-/* -------- Budget Start -------- */
-    document.querySelectorAll('.filter-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
+        <script>
+            /* -------- Budget Start -------- */
+            document.querySelectorAll('.filter-btn').forEach((button) => {
+                button.addEventListener('click', function () {
+                    document.querySelectorAll('.filter-btn').forEach((btn) => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
             });
-            this.classList.add('active');
-        });
-    });
 
-    document.querySelectorAll('.month').forEach(month => {
-        month.addEventListener('click', function() {
-            document.querySelectorAll('.month').forEach(m => {
-                m.classList.remove('active');
+            document.querySelectorAll('.month').forEach((month) => {
+                month.addEventListener('click', function () {
+                    document.querySelectorAll('.month').forEach((m) => {
+                        m.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
             });
-            this.classList.add('active');
-        });
-    });
-    
-    document.querySelector('.export-btn').addEventListener('click', function() {
-        alert('Exported to Excel');
-    });
-    
-    document.querySelector('.add-transaction-btn').addEventListener('click', function() {
-        alert('Add Transaction will be here');
-    });
-/* -------- Budget End -------- */
 
-</script>
-</body>
+            document
+                .querySelector('.export-btn')
+                .addEventListener('click', function () {
+                    alert('Exported to Excel');
+                });
+
+            document
+                .querySelector('.add-transaction-btn')
+                .addEventListener('click', function () {
+                    alert('Add Transaction will be here');
+                });
+            /* -------- Budget End -------- */
+        </script>
+    </body>
 </html>

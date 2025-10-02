@@ -72,10 +72,10 @@
   border: 2px dashed #2563eb;
 }
 .chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
 .chart-header h3 {
   font-size: 16px;
@@ -93,7 +93,7 @@
   transition: background 0.2s;
 }
 .delete-btn:hover {
-  background: #dc2626;
+    background: #dc2626;
 }
 .chart-card canvas {
   flex: 1;

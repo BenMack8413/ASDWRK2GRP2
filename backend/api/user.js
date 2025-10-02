@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { db, addUser, deleteUser } = require('../db.js');
+const { addUser, deleteUser, getAccountInfo } = require('../db.js');
 const { generateToken, requireAuth } = require('../auth.js');
 
 module.exports = (db) => {
@@ -83,18 +83,43 @@ module.exports = (db) => {
         res.json({ message: 'Authenticated user', user: req.user });
     });
 
+    router.get('/information/:id', requireAuth, (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            if (Number.isNaN(id)) {
+                return res.status(400).json({ error: 'Invalid id' });
+            }
+
+            const info = getAccountInfo(db, id);
+
+            if (!info) {
+                return res
+                    .status(404)
+                    .json({ error: 'Account info not found' });
+            }
+            return res.json(info);
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({
+                error: 'Failed to retrieve account information',
+                detail: e.message,
+            });
+        }
+    });
+
     router.delete('/delete/:id', requireAuth, async (req, res) => {
         try {
             const id = Number(req.params.id);
-            if (Number.isNaN(id))
+            if (Number.isNaN(id)) {
                 return res.status(400).json({ error: 'Invalid id' });
+            }
 
             const deleted = deleteUser(db, id);
 
-            if (!deleted)
+            if (!deleted) {
                 return res.status(404).json({ error: 'Item not found' });
-
-            res.status(200).json({ message: 'Item deleted' });
+            }
+            return res.status(200).json({ message: 'Item deleted' });
         } catch (err) {
             console.error(err);
             res.status(500).json({

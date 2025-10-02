@@ -28,7 +28,7 @@ function renderChart(config) {
   card.classList.add("chart-card");
   card.dataset.id = chartId;
 
-  card.innerHTML = `
+    card.innerHTML = `
     <div class="chart-header">
       <h3>${config.name}</h3>
       <button class="delete-btn" onclick="deleteChart('${config.config_id}', this)">Delete</button>
@@ -36,7 +36,7 @@ function renderChart(config) {
     <canvas id="${chartId}" height="200"></canvas>
   `;
 
-  document.getElementById("chartsArea").appendChild(card);
+    document.getElementById('chartsArea').appendChild(card);
 
   // Render Chart.js instance
   const ctx = document.getElementById(chartId).getContext("2d");
