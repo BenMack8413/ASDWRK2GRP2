@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categories</title>
+
+    <!-- Base styles -->
+    <link rel="stylesheet" href="./css/style.css" />
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="./css/categories.css" />
+
+    <!-- Controller -->
+    <script defer src="./scripts/categories.js"></script>
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="budget_name">My Budget</div>
+        <div><div class="balance">Menu</div></div>
+        <nav class="nav">
+          <a href="dashboard.html">Dashboard</a>
+          <a href="budget.html">Budget</a>
+          <a href="chart.html">Charts</a>
+          <a href="categories.html" class="active">Categories</a>
+          <a href="saving-goals.html">Saving Goals</a>
+          <a href="upcoming-payments.html">Upcoming Payments</a>
+        </nav>
+      </aside>
+
+      <!-- Main -->
+      <main class="main">
+        <!-- Page header -->
+        <div class="page-header">
+          <h2>Categories</h2>
+          <p class="subtext">
+            Manage your income and expense categories for better budget organization.
+          </p>
+        </div>
+
+        <!-- Controls -->
+        <div class="card">
+          <div class="controls">
+            <button id="addCategoryBtn" class="btn primary">+ Add Category</button>
+            <div class="filter-tabs">
+              <button class="filter-tab active" data-filter="all">All</button>
+              <button class="filter-tab" data-filter="expense">Expenses</button>
+              <button class="filter-tab" data-filter="income">Income</button>
+            </div>
+          </div>
+
+          <!-- Category Form (hidden by default) -->
+          <div id="categoryForm" class="category-form" style="display: none;">
+            <h3 id="formTitle">Add New Category</h3>
+            
+            <input type="hidden" id="editCategoryId" value="">
+            
+            <div class="form-group">
+              <label for="categoryName">Category Name</label>
+              <input type="text" id="categoryName" class="form-input" placeholder="e.g., Groceries" required>
+            </div>
+
+            <div class="form-group">
+              <label for="categoryType">Type</label>
+              <select id="categoryType" class="form-input">
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button id="cancelCategoryBtn" class="btn secondary">Cancel</button>
+              <button id="saveCategoryBtn" class="btn primary">Save Category</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories List -->
+        <div class="card">
+          <div class="categories-header">
+            <h3>Your Categories</h3>
+            <span id="categoryCount" class="count-badge">0 categories</span>
+          </div>
+          
+          <div id="categoriesContainer" class="categories-list">
+            <!-- Categories will be dynamically loaded here -->
+          </div>
+
+          <div id="emptyState" class="empty-state" style="display: none;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7h16M4 12h16M4 17h16"/>
+            </svg>
+            <p>No categories yet</p>
+            <button class="btn primary" onclick="document.getElementById('addCategoryBtn').click()">
+              Create Your First Category
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
