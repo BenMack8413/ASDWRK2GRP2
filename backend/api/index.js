@@ -18,7 +18,6 @@ module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
     router.use('/charts', createChartRouter(db));
     router.use('/categories', createCategoriesRouter(db));
 
-
     // router.use('/sampleApiRouter', sampleApiRouter(db));
 
     return router;
