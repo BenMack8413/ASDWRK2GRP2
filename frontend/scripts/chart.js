@@ -309,7 +309,7 @@ function handleDataSourceChange() {
 // ---------------------------
 // Initialize on page load
 // ---------------------------
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const budgetId = 1; // TODO: replace with logged-in user's budget
   loadCharts(budgetId);
 
@@ -320,6 +320,16 @@ document.addEventListener("DOMContentLoaded", () => {
   
   document.getElementById('endDate').valueAsDate = today;
   document.getElementById('startDate').valueAsDate = thirtyDaysAgo;
+
+  // Load categories into cache if CategoryUtils is available
+  if (window.CategoryUtils) {
+    try {
+      await window.CategoryUtils.getAll();
+      console.log('Categories loaded for charts');
+    } catch (err) {
+      console.warn('Could not load categories:', err);
+    }
+  }
 
   // Hook up buttons
   document.getElementById('addChartBtn').addEventListener('click', () => toggleChartForm(true));
