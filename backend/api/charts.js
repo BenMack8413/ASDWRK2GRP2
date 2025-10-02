@@ -15,10 +15,13 @@ module.exports = function createChartRouter(db) {
       GROUP BY c.category_id
       ORDER BY total DESC;
     `;
-    db.all(sql, [budgetId], (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
+    try {
+      const rows = db.prepare(sql).all(budgetId);
       res.json(rows);
-    });
+    } catch (err) {
+      console.error('Error in expenses-by-category:', err);
+      res.status(500).json({ error: err.message });
+    }
   });
 
   // GET: totals filtered by tag
@@ -33,39 +36,52 @@ module.exports = function createChartRouter(db) {
       WHERE t.budget_id = ? AND tg.tag_id = ?
       GROUP BY tg.tag_id;
     `;
-    db.all(sql, [budgetId, tagId], (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
+    try {
+      const rows = db.prepare(sql).all(budgetId, tagId);
       res.json(rows);
-    });
+    } catch (err) {
+      console.error('Error in expenses-by-tag:', err);
+      res.status(500).json({ error: err.message });
+    }
   });
 
-  // (Optional) CRUD for saved chart configs
+  // GET: all chart configs for a budget
   router.get('/configs/:budgetId', (req, res) => {
     const { budgetId } = req.params;
-    db.all(`SELECT * FROM chart_configs WHERE budget_id = ?`, [budgetId], (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
+    try {
+      const rows = db.prepare(`SELECT * FROM chart_configs WHERE budget_id = ?`).all(budgetId);
       res.json(rows);
-    });
+    } catch (err) {
+      console.error('Error getting configs:', err);
+      res.status(500).json({ error: err.message });
+    }
   });
 
+  // POST: create new chart config
   router.post('/configs', (req, res) => {
     const { budgetId, name, type, config } = req.body;
-    db.run(
-      `INSERT INTO chart_configs (budget_id, name, type, config_json) VALUES (?, ?, ?, ?)`,
-      [budgetId, name, type, JSON.stringify(config)],
-      function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ config_id: this.lastID });
-      }
-    );
+    try {
+      const result = db.prepare(
+        `INSERT INTO chart_configs (budget_id, name, type, config_json) VALUES (?, ?, ?, ?)`
+      ).run(budgetId, name, type, JSON.stringify(config));
+      
+      res.json({ config_id: result.lastInsertRowid });
+    } catch (err) {
+      console.error('Error creating config:', err);
+      res.status(500).json({ error: err.message });
+    }
   });
 
+  // DELETE: remove chart config
   router.delete('/configs/:configId', (req, res) => {
     const { configId } = req.params;
-    db.run(`DELETE FROM chart_configs WHERE config_id = ?`, [configId], function (err) {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ deleted: this.changes });
-    });
+    try {
+      const result = db.prepare(`DELETE FROM chart_configs WHERE config_id = ?`).run(configId);
+      res.json({ deleted: result.changes });
+    } catch (err) {
+      console.error('Error deleting config:', err);
+      res.status(500).json({ error: err.message });
+    }
   });
 
   return router;
