@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 
 let db;
-//123
 beforeAll(() => {
     db = new Database(':memory:');
 
