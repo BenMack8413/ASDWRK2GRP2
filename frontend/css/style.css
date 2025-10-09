@@ -1241,3 +1241,139 @@
             }
             /* -------- Income End -------- */
             /* INCOME HTML PAGE END */
+
+            /* EXPENSES HTML PAGE START */
+            /* -------- Expenses Start -------- */
+            .expense-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 24px;
+                padding: 16px 0;
+            }
+
+            .title {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #1a1a1a;
+            }
+
+            .addExpenseButton {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+                font-size: 14px;
+                background-color: var(--accent);
+                color: white;
+            }
+
+            .addExpenseButton:hover {
+                background-color: var(--accent-2);
+            }
+
+            .expenseContainer {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 24px;
+                box-shadow: var(--card_shadow);
+                margin-bottom: 24px;
+                overflow-x: auto;
+            }
+
+            .expenseTable {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 600px;
+            }
+
+            .expenseTable th {
+                text-align: left;
+                padding: 12px;
+                border-bottom: 2px solid #e2e8f0;
+                font-weight: 600;
+                color: var(--muted);
+            }
+
+            .expenseTable td {
+                padding: 15px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .expenseTable tr:hover {
+                background-color: #f8fafc;
+            }
+            /* -------- Expenses End -------- */
+
+            /* Responsive Design */
+            @media (max-width: 1200px) {
+                .sidebar {
+                    width: 200px;
+                    padding: 24px 16px;
+                }
+                
+                .main {
+                    margin-left: 200px;
+                    width: calc(100% - 200px);
+                    padding: 24px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .dashboard {
+                    flex-direction: column;
+                }
+                
+                .sidebar {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    padding: 20px;
+                    border-radius: 0;
+                }
+                
+                .main {
+                    margin-left: 0;
+                    width: 100%;
+                    padding: 20px;
+                }
+                
+                .nav {
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                }
+                
+                .nav a {
+                    flex: 1;
+                    min-width: 120px;
+                    justify-content: center;
+                }
+                
+                .expense-header {
+                    flex-direction: column;
+                    gap: 16px;
+                    align-items: flex-start;
+                }
+                
+                .expenseContainer {
+                    padding: 16px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .expenseTable {
+                    font-size: 14px;
+                }
+                
+                .expenseTable th, 
+                .expenseTable td {
+                    padding: 10px 8px;
+                }
+            }
+            /* EXPENSES HTML PAGE END */
