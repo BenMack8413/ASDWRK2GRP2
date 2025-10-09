@@ -2,12 +2,204 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Login / Signup</title>
-        <link rel="stylesheet" href="/css/styles.css" />
-        <!-- Optional CSS -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login / Signup - My Budget</title>
+        <link rel="stylesheet" href="./css/style.css" />
+        <style>
+            body {
+                margin: 0;
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    'Segoe UI',
+                    Roboto,
+                    'Helvetica Neue',
+                    Arial;
+                background: linear-gradient(135deg, #f3f6fb 0%, #e9edf5 100%);
+                color: #111;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            </style>
     </head>
     <body>
-        <!-- Signup Form -->
+        <div class="auth-container">
+            <div class="auth-left">
+                <h1>My Budget</h1>
+                <p>Take control of your finances with our intuitive budget tracking tool. Create budgets, track expenses, and achieve your financial goals.</p>
+            </div>
+            <div class="auth-right">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="loginTab">Log In</button>
+                    <button class="auth-tab" id="signupTab">Sign Up</button>
+                </div>
+
+                <!-- Login Form -->
+                <form class="auth-form active" id="loginForm">
+                    <h2>Welcome Back</h2>
+                    <div class="form-group">
+                        <label for="login-username">Username or Email</label>
+                        <input
+                            type="text"
+                            id="login-username"
+                            name="username"
+                            class="form-input"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input
+                            type="password"
+                            id="login-password"
+                            name="password"
+                            class="form-input"
+                            required
+                        />
+                    </div>
+                    <div class="checkbox-group">
+                        <input
+                            type="checkbox"
+                            id="login-remember"
+                            name="remember"
+                        />
+                        <label for="login-remember">Remember me</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Log In</button>
+                    <div class="switch-form">
+                        Don't have an account? <a id="switchToSignup">Sign up</a>
+                    </div>
+                </form>
+
+                <!-- Signup Form -->
+                <form class="auth-form" id="signupForm">
+                    <h2>Create Account</h2>
+                    <div class="form-group">
+                        <label for="signup-username">Username</label>
+                        <input
+                            type="text"
+                            id="signup-username"
+                            name="username"
+                            class="form-input"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input
+                            type="email"
+                            id="signup-email"
+                            name="email"
+                            class="form-input"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input
+                            type="password"
+                            id="signup-password"
+                            name="password"
+                            class="form-input"
+                            required
+                        />
+                    </div>
+                    <div class="checkbox-group">
+                        <input
+                            type="checkbox"
+                            id="signup-remember"
+                            name="remember"
+                        />
+                        <label for="signup-remember">Remember me</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Sign Up</button>
+                    <div class="switch-form">
+                        Already have an account? <a id="switchToLogin">Log in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            // Tab switching functionality
+            const loginTab = document.getElementById('loginTab');
+            const signupTab = document.getElementById('signupTab');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const switchToSignup = document.getElementById('switchToSignup');
+            const switchToLogin = document.getElementById('switchToLogin');
+
+            function showLogin() {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.classList.add('active');
+                signupForm.classList.remove('active');
+            }
+
+            function showSignup() {
+                signupTab.classList.add('active');
+                loginTab.classList.remove('active');
+                signupForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+
+            loginTab.addEventListener('click', showLogin);
+            signupTab.addEventListener('click', showSignup);
+            switchToLogin.addEventListener('click', showLogin);
+            switchToSignup.addEventListener('click', showSignup);
+
+            // Form submission
+            document
+                .getElementById('signupForm')
+                .addEventListener('submit', function (e) {
+                    e.preventDefault(); // stop page reload
+                    const username =
+                        document.getElementById('signup-username').value;
+                    const email = document.getElementById('signup-email').value;
+                    const password =
+                        document.getElementById('signup-password').value;
+                    const remember =
+                        document.getElementById('signup-remember').checked;
+
+                    // Call your signup function here
+                    console.log('Signup:', { username, email, password, remember });
+                    // signup(username, email, password, remember);
+                });
+
+            // Watch for login form submit
+            document
+                .getElementById('loginForm')
+                .addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const username =
+                        document.getElementById('login-username').value;
+                    const password =
+                        document.getElementById('login-password').value;
+                    const remember =
+                        document.getElementById('login-remember').checked;
+
+                    // Call your login function here
+                    console.log('Login:', { username, password, remember });
+                    // login(username, password, remember);
+                });
+        </script>
+    </body>
+</html>
+
+<!-- Original login file below -->
+<!-- <!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Login / Signup</title>
+        <link rel="stylesheet" href="/css/styles.css" />
+    </head>
+    <body>
         <section id="signup">
             <h2>Sign Up</h2>
             <form id="signupForm">
@@ -45,7 +237,6 @@
 
         <hr />
 
-        <!-- Login Form -->
         <section id="login">
             <h2>Log In</h2>
             <form id="loginForm">
@@ -80,11 +271,11 @@
 
         <script src="/scripts/token.js"></script>
         <script>
-            // Watch for signup form submit
+
             document
                 .getElementById('signupForm')
                 .addEventListener('submit', function (e) {
-                    e.preventDefault(); // stop page reload
+                    e.preventDefault();
                     const username =
                         document.getElementById('signup-username').value;
                     const email = document.getElementById('signup-email').value;
@@ -93,10 +284,9 @@
                     const remember =
                         document.getElementById('signup-remember').checked;
 
-                    signup(username, email, password, remember); // call your signup function
+                    signup(username, email, password, remember);
                 });
 
-            // Watch for login form submit
             document
                 .getElementById('loginForm')
                 .addEventListener('submit', function (e) {
@@ -108,8 +298,8 @@
                     const remember =
                         document.getElementById('login-remember').checked;
 
-                    login(username, password, remember); // call your login function
+                    login(username, password, remember); 
                 });
         </script>
     </body>
-</html>
+</html> -->
