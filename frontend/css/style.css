@@ -2523,3 +2523,236 @@
     }
 }
 /* UPCOMING PAYMENTS HTML PAGE END */
+
+/* ACCOUNT HTML PAGE START */
+.account-information {
+    background: var(--panel);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: var(--card_shadow);
+    margin-bottom: 24px;
+}
+
+.account-information h2 {
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row .label {
+    font-weight: 600;
+    color: var(--muted);
+    width: 140px;
+    font-size: 14px;
+}
+
+.info-row .value {
+    font-weight: 500;
+    color: #1a1a1a;
+    flex: 1;
+}
+
+#account-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 16px 0;
+}
+
+#logoutBtn, #deleteBtn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 14px;
+}
+
+#logoutBtn {
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid #e2e8f0;
+}
+
+#logoutBtn:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+#deleteBtn {
+    background-color: #dc2626;
+    color: white;
+}
+
+#deleteBtn:hover {
+    background-color: #b91c1c;
+}
+
+#acctMessage {
+    margin-left: 12px;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-label {
+    flex: 1;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Dark mode toggle switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Language dropdown */
+.language-select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: white;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+#saveBtn {
+    padding: 12px 24px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 20px;
+}
+
+#saveBtn:hover {
+    background-color: var(--accent-2);
+}
+
+.status {
+    margin-left: 16px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .account-information {
+        padding: 20px;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .info-row .label {
+        width: 100%;
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .setting-control {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    #account-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    #acctMessage {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+}
+/* ACCOUNT HTML PAGE END */

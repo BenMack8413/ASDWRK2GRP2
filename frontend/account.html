@@ -4,7 +4,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dashboard</title>
-        <style></style>
         <link rel="stylesheet" href="./css/style.css" />
     </head>
     <!--HEADER COPY END HERE-->
@@ -73,12 +72,36 @@
                         <span id="creationDate" class="value"></span>
                     </div>
                 </div>
-                <div class="card">
-                    <h1>User Settings</h1>
-                    <div id="settingsContainer"></div>
-                    <button id="saveBtn">Save All</button>
-                    <span class="status" id="statusText">—</span>
-                </div>
+<!-- Replace this section in your account.html -->
+<div class="card">
+    <h1>User Settings</h1>
+    <div class="settings-container" id="settingsContainer">
+        <div class="setting-item">
+            <div class="setting-label">Dark Mode</div>
+            <div class="setting-control">
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="setting-item">
+            <div class="setting-label">Language</div>
+            <div class="setting-control">
+                <select class="language-select" id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; margin-top: 20px;">
+        <button id="saveBtn">Save All</button>
+        <span class="status" id="statusText">—</span>
+    </div>
+</div>
             </main>
         </div>
     </body>
