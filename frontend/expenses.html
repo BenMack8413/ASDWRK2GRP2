@@ -1,13 +1,9 @@
-<!--HEADER COPY START HERE-->
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Dashboard</title>
-        <!-- <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}"> -->
-        <!-- <script src="{{ url_for('serve_js', filename='script.js') }}"></script> -->
-
+        <title>Expenses</title>
         <!-- CSS here for now -->
         <style>
             /* -------- Universal Root Start -------- */
@@ -42,8 +38,6 @@
             .dashboard {
                 display: flex;
                 min-height: 100vh;
-                gap: 24px;
-                padding: 28px 28px 28px 0;
                 align-items: stretch;
             }
 
@@ -52,8 +46,8 @@
                 left: 0;
                 top: 0;
                 bottom: 0;
-                width: 260px;
-                padding: 32px 28px;
+                width: 240px;
+                padding: 28px 20px;
                 background: linear-gradient(
                     180deg,
                     var(--accent),
@@ -64,10 +58,12 @@
                 flex-direction: column;
                 gap: 18px;
                 z-index: 50;
+                overflow-y: auto;
             }
 
             .budget_name {
                 font-weight: 700;
+                font-size: 18px;
             }
 
             .balance {
@@ -84,7 +80,7 @@
             .nav {
                 display: flex;
                 flex-direction: column;
-                gap: 12px;
+                gap: 8px;
                 margin-top: 6px;
             }
 
@@ -94,21 +90,29 @@
                 display: flex;
                 gap: 10px;
                 align-items: center;
-                padding: 8px 10px;
-                border-radius: 10px;
+                padding: 10px 12px;
+                border-radius: 8px;
+                transition: background 0.2s;
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: rgba(255, 255, 255, 0.1);
             }
 
             .nav a.active {
-                background: rgba(255, 255, 255, 0.08);
+                background: rgba(255, 255, 255, 0.15);
             }
 
             .main {
-                margin-left: 280px;
+                margin-left: 240px;
+                width: calc(100% - 240px);
                 display: flex;
                 flex-direction: column;
                 gap: 18px;
-                min-width: 0;
-                padding-right: 28px;
+                padding: 28px;
+                min-height: 100vh;
+                box-sizing: border-box;
             }
 
             .top_row {
@@ -172,7 +176,7 @@
                 background: var(--panel);
                 padding: 18px;
                 border-radius: 14px;
-                box-shadow: var(--card-shadow);
+                box-shadow: var(--card_shadow);
             }
 
             .widget.dragging {
@@ -224,28 +228,20 @@
                 place-items: center;
             }
 
-            @media (max-width: 1800px) {
-                .sidebar {
-                    position: static;
-                    width: 220px;
-                    border-radius: 20px;
-                    padding: 28px;
-                }
-                .main {
-                    margin-left: 0;
-                    padding-right: 16px;
-                }
-                .dashboard {
-                    padding: 16px;
-                }
+            /* -------- Expenses Start -------- */
+            .expense-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 24px;
+                padding: 16px 0;
             }
 
-            /* -------- Dashboard End -------- */
-
-            /* -------- Expenses Start -------- */
-            .expenseTable {
-                width: 100%;
-                border-collapse: collapse;
+            .title {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #1a1a1a;
             }
 
             .addExpenseButton {
@@ -259,8 +255,12 @@
                 transition: all 0.2s ease;
                 border: none;
                 font-size: 14px;
-                background-color: #4f46e5;
-                color: #e0e7ff;
+                background-color: var(--accent);
+                color: white;
+            }
+
+            .addExpenseButton:hover {
+                background-color: var(--accent-2);
             }
 
             .expenseContainer {
@@ -269,6 +269,13 @@
                 padding: 24px;
                 box-shadow: var(--card_shadow);
                 margin-bottom: 24px;
+                overflow-x: auto;
+            }
+
+            .expenseTable {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 600px;
             }
 
             .expenseTable th {
@@ -281,13 +288,82 @@
 
             .expenseTable td {
                 padding: 15px;
+                border-bottom: 1px solid #f0f0f0;
             }
 
+            .expenseTable tr:hover {
+                background-color: #f8fafc;
+            }
             /* -------- Expenses End -------- */
+
+            /* Responsive Design */
+            @media (max-width: 1200px) {
+                .sidebar {
+                    width: 200px;
+                    padding: 24px 16px;
+                }
+                
+                .main {
+                    margin-left: 200px;
+                    width: calc(100% - 200px);
+                    padding: 24px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .dashboard {
+                    flex-direction: column;
+                }
+                
+                .sidebar {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    padding: 20px;
+                    border-radius: 0;
+                }
+                
+                .main {
+                    margin-left: 0;
+                    width: 100%;
+                    padding: 20px;
+                }
+                
+                .nav {
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                }
+                
+                .nav a {
+                    flex: 1;
+                    min-width: 120px;
+                    justify-content: center;
+                }
+                
+                .expense-header {
+                    flex-direction: column;
+                    gap: 16px;
+                    align-items: flex-start;
+                }
+                
+                .expenseContainer {
+                    padding: 16px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .expenseTable {
+                    font-size: 14px;
+                }
+                
+                .expenseTable th, 
+                .expenseTable td {
+                    padding: 10px 8px;
+                }
+            }
         </style>
         <!-- CSS here for now -->
     </head>
-    <!--HEADER COPY END HERE-->
 
     <body>
         <div class="dashboard">
@@ -298,54 +374,56 @@
                     <div class="balance">Menu</div>
                 </div>
                 <nav class="nav">
-                    <a onclick="location.href='dashboard.html';">Dashboard</a>
-                    <a onclick="location.href='budget.html';">Budget</a>
-                    <a onclick="location.href='income.html';">Income</a>
-                    <a class="active" onclick="location.href='expenses.html';"
-                        >Expenses</a
-                    >
-                    <!-- <a href="#">Charts</a> -->
-                    <a onclick="location.href='/schedules';">Schedules</a>
-                    <a onclick="location.href='chart.html';">Charts</a>
-                    <a onclick="location.href='/calendar';">Calendar</a>
-                    <a onclick="location.href='/messages';">Messages</a>
+                    <a onclick="location.href='/dashboard.html';">Dashboard</a>
+                    <a onclick="location.href='/budget.html';">Budget</a>
+                    <a onclick="location.href='/income.html';">Income</a>
+                    <a class="active" onclick="location.href='/expenses.html';">Expenses</a>
+                    <a onclick="location.href='/chart.html';">Charts</a>
+                    <a onclick="location.href='/categories.html';">Categories</a>
+                    <a onclick="location.href='/saving-goals.html';">Saving Goals</a>
+                    <a onclick="location.href='/upcoming-payments.html';">Upcoming Payments</a>
                     <a onclick="location.href='/account.html';">Settings</a>
                 </nav>
             </aside>
             <!--LEFT SIDE BAR END HERE-->
 
             <main class="main">
-                <h1 class="title">Expense Tracking</h1>
-                <table class="expenseTable" id="expenseTable">
-                    <thead>
-                        <tr>
-                            <th>Amount</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Date</th>
-                            <th>Frequency</th>
-                        </tr>
-                    </thead>
-                    <tbody class="expenseContainer">
-                        <tr>
-                            <td>$500</td>
-                            <td>Groceries</td>
-                            <td>Weekly grocery shopping</td>
-                            <td>1st January 2026</td>
-                            <td>Weekly</td>
-                        </tr>
-                        <tr>
-                            <td>$150</td>
-                            <td>Utilities</td>
-                            <td>Monthly utility bills</td>
-                            <td>13th January 2026</td>
-                            <td>Monthly</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="addExpenseButton" id="addExpense">
-                    + Add Expense
-                </button>
+                <div class="expense-header">
+                    <h1 class="title">Expense Tracking</h1>
+                    <button class="addExpenseButton" id="addExpense">
+                        + Add Expense
+                    </button>
+                </div>
+                
+                <div class="expenseContainer">
+                    <table class="expenseTable" id="expenseTable">
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>$500</td>
+                                <td>Groceries</td>
+                                <td>Weekly grocery shopping</td>
+                                <td>1st January 2026</td>
+                                <td>Weekly</td>
+                            </tr>
+                            <tr>
+                                <td>$150</td>
+                                <td>Utilities</td>
+                                <td>Monthly utility bills</td>
+                                <td>13th January 2026</td>
+                                <td>Monthly</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </main>
         </div>
     </body>
