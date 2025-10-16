@@ -1519,6 +1519,7 @@ body {
     padding: 20px;
     border: 1px solid #e5e7eb;
     box-shadow: 0 4px 20px rgba(2, 6, 23, 0.06);
+    overflow: hidden;
     position: relative;
     height: 320px;
     display: flex;
@@ -1546,7 +1547,7 @@ body {
 }
 .delete-btn {
     background: #f87171;
-    color: white;
+    color: white;~
     border: none;
     border-radius: 8px;
     padding: 6px 12px;
@@ -1560,6 +1561,9 @@ body {
 }
 .chart-card canvas {
     flex: 1;
+    width: 100% !important;
+    height: 200px !important;
+    object-fit: contain;
 }
 
 /* Responsive */
