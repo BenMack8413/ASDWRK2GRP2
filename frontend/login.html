@@ -43,7 +43,7 @@
                 <form class="auth-form active" id="loginForm">
                     <h2>Welcome Back</h2>
                     <div class="form-group">
-                        <label for="login-username">Username or Email</label>
+                        <label for="login-username">Email</label>
                         <input
                             type="text"
                             id="login-username"
@@ -167,8 +167,8 @@
                         document.getElementById('signup-remember').checked;
 
                     // Call your signup function here
-                    console.log('Signup:', { username, email, password, remember });
-                    // signup(username, email, password, remember);
+                    // console.log('Signup:', { username, email, password, remember });
+                    signup(username, email, password, remember);
                 });
 
             // Watch for login form submit
@@ -184,10 +184,11 @@
                         document.getElementById('login-remember').checked;
 
                     // Call your login function here
-                    console.log('Login:', { username, password, remember });
-                    // login(username, password, remember);
+                    // console.log('Login:', { username, password, remember });
+                    login(username, password, remember);
                 });
         </script>
+        <script src="/scripts/token.js"></script>
     </body>
 </html>
 
