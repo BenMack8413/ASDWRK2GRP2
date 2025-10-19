@@ -324,9 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // At the bottom
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    loadCategories,
-    renderCategories,
-    saveCategory,
-  };
+    module.exports = {
+        loadCategories,
+        renderCategories,
+        saveCategory,
+    };
 }
