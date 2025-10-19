@@ -7,46 +7,61 @@ const { requireAuth } = require('../auth.js');
 module.exports = (db) => {
     const router = express.Router();
 
-    // -----------------------
-    // GET /api/userData/export
+    // -----------------------------------
     router.get('/export', requireAuth, (req, res) => {
+          console.log('[EXPORT] route hit, user:', req.user && req.user.id, 'path:', req.path);
         try {
-            const user_id = req.user.id;
-            const exportPath = getAllUserInfo(db, user_id);
-            res.download(exportPath, path.basename(exportPath), (err) => {
-                if (err) console.error(err);
-            });
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({
-                error: 'Failed to export user data',
-                detail: err.message,
-            });
-        }
+    const userId = req.user.id;
+    const filePath = getAllUserInfo(userId); // should return absolute path
+
+    if (!filePath || !fs.existsSync(filePath)) {
+      console.error('Export file not found:', filePath);
+      return res.status(404).json({ error: 'Export file not found' });
+    }
+
+    // Use res.download to set Content-Disposition and stream safely
+    const filename = `userdata_${userId}.sqlite`;
+    res.download(filePath, filename, (err) => {
+      if (err) {
+        console.error('Error sending export file:', err);
+        // If headers already sent, you can't send JSON; just log
+        if (!res.headersSent) res.status(500).json({ error: 'Failed to download file' });
+      } else {
+        // Optionally delete exported temp file if you created one
+        try { fs.unlinkSync(filePath); } catch(e) { /* ignore */ }
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to export user data' });
+  }
     });
 
-    // -----------------------
-    // POST /api/userData/import
-    router.post('/import', requireAuth, async (req, res) => {
+    // -----------------------------------
+    // Form field: file
+    router.post('/import', requireAuth, (req, res) => {
         try {
-            const user_id = req.user.id;
             if (!req.files || !req.files.file)
                 return res.status(400).json({ error: 'No file uploaded' });
 
-            const uploadedFile = req.files.file;
-            const importPath = path.join(__dirname, '../imports', `user_${user_id}.sqlite`);
-            await uploadedFile.mv(importPath);
-
-            importUserInfo(db, user_id, importPath);
-            res.json({ message: 'User data imported and overwritten successfully.' });
+            const userId = req.user.id;
+            const importFile = req.files.file;
+            const tempPath = path.join(__dirname, '../uploads', importFile.name);
+            importFile.mv(tempPath, (err) => {
+                if (err) return res.status(500).json({ error: 'File upload failed' });
+                try {
+                    importUserInfo(userId, tempPath);
+                    fs.unlink(tempPath, () => {});
+                    res.json({ ok: true, message: 'User data imported successfully' });
+                } catch (e) {
+                    console.error(e);
+                    res.status(500).json({ error: 'Import failed' });
+                }
+            });
         } catch (err) {
             console.error(err);
-            res.status(500).json({
-                error: 'Failed to import user data',
-                detail: err.message,
-            });
+            res.status(500).json({ error: 'Failed to import user data' });
         }
     });
-
     return router;
 };

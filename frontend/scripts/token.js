@@ -184,4 +184,4 @@ window.login = login;
 window.logout = logout;
 window.deleteUser = deleteUser;
 
-module.exports = { signup, login };
+module.exports = { signup, login, getToken };

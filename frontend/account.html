@@ -122,11 +122,16 @@
                         <span class="status" id="statusText">—</span>
                     </div>
                 </div>
+                <div id="import-button">
+                    <input type="file" id="importFile" accept=".sqlite">
+                    <button onclick="handleImport()">Import User Data</button>
+                </div>
             </main>
         </div>
     </body>
-    <script src="/scripts/token.js"></script>
-    <script src="/scripts/settings.js"></script>
+    <script src="./scripts/token.js"></script>
+    <script src="./scripts/settings.js"></script>
+    <script src="./scripts/importExport.js"></script>
     <script>
         window.onload = loadAccountInfo();
         document
@@ -134,4 +139,12 @@
             .addEventListener('click', saveSettings);
         window.addEventListener('DOMContentLoaded', fetchSettings);
     </script>
+    <script>
+        function handleImport() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            importUserData(file);
+        }
+    </script>
 </html>
+
