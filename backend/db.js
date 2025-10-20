@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
+const { error } = require('console');
 
 const DB_FILE = process.env.DB_FILE || path.resolve(__dirname, 'mybudget.db');
 const SCHEMA_FILE =
@@ -100,17 +101,111 @@ function addUser(db, username, email, passwordHash) {
 function deleteUser(db, id) {
     if (!id) throw new Error('User ID Required');
 
-    try {
-        const statement = db.prepare(`
-            DELETE FROM users WHERE user_id = ?
-        `);
-        const info = statement.run(id);
+    const idNum = Number(id);
+    if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
 
-        return info.changes > 0;
+    try {
+        const statement = db.prepare(`DELETE FROM users WHERE user_id = ?`);
+        const info = statement.run(idNum);
+        console.log('deleteUser:', { id: idNum, changes: info.changes });
+
+        return info.changes > 0; // true if a row was deleted
     } catch (err) {
         console.error(err);
         throw new Error('Something went wrong when deleting user');
     }
 }
 
-module.exports = { db, createTransactionAtomic, addUser, deleteUser };
+function getAccountInfo(db, id) {
+    if (!id) throw new Error('User ID Required');
+
+    const idNum = Number(id);
+    if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
+
+    try {
+        const statement = db.prepare(
+            `SELECT username, email, date_created FROM users WHERE user_id = ?`,
+        );
+        const info = statement.get(idNum);
+
+        return info;
+    } catch (err) {
+        console.error(err);
+        throw new Error(
+            'Something went wrong when retrieving user information',
+        );
+    }
+}
+
+function getUserSettings(db, id) {
+    if (!id) throw new Error('User ID Required');
+
+    const idNum = Number(id);
+    if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
+
+    try {
+        const statement = db.prepare(
+            `SELECT data FROM settings WHERE user_id = ?`,
+        );
+        const row = statement.get(idNum);
+
+        if (!row) {
+            return { settings: null };
+        }
+
+        const parsed = JSON.parse(row.data);
+        return stripSettingsKey(parsed);
+    } catch (e) {
+        console.error(e);
+        throw new Error('Something went wrong when retrieving user settings');
+    }
+}
+
+function stripSettingsKey(obj) {
+    if (!obj || typeof obj !== 'object') return {};
+    const { settings, ...rest } = obj;
+    return rest;
+}
+
+function updateUserSettings(db, id, settingsObj) {
+    if (!id) throw new Error('User ID Required');
+
+    if (typeof settingsObj !== 'object' || settingsObj === null) {
+        throw new TypeError('settings must be an object');
+    }
+
+    const idNum = Number(id);
+    const text = JSON.stringify(settingsObj);
+    if (!Number.isInteger(idNum)) throw new TypeError('Invalid user ID');
+
+    try {
+        const statement = db.prepare(
+            `
+            INSERT INTO settings (user_id, data)
+            VALUES (?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET
+                data = excluded.data
+            `,
+        );
+        const info = statement.run(idNum, text);
+
+        return {
+            ok: true,
+            changes: info.changes,
+            lastInsertRowid: info.lastInsertRowid,
+        };
+    } catch (e) {
+        console.error(e);
+        throw new Error('Something went wrong when retrieving user settings');
+    }
+}
+
+module.exports = {
+    db,
+    createTransactionAtomic,
+    addUser,
+    deleteUser,
+    getAccountInfo,
+    getUserSettings,
+    updateUserSettings,
+};

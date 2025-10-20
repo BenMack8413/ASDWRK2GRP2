@@ -8,667 +8,7 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
-        <!-- <link rel="stylesheet" href="{{ url_for('serve_css', filename='styles.css')}}"> -->
-        <!-- <script src="{{ url_for('serve_js', filename='script.js') }}"></script> -->
-
-        <!-- CSS here for now -->
-        <style>
-            /* -------- Universal Root Start -------- */
-            :root {
-                --bg: #f3f6fb;
-                --panel: #ffffff;
-                --accent: #1062cd;
-                --accent-2: #083880;
-                --muted: #8b94a6;
-                --card_shadow: 0 6px 18px rgba(32, 41, 78, 0.06);
-                --success: #10b981;
-                --warning: #f59e0b;
-                --danger: #ef4444;
-            }
-            * {
-                box-sizing: border-box;
-            }
-            body {
-                margin: 0;
-                font-family:
-                    Inter,
-                    ui-sans-serif,
-                    system-ui,
-                    -apple-system,
-                    'Segoe UI',
-                    Roboto,
-                    'Helvetica Neue',
-                    Arial;
-                background: linear-gradient(180deg, var(--bg), var(--panel));
-                color: #111;
-                min-height: 100vh;
-                overflow-x: hidden;
-            }
-            /* -------- Universal Root End -------- */
-
-            /* -------- Dashboard Start -------- */
-            .dashboard {
-                display: flex;
-                min-height: 100vh;
-                gap: 24px;
-                padding: 28px 0;
-                align-items: stretch;
-                width: 100%;
-            }
-
-            .sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                width: 260px;
-                padding: 32px 28px;
-                background: linear-gradient(
-                    180deg,
-                    var(--accent),
-                    var(--accent-2)
-                );
-                color: #fff;
-                display: flex;
-                flex-direction: column;
-                gap: 18px;
-                z-index: 50;
-            }
-
-            .budget_name {
-                font-weight: 700;
-            }
-
-            .balance {
-                font-size: 20px;
-                opacity: 0.9;
-            }
-
-            .balance_amount {
-                font-size: 28px;
-                font-weight: 700;
-                margin-top: 6px;
-            }
-
-            .nav {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                margin-top: 6px;
-            }
-
-            .nav a {
-                color: rgba(255, 255, 255, 0.9);
-                text-decoration: none;
-                display: flex;
-                gap: 10px;
-                align-items: center;
-                padding: 8px 10px;
-                border-radius: 10px;
-            }
-
-            .nav a.active {
-                background: rgba(255, 255, 255, 0.08);
-            }
-
-            .main {
-                margin-left: 260px;
-                width: calc(100% - 260px);
-                display: flex;
-                flex-direction: column;
-                gap: 18px;
-                min-width: 0;
-                padding: 0 28px;
-                min-height: 100vh;
-                box-sizing: border-box;
-            }
-
-            .top_row {
-                display: flex;
-                gap: 18px;
-                align-items: flex-start;
-            }
-
-            .card {
-                background: var(--panel);
-                border-radius: 14px;
-                padding: 18px;
-                box-shadow: var(--card_shadow);
-            }
-            .card.small {
-                flex: 0 0 260px;
-            }
-
-            .card.medium {
-                flex: 1;
-            }
-
-            .card.half {
-                flex: 0 0 420px;
-            }
-
-            .grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 18px;
-            }
-
-            h3 {
-                margin: 0;
-                font-size: 18px;
-            }
-
-            .muted {
-                color: var(--muted);
-                font-size: 13px;
-            }
-
-            .big-num {
-                font-size: 26px;
-                font-weight: 700;
-            }
-
-            .sub {
-                font-size: 13px;
-                color: var(--muted);
-                margin-top: 6px;
-            }
-
-            .widgets {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 18px;
-            }
-
-            .widget {
-                background: var(--panel);
-                padding: 18px;
-                border-radius: 14px;
-                box-shadow: var(--card_shadow);
-            }
-
-            .widget.dragging {
-                opacity: 0.6;
-            }
-
-            .widget-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 8px;
-            }
-
-            .chart-wrap {
-                height: 240px;
-            }
-
-            .layout-controls {
-                display: flex;
-                gap: 8px;
-                align-items: center;
-            }
-
-            .transactions {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                padding: 12px;
-            }
-
-            .tx {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 12px;
-            }
-
-            .tx.meta {
-                display: flex;
-                gap: 10px;
-                align-items: center;
-            }
-
-            .dot {
-                width: 36px;
-                height: 36px;
-                border-radius: 10px;
-                display: grid;
-                place-items: center;
-            }
-
-            /* -------- Income Header Start -------- */
-            .income-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 24px;
-                padding: 16px 0;
-            }
-
-            .header-left h1 {
-                margin: 0;
-                font-size: 28px;
-                font-weight: 700;
-                color: #1a1a1a;
-            }
-
-            .header-left p {
-                margin: 8px 0 0;
-                color: var(--muted);
-                font-size: 14px;
-            }
-
-            .header-right {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-            }
-
-            .header-date {
-                color: var(--muted);
-                font-size: 14px;
-                margin-right: 8px;
-            }
-
-            .export-btn,
-            .add-income-btn {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                padding: 10px 16px;
-                border-radius: 8px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                border: none;
-                font-size: 14px;
-            }
-
-            .export-btn {
-                background-color: transparent;
-                color: var(--accent);
-                border: 1px solid #e2e8f0;
-            }
-
-            .export-btn:hover {
-                background-color: #f8fafc;
-                border-color: #cbd5e0;
-            }
-
-            .add-income-btn {
-                background-color: var(--accent);
-                color: white;
-            }
-
-            .add-income-btn:hover {
-                background-color: var(--accent-2);
-            }
-            /* -------- Income Header End -------- */
-
-            /* -------- Income Form Start -------- */
-            .income-form-container {
-                background: var(--panel);
-                border-radius: 14px;
-                padding: 24px;
-                box-shadow: var(--card_shadow);
-                margin-bottom: 24px;
-                display: none;
-            }
-
-            .income-form-container.visible {
-                display: block;
-            }
-
-            .form-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-
-            .form-header h3 {
-                margin: 0;
-            }
-
-            .close-form {
-                background: none;
-                border: none;
-                font-size: 20px;
-                cursor: pointer;
-                color: var(--muted);
-            }
-
-            .income-form {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-            }
-
-            .form-group {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .form-group label {
-                font-size: 14px;
-                font-weight: 500;
-            }
-
-            .form-group input,
-            .form-group select {
-                padding: 12px;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 14px;
-            }
-
-            .form-group.full-width {
-                grid-column: span 2;
-            }
-
-            .recurring-options {
-                display: flex;
-                gap: 12px;
-                align-items: center;
-            }
-
-            .recurring-options label {
-                margin: 0;
-            }
-
-            .form-actions {
-                grid-column: span 2;
-                display: flex;
-                justify-content: flex-end;
-                gap: 12px;
-                margin-top: 16px;
-            }
-
-            .cancel-btn {
-                padding: 10px 20px;
-                border: 1px solid #e2e8f0;
-                background: white;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: 500;
-            }
-
-            .submit-btn {
-                padding: 10px 20px;
-                border: none;
-                background: var(--accent);
-                color: white;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: 500;
-            }
-
-            .submit-btn:hover {
-                background: var(--accent-2);
-            }
-            /* -------- Income Form End -------- */
-
-            /* -------- Income List Start -------- */
-            .income-list-container {
-                background: var(--panel);
-                border-radius: 14px;
-                padding: 24px;
-                box-shadow: var(--card_shadow);
-                margin-bottom: 24px;
-            }
-
-            .list-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-
-            .list-controls {
-                display: flex;
-                gap: 12px;
-                align-items: center;
-            }
-
-            .search-box {
-                padding: 8px 12px;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 14px;
-            }
-
-            .sort-select {
-                padding: 8px 12px;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 14px;
-                background: white;
-            }
-
-            .income-table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            .income-table th {
-                text-align: left;
-                padding: 12px;
-                border-bottom: 2px solid #e2e8f0;
-                font-weight: 600;
-                color: var(--muted);
-            }
-
-            .income-table td {
-                padding: 12px;
-                border-bottom: 1px solid #e2e8f0;
-            }
-
-            .income-row:hover {
-                background-color: #f8fafc;
-            }
-
-            .income-source {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
-
-            .source-icon {
-                width: 36px;
-                height: 36px;
-                border-radius: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: var(--accent);
-                color: white;
-            }
-
-            .income-amount {
-                font-weight: 600;
-            }
-
-            .income-frequency {
-                padding: 4px 8px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 500;
-                background: #e7f5ef;
-                color: #0ca678;
-            }
-
-            .frequency-monthly {
-                background: #e7f5ef;
-                color: #0ca678;
-            }
-
-            .frequency-weekly {
-                background: #fff4e6;
-                color: #f76707;
-            }
-
-            .frequency-fortnightly {
-                background: #e0e7ff;
-                color: #4f46e5;
-            }
-
-            .income-actions {
-                display: flex;
-                gap: 8px;
-            }
-
-            .edit-btn,
-            .delete-btn {
-                padding: 6px;
-                border-radius: 6px;
-                cursor: pointer;
-                border: none;
-                background: transparent;
-            }
-
-            .edit-btn {
-                color: var(--accent);
-            }
-
-            .edit-btn:hover {
-                background: #e0e7ff;
-            }
-
-            .delete-btn {
-                color: var(--danger);
-            }
-
-            .delete-btn:hover {
-                background: #fee2e2;
-            }
-
-            /* -------- Income List End -------- */
-
-            /* -------- Income Stats Start -------- */
-            .income-stats {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 18px;
-                margin-bottom: 24px;
-            }
-
-            .stat-card {
-                background: var(--panel);
-                border-radius: 14px;
-                padding: 18px;
-                box-shadow: var(--card_shadow);
-                display: flex;
-                flex-direction: column;
-            }
-
-            .stat-icon {
-                width: 40px;
-                height: 40px;
-                border-radius: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 12px;
-                font-size: 18px;
-            }
-
-            .stat-1 .stat-icon {
-                background: #e7f5ef;
-                color: #0ca678;
-            }
-
-            .stat-2 .stat-icon {
-                background: #fff4e6;
-                color: #f76707;
-            }
-
-            .stat-3 .stat-icon {
-                background: #e0e7ff;
-                color: #4f46e5;
-            }
-
-            .stat-value {
-                font-size: 22px;
-                font-weight: 700;
-                margin: 8px 0;
-            }
-
-            .stat-title {
-                color: var(--muted);
-                font-size: 14px;
-            }
-            /* -------- Income Stats End -------- */
-
-            @media (max-width: 1800px) {
-                .sidebar {
-                    position: static;
-                    width: 220px;
-                    border-radius: 20px;
-                    padding: 28px;
-                }
-                .main {
-                    margin-left: 0;
-                    width: 100%;
-                    padding: 0 16px;
-                }
-                .dashboard {
-                    padding: 16px;
-                    flex-direction: column;
-                }
-                .income-header {
-                    flex-direction: column;
-                    gap: 16px;
-                }
-
-                .header-right {
-                    width: 100%;
-                    justify-content: space-between;
-                }
-            }
-
-            @media (max-width: 1024px) {
-                .income-form {
-                    grid-template-columns: 1fr;
-                }
-
-                .form-group.full-width {
-                    grid-column: span 1;
-                }
-
-                .income-stats {
-                    grid-template-columns: 1fr;
-                }
-            }
-
-            @media (max-width: 768px) {
-                .header-right {
-                    flex-wrap: wrap;
-                }
-
-                .header-date {
-                    order: 3;
-                    width: 100%;
-                    text-align: center;
-                    margin-top: 8px;
-                }
-
-                .income-table {
-                    display: block;
-                    overflow-x: auto;
-                }
-
-                .list-controls {
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-
-                .income-stats {
-                    grid-template-columns: 1fr;
-                }
-            }
-            /* -------- Income End -------- */
-        </style>
+        <link rel="stylesheet" href="./css/style.css" />
     </head>
 
     <body>
@@ -680,24 +20,23 @@
                     <div class="balance">Menu</div>
                 </div>
                 <nav class="nav">
-                    <a onclick="location.href='/dashboard.html';"
-                        >Dashboard</a
-                    >
-                    <a onclick="location.href='/budget.html';"
-                        >Budget</a
-                    >
-                    <a
-                        class="active"
-                        onclick="location.href='/income.html';"
+                    <a onclick="location.href='/dashboard.html';">Dashboard</a>
+                    <a onclick="location.href='/budget.html';">Budget</a>
+                    <a class="active" onclick="location.href='/income.html';"
                         >Income</a
                     >
-                    <a onclick="location.href='expenses.html';">Expenses</a>
-                    <a onclick="location.href='/reports';">Reports</a>
-                    <a onclick="location.href='/schedules';">Schedules</a>
-                    <a onclick="location.href='chart.html';">Charts</a>
-                    <a onclick="location.href='/calendar';">Calendar</a>
-                    <a onclick="location.href='/messages';">Messages</a>
-                    <a onclick="location.href='/settings';">Settings</a>
+                    <a onclick="location.href='/expenses.html';">Expenses</a>
+                    <a onclick="location.href='/chart.html';">Charts</a>
+                    <a onclick="location.href='/categories.html';"
+                        >Categories</a
+                    >
+                    <a onclick="location.href='/saving-goals.html';"
+                        >Saving Goals</a
+                    >
+                    <a onclick="location.href='/upcoming-payments.html';"
+                        >Upcoming Payments</a
+                    >
+                    <a onclick="location.href='/account.html';">Settings</a>
                 </nav>
             </aside>
             <!--LEFT SIDE BAR END HERE-->
@@ -796,14 +135,18 @@
                         <div class="stat-icon">
                             <i class="fas fa-dollar-sign"></i>
                         </div>
-                        <div class="stat-value" id="stat-total-income">$0.00</div>
-                        <div class="stat-title">Total Monthly Income</div>
+                        <div class="stat-value" id="stat-total-income">$0</div>
+                        <div class="stat-title">
+                            Total Current Monthly Income
+                        </div>
                     </div>
                     <div class="stat-card stat-2">
                         <div class="stat-icon">
                             <i class="fas fa-wallet"></i>
                         </div>
-                        <div class="stat-value" id="stat-expected-income">$0.00</div>
+                        <div class="stat-value" id="stat-expected-income">
+                            $0
+                        </div>
                         <div class="stat-title">Expected This Month</div>
                     </div>
                     <div class="stat-card stat-3">
@@ -861,201 +204,390 @@
         </div>
     </body>
 
-<script>
-/* ---- configuration ---- */
-const API_ROOT = '/api/incomes';
-const BUDGET_ID = 1;
+    <script>
+        const API_ROOT = '/api/incomes';
+        const BUDGET_ID = 1;
 
-/* ---- DOM refs ---- */
-const showIncomeFormBtn = document.getElementById('showIncomeForm');
-const incomeForm = document.getElementById('incomeForm');
-const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
-const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
-const incomeEntryForm = document.getElementById('incomeEntryForm');
-const incomeFrequency = document.getElementById('incomeFrequency');
-const recurringOptions = document.getElementById('recurringOptions');
-const incomeList = document.getElementById('incomeList');
-const searchIncome = document.getElementById('searchIncome');
-const sortIncome = document.getElementById('sortIncome');
+        const showIncomeFormBtn = document.getElementById('showIncomeForm');
+        const incomeForm = document.getElementById('incomeForm');
+        const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
+        const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
+        const incomeEntryForm = document.getElementById('incomeEntryForm');
+        const incomeFrequency = document.getElementById('incomeFrequency');
+        const recurringOptions = document.getElementById('recurringOptions');
+        const incomeList = document.getElementById('incomeList');
+        const searchIncome = document.getElementById('searchIncome');
+        const sortIncome = document.getElementById('sortIncome');
 
-showIncomeFormBtn.addEventListener('click', () => incomeForm.classList.add('visible'));
-function hideIncomeForm() { incomeForm.classList.remove('visible'); incomeEntryForm.reset(); }
-closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
-cancelIncomeFormBtn.addEventListener('click', hideIncomeForm);
+        const formHeaderTitle = incomeForm.querySelector('.form-header h3');
+        const submitBtn = incomeEntryForm.querySelector(
+            'button[type="submit"]',
+        );
+        const inputSource = document.getElementById('incomeSource');
+        const inputAmount = document.getElementById('incomeAmount');
+        const inputDate = document.getElementById('incomeDate');
+        const inputFrequency = document.getElementById('incomeFrequency');
+        const inputDescription = document.getElementById('incomeDescription');
+        const inputRecurringCheckbox = document.getElementById('setRecurring');
 
-incomeFrequency.addEventListener('change', function () {
-  if (this.value !== 'one-time' && this.value !== '') recurringOptions.style.display = 'flex';
-  else recurringOptions.style.display = 'none';
-});
+        /* ---- edit state ---- */
+        let editingIncomeId = null;
 
-/* ---- fetch / render ---- */
-let incomes = [];
+        function openIncomeFormForCreate() {
+            editingIncomeId = null;
+            formHeaderTitle.textContent = 'Add New Income';
+            submitBtn.textContent = 'Add Income';
+            incomeEntryForm.reset();
+            recurringOptions.style.display = 'none';
+            incomeForm.classList.add('visible');
 
-async function loadIncomes() {
-  try {
-    const res = await fetch(`${API_ROOT}?budget_id=${BUDGET_ID}`);
-    if (!res.ok) throw new Error('Failed to load incomes: ' + res.statusText);
-    incomes = await res.json();
-    renderIncomes();
-  } catch (err) {
-    console.error(err);
-    alert('Could not load incomes from server. See console for details.');
-  }
-}
-
-async function createIncome(payload) {
-  try {
-    const res = await fetch(API_ROOT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error('Create failed: ' + txt);
-    }
-    const created = await res.json();
-    incomes.unshift(created);
-    renderIncomes();
-    return created;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-async function deleteIncomeOnServer(id) {
-  try {
-    const res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, { method: 'DELETE' });
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error('Delete failed: ' + txt);
-    }
-    incomes = incomes.filter(i => i.id !== id);
-    renderIncomes();
-  } catch (err) {
-    console.error(err);
-    alert('Failed to delete item on server.');
-  }
-}
-
-/* ---- submit form handler ---- */
-incomeEntryForm.addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const source = document.getElementById('incomeSource').value;
-  const amount = parseFloat(document.getElementById('incomeAmount').value);
-  const date = document.getElementById('incomeDate').value;
-  const frequency = document.getElementById('incomeFrequency').value;
-  const description = document.getElementById('incomeDescription').value;
-  const isRecurring = document.getElementById('setRecurring').checked;
-
-  const payload = {
-    budget_id: BUDGET_ID,
-    amount,       
-    date,
-    source,
-    frequency,
-    description,
-    account_id: null
-  };
-
-  try {
-    await createIncome(payload);
-    hideIncomeForm();
-    alert('Income added successfully!');
-  } catch (err) {
-    alert('Failed to add income: ' + (err.message || err));
-  }
-});
-function updateIncomeStats(incomes) {
-  const now = new Date();
-  let totalIncome = 0;
-  let expectedThisMonth = 0;
-
-  incomes.forEach(i => {
-    const amount = i.amount || 0;
-    totalIncome += amount;
-
-    // Parse stored date
-    const incomeDate = new Date(i.date);
-
-    switch ((i.frequency || '').toLowerCase()) {
-      case 'monthly':
-        // Always add this month’s instance
-        if (incomeDate <= now) expectedThisMonth += amount;
-        break;
-      case 'weekly':
-        // Roughly 4 weeks per month
-        if (incomeDate <= now) expectedThisMonth += amount * 4;
-        break;
-      case 'yearly':
-        // Divide yearly into monthly
-        if (incomeDate <= now) expectedThisMonth += amount / 12;
-        break;
-      default:
-        // One-time incomes → only count if date is in this month
-        if (
-          incomeDate.getMonth() === now.getMonth() &&
-          incomeDate.getFullYear() === now.getFullYear()
-        ) {
-          expectedThisMonth += amount;
+            if (!inputDate.value) inputDate.valueAsDate = new Date();
         }
-    }
-  });
 
-  // Unique sources
-  const sources = new Set(incomes.map(i => i.source)).size;
+        function openIncomeFormForEdit(income) {
+            editingIncomeId = income.id;
+            formHeaderTitle.textContent = 'Edit Income';
+            submitBtn.textContent = 'Save Changes';
 
-  // Update DOM
-  document.getElementById('stat-total-income').textContent = `$${(totalIncome / 100).toFixed(2)}`;
-  document.getElementById('stat-expected-income').textContent = `$${(expectedThisMonth / 100).toFixed(2)}`;
-  document.getElementById('stat-income-sources').textContent = sources;
-}
+            inputSource.value = income.source || '';
+            inputAmount.value =
+                typeof income.amount === 'number'
+                    ? income.amount.toFixed(2)
+                    : '';
 
-/* ---- render logic (keeps your existing UI formatting) ---- */
-function renderIncomes() {
-  // clear existing rows
-  incomeList.innerHTML = '';
+            inputDate.value = income.date ? income.date.split('T')[0] : '';
+            inputFrequency.value = income.frequency || '';
+            inputDescription.value = income.description || income.notes || '';
+            inputRecurringCheckbox.checked = false;
+            recurringOptions.style.display =
+                inputFrequency.value && inputFrequency.value !== 'one-time'
+                    ? 'flex'
+                    : 'none';
+            incomeForm.classList.add('visible');
 
-  incomes.forEach(income => {
-    const row = document.createElement('tr');
-    row.classList.add('income-row');
+            inputSource.focus();
+        }
 
-    row.innerHTML = `
+        function hideIncomeForm() {
+            incomeForm.classList.remove('visible');
+            editingIncomeId = null;
+            incomeEntryForm.reset();
+
+            formHeaderTitle.textContent = 'Add New Income';
+            submitBtn.textContent = 'Add Income';
+            recurringOptions.style.display = 'none';
+        }
+
+        showIncomeFormBtn.addEventListener('click', openIncomeFormForCreate);
+        closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
+        cancelIncomeFormBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            hideIncomeForm();
+        });
+
+        incomeFrequency.addEventListener('change', function () {
+            if (this.value !== 'one-time' && this.value !== '')
+                recurringOptions.style.display = 'flex';
+            else recurringOptions.style.display = 'none';
+        });
+
+        let incomes = [];
+
+        async function loadIncomes() {
+            try {
+                const res = await fetch(`${API_ROOT}?budget_id=${BUDGET_ID}`);
+                if (!res.ok)
+                    throw new Error(
+                        'Failed to load incomes: ' + res.statusText,
+                    );
+                incomes = await res.json();
+                renderIncomes();
+            } catch (err) {
+                console.error(err);
+                // alert('Could not load incomes from server. See console for details.');
+            }
+        }
+
+        async function createIncome(payload) {
+            try {
+                const res = await fetch(API_ROOT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Create failed: ' + txt);
+                }
+                const created = await res.json();
+                // add to local list
+                incomes.unshift(created);
+                renderIncomes();
+                return created;
+            } catch (err) {
+                console.error(err);
+                throw err;
+            }
+        }
+
+        async function updateIncomeOnServer(id, payload) {
+            try {
+                let res = await fetch(
+                    `${API_ROOT}/${id}?budget_id=${BUDGET_ID}`,
+                    {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    },
+                );
+                if (res.ok) return await res.json();
+
+                res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (res.ok) return await res.json();
+
+                const text = await res.text().catch(() => '');
+                throw new Error(
+                    `Update not supported or failed: ${res.status} ${text}`,
+                );
+            } catch (err) {
+                throw err;
+            }
+        }
+
+        async function deleteIncomeOnServer(id) {
+            try {
+                const res = await fetch(
+                    `${API_ROOT}/${id}?budget_id=${BUDGET_ID}`,
+                    { method: 'DELETE' },
+                );
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Delete failed: ' + txt);
+                }
+                incomes = incomes.filter((i) => i.id !== id);
+                renderIncomes();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete item on server.');
+            }
+        }
+
+        incomeEntryForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const source = inputSource.value.trim();
+            const amountRaw = inputAmount.value;
+            const amount = parseFloat(amountRaw);
+            const date = inputDate.value;
+            const frequency = inputFrequency.value;
+            const description = inputDescription.value;
+            const isRecurring = inputRecurringCheckbox.checked;
+
+            if (!date || !Number.isFinite(amount)) {
+                alert('Please provide valid date and amount.');
+                return;
+            }
+
+            const payload = {
+                budget_id: BUDGET_ID,
+                amount,
+                date,
+                source,
+                frequency,
+                description,
+                account_id: null,
+            };
+
+            try {
+                if (editingIncomeId == null) {
+                    await createIncome(payload);
+                    hideIncomeForm();
+                    alert('Income added successfully!');
+                } else {
+                    try {
+                        const updated = await updateIncomeOnServer(
+                            editingIncomeId,
+                            payload,
+                        );
+
+                        if (updated && updated.id) {
+                            incomes = incomes.map((i) =>
+                                i.id === updated.id ? updated : i,
+                            );
+                        } else {
+                            await loadIncomes();
+                        }
+                        hideIncomeForm();
+                        alert('Income updated successfully!');
+                    } catch (updateErr) {
+                        console.warn(
+                            'Update failed, falling back to recreate+delete:',
+                            updateErr,
+                        );
+                        const created = await createIncome(payload);
+
+                        try {
+                            await deleteIncomeOnServer(editingIncomeId);
+                        } catch (delErr) {
+                            console.warn(
+                                'Failed to delete old income after fallback create:',
+                                delErr,
+                            );
+                        }
+                        hideIncomeForm();
+                        alert('Income updated (by creating a new record).');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to save income: ' + (err.message || err));
+            } finally {
+                editingIncomeId = null;
+            }
+        });
+
+        function updateIncomeStats(incomes) {
+            const now = new Date();
+            let totalIncome = 0;
+            let expectedThisMonth = 0;
+
+            incomes.forEach((i) => {
+                const amount = i.amount || 0;
+                totalIncome += amount;
+
+                const incomeDate = new Date(i.date);
+
+                switch ((i.frequency || '').toLowerCase()) {
+                    case 'monthly':
+                        if (incomeDate <= now) expectedThisMonth += amount;
+                        break;
+                    case 'weekly':
+                        if (incomeDate <= now) expectedThisMonth += amount * 4;
+                        break;
+                    case 'yearly':
+                        if (incomeDate <= now) expectedThisMonth += amount / 12;
+                        break;
+                    default:
+                        if (
+                            incomeDate.getMonth() === now.getMonth() &&
+                            incomeDate.getFullYear() === now.getFullYear()
+                        ) {
+                            expectedThisMonth += amount;
+                        }
+                }
+            });
+
+            const sources = new Set(incomes.map((i) => i.source)).size;
+
+            document.getElementById('stat-total-income').textContent =
+                `$${totalIncome.toFixed(2)}`;
+            document.getElementById('stat-expected-income').textContent =
+                `$${expectedThisMonth.toFixed(2)}`;
+            document.getElementById('stat-income-sources').textContent =
+                sources;
+        }
+
+        function renderIncomes() {
+            incomeList.innerHTML = '';
+
+            incomes.forEach((income) => {
+                const row = document.createElement('tr');
+                row.classList.add('income-row');
+
+                row.innerHTML = `
       <td>
         <div class="income-source">
           <div class="source-icon"><i class="fas fa-wallet"></i></div>
-          <div>${income.source}</div>
+          <div class="income-source-text"></div>
         </div>
       </td>
-      <td class="income-amount">$${income.amount.toFixed(2)}</td>
-      <td>${new Date(income.date).toLocaleDateString()}</td>
+      <td class="income-amount"></td>
+      <td class="income-date"></td>
       <td>
         <span class="income-frequency">${income.frequency || 'One-time'}</span>
       </td>
       <td>
         <div class="income-actions">
-          <button class="edit-btn"><i class="fas fa-edit"></i></button>
-          <button class="delete-btn" onclick="deleteIncomeOnServer(${income.id})"><i class="fas fa-trash"></i></button>
+          <button class="edit-btn" type="button" title="Edit"><i class="fas fa-edit"></i></button>
+          <button class="delete-btn" type="button" title="Delete"><i class="fas fa-trash"></i></button>
         </div>
       </td>
     `;
 
-    incomeList.appendChild(row);
-  });
+                row.querySelector('.income-source-text').textContent =
+                    income.source || '';
+                row.querySelector('.income-amount').textContent =
+                    `$${(income.amount || 0).toFixed(2)}`;
+                row.querySelector('.income-date').textContent = new Date(
+                    income.date,
+                ).toLocaleDateString();
 
-  // update stats each time
-  updateIncomeStats(incomes);
-}
+                row.querySelector('.edit-btn').addEventListener('click', () => {
+                    openIncomeFormForEdit(income);
+                });
 
-/* ---- wire inputs ---- */
-searchIncome.addEventListener('input', renderIncomes);
-sortIncome.addEventListener('change', renderIncomes);
-document.getElementById('incomeDate').valueAsDate = new Date();
-document.addEventListener('DOMContentLoaded', loadIncomes);
+                row.querySelector('.delete-btn').addEventListener(
+                    'click',
+                    async () => {
+                        if (!confirm('Delete this income?')) return;
+                        try {
+                            await deleteIncomeOnServer(income.id);
+                        } catch (err) {
+                            console.error(err);
+                            alert('Failed to delete income.');
+                        }
+                    },
+                );
 
-/* ---- initial load ---- */
-loadIncomes();
-</script>
+                incomeList.appendChild(row);
+            });
 
+            updateIncomeStats(incomes);
+        }
+
+        searchIncome.addEventListener('input', () => {
+            const q = searchIncome.value.trim().toLowerCase();
+            if (!q) {
+                renderIncomes();
+                return;
+            }
+            const filtered = incomes.filter(
+                (i) =>
+                    (i.source || '').toLowerCase().includes(q) ||
+                    (i.description || i.notes || '').toLowerCase().includes(q),
+            );
+
+            const prev = incomes;
+            incomes = filtered;
+            renderIncomes();
+            incomes = prev;
+        });
+
+        sortIncome.addEventListener('change', () => {
+            const mode = sortIncome.value;
+
+            incomes.sort((a, b) => {
+                if (mode === 'date-desc')
+                    return new Date(b.date) - new Date(a.date);
+                if (mode === 'date-asc')
+                    return new Date(a.date) - new Date(b.date);
+                if (mode === 'amount-desc')
+                    return (b.amount || 0) - (a.amount || 0);
+                if (mode === 'amount-asc')
+                    return (a.amount || 0) - (b.amount || 0);
+                if (mode === 'source')
+                    return (a.source || '').localeCompare(b.source || '');
+                return 0;
+            });
+            renderIncomes();
+        });
+
+        document.getElementById('incomeDate').valueAsDate = new Date();
+        document.addEventListener('DOMContentLoaded', loadIncomes);
+        loadIncomes();
+    </script>
 </html>
