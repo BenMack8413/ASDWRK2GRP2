@@ -15,6 +15,10 @@ describe('expenses table', () => {
         ).run(1, 1, 'Test Account', 'USD', 0);
     });
 
+    afterAll(() => {
+        if (db && typeof db.close === 'function') db.close();
+    });
+
     test('can insert and retrieve an expense row', () => {
         const uniqueSource = `test-source-${Date.now()}`;
         const amount = 123.45;
