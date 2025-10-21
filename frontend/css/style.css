@@ -1240,71 +1240,136 @@ body {
 
 /* EXPENSES HTML PAGE START */
 /* -------- Expenses Start -------- */
-.expense-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding: 16px 0;
-}
+            .expenseStats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px;
+                margin-bottom: 24px;
+            }
 
-.title {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a1a1a;
-}
+            .expenseHeader {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 24px;
+                padding: 16px 0;
+            }
 
-.addExpenseButton {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-    font-size: 14px;
-    background-color: var(--accent);
-    color: white;
-}
+            .expenseContainer {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 24px;
+                box-shadow: var(--card_shadow);
+                margin-bottom: 24px;
+            }
 
-.addExpenseButton:hover {
-    background-color: var(--accent-2);
-}
+            .expenseTable {
+                width: 100%;
+                border-collapse: collapse;
+            }
 
-.expenseContainer {
-    background: var(--panel);
-    border-radius: 14px;
-    padding: 24px;
-    box-shadow: var(--card_shadow);
-    margin-bottom: 24px;
-    overflow-x: auto;
-}
+            .expenseTable th {
+                text-align: left;
+                padding: 12px;
+                border-bottom: 2px solid #e2e8f0;
+                font-weight: 600;
+                color: var(--muted);
+                background: var(--panel);
+            }
 
-.expenseTable {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px;
-}
+            .expenseTable td {
+                padding: 12px;
+                border-bottom: 1px solid #e2e8f0;
+            }
 
-.expenseTable th {
-    text-align: left;
-    padding: 12px;
-    border-bottom: 2px solid #e2e8f0;
-    font-weight: 600;
-    color: var(--muted);
-}
+            .addExpenseButton {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+                font-size: 14px;
+                background-color: var(--accent);
+                color: #fff;
+                margin-top: 12px;
+                margin-left: 25px;
+            }
 
-.expenseTable td {
-    padding: 15px;
-    border-bottom: 1px solid #f0f0f0;
-}
+            #expenseForm {
+                background: var(--panel);
+                border-radius: 14px;
+                padding: 24px;
+                box-shadow: var(--card_shadow);
+                margin-bottom: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                max-width: 400px;
+            }
 
-.expenseTable tr:hover {
-    background-color: #f8fafc;
-}
+            #expenseForm label {
+                display: flex;
+                flex-direction: column;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--muted);
+            }
+
+            #expenseForm .formSub {
+                margin-bottom: 6px;
+                font-weight: 600;
+                color: #111;
+                font-size: 14px;
+            }
+
+            #expenseForm input,
+            #expenseForm select {
+                padding: 10px 12px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+                background: #fff;
+                color: #111;
+                outline: none;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            #expenseForm input:focus,
+            #expenseForm select:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(16, 98, 205, 0.15);
+            }
+
+            #expenseForm button[type="submit"] {
+                align-self: flex-start;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+                font-size: 14px;
+                background-color: var(--accent);
+                color: #fff;
+                margin-top: 10px;
+            }
+
+            #expenseForm button[type="submit"]:hover {
+                background-color: var(--accent-2);
+            }
+
+            @media (max-width: 1024px) {
+                .expense-stats {
+                    grid-template-columns: 1fr;
+                }
+                #expenseForm {
+                    max-width: 100%;
+                }
+            }
 /* -------- Expenses End -------- */
 
 /* Responsive Design */

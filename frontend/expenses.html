@@ -157,53 +157,88 @@
                 }
             };
 
-            function loadExpenses() {
-                const stored = localStorage.getItem('expenses');
-                if (stored) {
-                    try {
-                        expenses = JSON.parse(stored).map(e => ({
-                        source: e.source || '',
-                        amount: Number(e.amount || 0),
-                        date: e.date || '',
-                        frequency: e.frequency || 'One-time',
-                        description: e.description || ''
-                        }));
-                    } catch (err) {
-                        console.error('Failed to parse stored expenses', err);
-                        expenses = [];
+            async function loadExpenses() {
+                try {
+                    const res = await fetch('/api/expenses');
+                    if (!res.ok) throw new Error('Failed to fetch');
+                    expenses = await res.json();
+                } catch (err) {
+                    console.warn('Falling back to localStorage/sample data:', err);
+                    const stored = localStorage.getItem('expenses');
+                    if (stored) {
+                        try {
+                            expenses = JSON.parse(stored);
+                        } catch {
+                            expenses = [];
+                        }
+                    } else {
+                        expenses = [
+                            { source: 'Rent', amount: 1200, date: '2024-06-01', frequency: 'Monthly', description: 'June Rent' },
+                            { source: 'Groceries', amount: 300, date: '2024-06-05', frequency: 'Weekly', description: 'Weekly groceries' },
+                            { source: 'Utilities', amount: 150, date: '2024-06-03', frequency: 'Monthly', description: 'Electricity and water' },
+                        ];
                     }
-                }
-                // Placeholder for loading expenses from a backend or local storage
-                // It loads this if no info is found in local storage
-                // Remove this when there is actual backend implementation with the database
-                else {
-                    expenses = [
-                        { source: 'Rent', amount: 1200, date: '2024-06-01', frequency: 'Monthly', description: 'June Rent' },
-                        { source: 'Groceries', amount: 300, date: '2024-06-05', frequency: 'Weekly', description: 'Weekly groceries' },
-                        { source: 'Utilities', amount: 150, date: '2024-06-03', frequency: 'Monthly', description: 'Electricity and water' },
-                    ];
-                    localStorage.setItem('expenses', JSON.stringify(expenses));
                 }
                 renderExpenses();
             }
+
+            async function createExpenseOnServer(payload) {
+                try {
+                    const res = await fetch('/api/expenses', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+                    if (!res.ok) throw new Error('Create failed');
+                    const created = await res.json();
+                    // push server record (with id) into local array and re-render
+                    expenses.unshift(created);
+                    renderExpenses();
+                    return created;
+                } catch (err) {
+                    console.error('createExpenseOnServer error', err);
+                    throw err;
+                }
+            }
+
+            async function deleteExpenseOnServer(id) {
+                try {
+                    const res = await fetch('/api/expenses/' + id, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('Delete failed');
+                    // remove from local array and re-render
+                    expenses = expenses.filter(e => e.id !== Number(id));
+                    renderExpenses();
+                } catch (err) {
+                    console.error('deleteExpenseOnServer error', err);
+                }
+            }
+
 
             function renderExpenses() {
                 expenseTableBody.innerHTML = '';
                 expenses.forEach((expense, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${expense.source}</td>
-                        <td>$${expense.amount.toFixed(2)}</td>
-                        <td>${expense.date}</td>
-                        <td>${expense.frequency}</td>
+                        <td>${expense.source || ''}</td>
+                        <td>$${(Number(expense.amount) || 0).toFixed(2)}</td>
+                        <td>${expense.date || ''}</td>
+                        <td>${expense.frequency || ''}</td>
                         <td>${expense.description || ''}</td>
+                        <td>${expense.id ? `<button class="small del" data-id="${expense.id}">Delete</button>` : ''}</td>
                     `;
                     expenseTableBody.appendChild(row);
+                });
+                // wire up delete buttons
+                expenseTableBody.querySelectorAll('button.del').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        if (id) deleteExpenseOnServer(id);
+                    });
                 });
                 updateCards();
             }
 
-            function formSubmission() {
+            async function formSubmission(event) {
                 event.preventDefault();
                 const formData = new FormData(expenseForm);
 
@@ -213,13 +248,13 @@
                 const frequency = formData.get('Frequency');
                 const description = formData.get('Description');
 
-                expenses.push({ source, amount, date, frequency, description });
-
-                localStorage.setItem('expenses', JSON.stringify(expenses));
-
-                renderExpenses();
-                expenseForm.reset();
-                expenseForm.style.display = 'none';
+                try {
+                    await createExpenseOnServer({ source, amount, date, frequency, description });
+                    expenseForm.reset();
+                    expenseForm.style.display = 'none';
+                } catch (err) {
+                    alert('Failed to save expense to server. See console for details.');
+                }
             };
 
             function searchExpenses() {
