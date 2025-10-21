@@ -1,20 +1,18 @@
-const request = require('supertest');
-const express = require('express');
 const createExpensesRouter = require('../expenses');
 
 describe('expenses table', () => {
+    let db;
     beforeAll(() => {
-        // ensure table exists
-        db.prepare(`
-            CREATE TABLE IF NOT EXISTS expenses (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                source TEXT NOT NULL,
-                amount REAL NOT NULL,
-                date TEXT,
-                frequency TEXT,
-                description TEXT
-            )
-        `).run();
+        db = new Database(':memory:');
+    
+        const schemaPath = path.join(__dirname, '..', 'backend', 'schema.sql');
+        const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+        db.exec(schemaSql);
+    
+        db.prepare(
+            `INSERT OR IGNORE INTO accounts (account_id, budget_id, name, currency, balance)
+         VALUES (?, ?, ?, ?, ?)`,
+        ).run(1, 1, 'Test Account', 'USD', 0);
     });
 
     test('can insert and retrieve an expense row', () => {
