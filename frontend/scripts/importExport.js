@@ -41,14 +41,14 @@ async function importUserData(file) {
             alert('Please select a file first');
             return;
         }
-
+        
         const formData = new FormData();
         formData.append('file', file);
 
         const response = await fetch('/api/importExport/import', {
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('auth_jwt_token') || sessionStorage.getItem('auth_jwt_token')}`,
+                authorization: `Bearer ${localStorage.getItem('auth_jwt_token') || sessionStorage.getItem('auth_jwt_token')}`,
             },
             body: formData,
         });

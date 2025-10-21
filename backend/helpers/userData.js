@@ -16,7 +16,6 @@ const TABLES = [
     'transaction_lines',
     'transaction_tags',
     'chart_configs',
-    'recalc_requests',
 ];
 
 // -----------------------------------
@@ -134,7 +133,6 @@ function getAllUserInfo(db, userId) {
             chart_configs: db
                 .prepare(`SELECT * FROM chart_configs WHERE budget_id = ?`)
                 .all(budget),
-            recalc_requests: db.prepare(`SELECT * FROM recalc_requests`).all(), // optional
         };
 
         for (const [table, rows] of Object.entries(related))
@@ -149,45 +147,32 @@ function getAllUserInfo(db, userId) {
 // Import: Replace user’s data with data from uploaded .sqlite file
 function importUserInfo(db, userId, importFilePath) {
     const importDb = new Database(importFilePath, { readonly: true });
+
+    // Get all tables in the import file that exist in our TABLES list
     const importTables = importDb
         .prepare(
-            `
-        SELECT name FROM sqlite_master WHERE type='table' AND name IN (${TABLES.map(() => '?').join(',')})
-    `,
+            `SELECT name FROM sqlite_master WHERE type='table' AND name IN (${TABLES.map(() => '?').join(',')})`
         )
         .all(...TABLES)
-        .map((r) => r.name);
+        .map(r => r.name);
 
     const transaction = db.transaction(() => {
-        // Delete existing user data
-        const userBudgetIds = db
-            .prepare(`SELECT budget_id FROM budgets WHERE user_id = ?`)
-            .all(userId);
-        for (const t of importTables) {
-            if (t === 'users') {
-                db.prepare(`DELETE FROM users WHERE user_id = ?`).run(userId);
-            } else if (t === 'budgets' || t === 'settings') {
-                db.prepare(`DELETE FROM ${t} WHERE user_id = ?`).run(userId);
-            } else if (t !== 'recalc_requests') {
-                for (const b of userBudgetIds)
-                    db.prepare(`DELETE FROM ${t} WHERE budget_id = ?`).run(
-                        b.budget_id,
-                    );
-            }
-        }
+        // Delete the user – cascades will remove everything else
+        db.prepare(`DELETE FROM users WHERE user_id = ?`).run(userId);
 
         // Re-insert from import DB
         for (const t of importTables) {
             const rows = importDb.prepare(`SELECT * FROM ${t}`).all();
             if (!rows.length) continue;
+
             const cols = Object.keys(rows[0]);
             const placeholders = cols.map(() => '?').join(',');
             const stmt = db.prepare(
-                `INSERT INTO ${t} (${cols.join(',')}) VALUES (${placeholders})`,
+                `INSERT INTO ${t} (${cols.join(',')}) VALUES (${placeholders})`
             );
 
             for (const r of rows) {
-                // Overwrite user_id where applicable
+                // Ensure user_id matches the current user
                 if ('user_id' in r) r.user_id = userId;
                 stmt.run(Object.values(r));
             }
@@ -197,5 +182,6 @@ function importUserInfo(db, userId, importFilePath) {
     transaction();
     importDb.close();
 }
+
 
 module.exports = { importUserInfo, getAllUserInfo };

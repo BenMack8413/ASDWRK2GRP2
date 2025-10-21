@@ -85,8 +85,8 @@ CREATE TABLE IF NOT EXISTS incomes (
   notes       TEXT,
   created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE,
-  FOREIGN KEY(user_id)   REFERENCES users(user_id)     ON DELETE SET NULL,
-  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE SET NULL
+  FOREIGN KEY(user_id)   REFERENCES users(user_id)     ON DELETE CASCADE,
+  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_incomes_budget_date ON incomes(budget_id, date);
@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS transactions (
   type           TEXT,
   created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(budget_id)  REFERENCES budgets(budget_id) ON DELETE CASCADE,
-  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE SET NULL,
-  FOREIGN KEY(payee_id)   REFERENCES payees(payee_id) ON DELETE SET NULL
+  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE CASCADE,
+  FOREIGN KEY(payee_id)   REFERENCES payees(payee_id) ON DELETE CASCADE
 );
 
 -- TRANSACTION LINES (detail rows)
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS transaction_lines (
   note           TEXT,
   created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(transaction_id) REFERENCES transactions(transaction_id) ON DELETE CASCADE,
-  FOREIGN KEY(category_id)    REFERENCES categories(category_id) ON DELETE SET NULL
+  FOREIGN KEY(category_id)    REFERENCES categories(category_id) ON DELETE CASCADE
 );
 
 -- TRANSACTION_TAGS (many-to-many)
