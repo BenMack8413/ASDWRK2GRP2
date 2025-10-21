@@ -102,6 +102,7 @@
                             <th>Date</th>
                             <th>Frequency</th>
                             <th>Description</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="expenseTableBody"></tbody>
@@ -228,16 +229,11 @@
                         <td>${expense.date || ''}</td>
                         <td>${expense.frequency || ''}</td>
                         <td>${expense.description || ''}</td>
-                        <td>${expense.id ? `<button class="small del" data-id="${expense.id}">Delete</button>` : ''}</td>
+                        <td>
+                            ${expense.id ? `<button class="delete-btn" data-id="${expense.id}">Delete</button>` : ''}
+                        </td>
                     `;
                     expenseTableBody.appendChild(row);
-                });
-                // wire up delete buttons
-                expenseTableBody.querySelectorAll('button.del').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = e.currentTarget.dataset.id;
-                        if (id) deleteExpenseOnServer(id);
-                    });
                 });
                 updateCards();
             }
@@ -329,6 +325,15 @@
                 document.getElementById('stat-expected-expense').textContent = `$${expectedThisMonth.toFixed(2)}`;
                 document.getElementById('stat-expense-sources').textContent = numSources;
             }
+
+            expenseTableBody.addEventListener('click', (e) => {
+                const btn = e.target.closest('button.delete-btn');
+                if (!btn) return;
+                const id = btn.dataset.id;
+                if (id) {
+                    deleteExpenseOnServer(id);
+                }
+            });
 
             function addTestExpense() {
 
