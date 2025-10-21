@@ -21,7 +21,7 @@ const TABLES = [
 
 // -----------------------------------
 // Export: Copy user’s related rows into a temp .sqlite file
-function getAllUserInfo(userId) {
+function getAllUserInfo(db, userId) {
     // Create export DB
     const exportPath = path.join(
         __dirname,
@@ -147,7 +147,7 @@ function getAllUserInfo(userId) {
 
 // -----------------------------------
 // Import: Replace user’s data with data from uploaded .sqlite file
-function importUserInfo(userId, importFilePath) {
+function importUserInfo(db, userId, importFilePath) {
     const importDb = new Database(importFilePath, { readonly: true });
     const importTables = importDb
         .prepare(

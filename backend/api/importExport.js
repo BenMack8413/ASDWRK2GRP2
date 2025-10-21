@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const { getAllUserInfo, importUserInfo } = require('../helpers/userData');
 const { requireAuth } = require('../auth.js');
 
@@ -16,7 +17,7 @@ module.exports = (db) => {
         );
         try {
             const userId = req.user.id;
-            const filePath = getAllUserInfo(userId); // should return absolute path
+            const filePath = getAllUserInfo(db, userId); // should return absolute path
 
             if (!filePath || !fs.existsSync(filePath)) {
                 console.error('Export file not found:', filePath);
@@ -62,7 +63,7 @@ module.exports = (db) => {
                         .status(500)
                         .json({ error: 'File upload failed' });
                 try {
-                    importUserInfo(userId, tempPath);
+                    importUserInfo(db, userId, tempPath);
                     fs.unlink(tempPath, () => {});
                     res.json({
                         ok: true,

@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS budgets (
 );
 
 INSERT OR IGNORE INTO users (user_id, username, email, password_hash)
-VALUES (1, 'demo', 'demo@example.com', 'hashedpassword123');
+VALUES (1, 'demo', 'demo@example.com', '$2b$10$jlrP6zRp71UDJV.JHoFnH.8y0e4BjNZDWEcNT9j9sZ/0j/jDRvzcm');
+-- password is hashedpassword123
 
 INSERT OR IGNORE INTO budgets (budget_id, user_id, name, currency)
 VALUES (1, 1, 'Default Budget', 'USD');
