@@ -36,7 +36,19 @@ module.exports = (db) => {
                 filePath,
                 fs.existsSync(filePath) ? 'exists' : 'missing',
             );
-            res.download(filePath);
+             res.download(filePath, filename, (err) => {
+        if (err) {
+            console.error('Error sending file:', err);
+            if (!res.headersSent) {
+                res.status(500).json({ error: 'Failed to download file' });
+            }
+        } else {
+            // File successfully sent, safe to delete
+            fs.unlink(filePath, (unlinkErr) => {
+                if (unlinkErr) console.error('Failed to delete temp file:', unlinkErr);
+            });
+        }
+    });
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: 'Failed to export user data' });
