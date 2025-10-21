@@ -151,10 +151,10 @@ function importUserInfo(db, userId, importFilePath) {
     // Get all tables in the import file that exist in our TABLES list
     const importTables = importDb
         .prepare(
-            `SELECT name FROM sqlite_master WHERE type='table' AND name IN (${TABLES.map(() => '?').join(',')})`
+            `SELECT name FROM sqlite_master WHERE type='table' AND name IN (${TABLES.map(() => '?').join(',')})`,
         )
         .all(...TABLES)
-        .map(r => r.name);
+        .map((r) => r.name);
 
     const transaction = db.transaction(() => {
         // Delete the user – cascades will remove everything else
@@ -168,7 +168,7 @@ function importUserInfo(db, userId, importFilePath) {
             const cols = Object.keys(rows[0]);
             const placeholders = cols.map(() => '?').join(',');
             const stmt = db.prepare(
-                `INSERT INTO ${t} (${cols.join(',')}) VALUES (${placeholders})`
+                `INSERT INTO ${t} (${cols.join(',')}) VALUES (${placeholders})`,
             );
 
             for (const r of rows) {
@@ -182,6 +182,5 @@ function importUserInfo(db, userId, importFilePath) {
     transaction();
     importDb.close();
 }
-
 
 module.exports = { importUserInfo, getAllUserInfo };

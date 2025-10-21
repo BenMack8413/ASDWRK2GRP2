@@ -122,9 +122,12 @@
                         <span class="status" id="statusText">—</span>
                     </div>
                 </div>
-                <div id="import-button">
+                <div id="user-data-buttons">
                     <input type="file" id="importFile" accept=".sqlite" />
                     <button onclick="handleImport()">Import User Data</button>
+                    <button id="downloadUserData" class="btn">
+                        Download My Data
+                    </button>
                 </div>
             </main>
         </div>
@@ -145,5 +148,19 @@
             const file = fileInput.files[0];
             importUserData(file);
         }
+    </script>
+    <script>
+        // Attach click listener
+        document
+            .getElementById('downloadUserData')
+            .addEventListener('click', async () => {
+                try {
+                    // Call your existing export function
+                    await exportUserData();
+                } catch (err) {
+                    console.error('Error exporting user data:', err);
+                    alert('Failed to download user data');
+                }
+            });
     </script>
 </html>

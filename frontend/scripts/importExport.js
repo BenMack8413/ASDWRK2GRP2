@@ -41,7 +41,7 @@ async function importUserData(file) {
             alert('Please select a file first');
             return;
         }
-        
+
         const formData = new FormData();
         formData.append('file', file);
 
