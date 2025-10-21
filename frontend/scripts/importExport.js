@@ -1,12 +1,18 @@
 async function exportUserData() {
     try {
-        const response = await fetch('/importExport/export', {
+        console.log(
+            localStorage.getItem('auth_jwt_token') ||
+                sessionStorage.getItem('auth_jwt_token'),
+        );
+        const response = await fetch('/api/importExport/export', {
             method: 'GET',
             headers: {
-                authorization: `Bearer ${localStorage.getItem('auth_jwt_token') || sessionStorage.getItem('auth_jwt_token')}`
-            }
+                authorization: `Bearer ${localStorage.getItem('auth_jwt_token') || sessionStorage.getItem('auth_jwt_token')}`,
+            },
         });
-
+        console.log(response);
+        const textCheck = await response.clone().text();
+        console.log('First 200 chars of response:', textCheck.slice(0, 200));
         if (!response.ok) throw new Error('Export failed');
 
         const blob = await response.blob();
@@ -39,12 +45,12 @@ async function importUserData(file) {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch('/importExport/import', {
+        const response = await fetch('/api/importExport/import', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('auth_jwt_token') || sessionStorage.getItem('auth_jwt_token')}`
+                Authorization: `Bearer ${localStorage.getItem('auth_jwt_token') || sessionStorage.getItem('auth_jwt_token')}`,
             },
-            body: formData
+            body: formData,
         });
 
         const result = await response.json();
