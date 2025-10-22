@@ -147,14 +147,6 @@ CREATE TABLE IF NOT EXISTS chart_configs (
   FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE
 );
 
--- BUDGET_SIMPLE
-CREATE TABLE IF NOT EXISTS budget_simple (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    amount REAL NOT NULL DEFAULT 0,
-    date_created DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_transactions_budget_date ON transactions(budget_id, date);
 CREATE INDEX IF NOT EXISTS idx_transaction_lines_transaction ON transaction_lines(transaction_id);
