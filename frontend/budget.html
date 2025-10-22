@@ -242,59 +242,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="right-column">
-                        <div class="budget-category">
-                            <h3 style="margin-bottom: 16px">Budget Category</h3>
-                            <div class="category-header">
-                                <div></div>
-                                <div>Budget</div>
-                                <div>Monthly Limit</div>
-                                <div>Spent Today</div>
-                                <div>Remaining</div>
-                                <div>Status</div>
-                            </div>
-                            <div class="category-row">
-                                <div class="category-icon icon-entertainment">
-                                    <i class="fas fa-film"></i>
-                                </div>
-                                <div>Entertainment</div>
-                                <div>$50.00</div>
-                                <div>$30.00</div>
-                                <div>$20.00</div>
-                                <div>
-                                    <span class="status-badge status-on-track"
-                                        >On Track</span
-                                    >
-                                </div>
-                            </div>
-                            <div class="category-row">
-                                <div class="category-icon icon-transportation">
-                                    <i class="fas fa-bus"></i>
-                                </div>
-                                <div>Transportation</div>
-                                <div>$25.00</div>
-                                <div>$15.00</div>
-                                <div>$10.00</div>
-                                <div>
-                                    <span class="status-badge status-near-limit"
-                                        >Near Limit</span
-                                    >
-                                </div>
-                            </div>
-
-                            <div class="category-chips">
-                                <div class="category-chip">
-                                    <i class="fas fa-utensils"></i>
-                                    <span>Eating & Drinking: $50.00</span>
-                                </div>
-                                <div class="category-chip">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <span>Education: $100.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </main>
         </div>
@@ -306,6 +253,10 @@
 
             // Cards at the bottom of the page
             const statGrid = document.getElementById('stat-grid');
+            const monthNameToIndex = {
+                Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+            };
 
             document.querySelectorAll('.filter-btn').forEach((button) => {
                 button.addEventListener('click', function () {
@@ -372,35 +323,51 @@
                 }
             }
 
+            function monthIndexFromYYYYMM(yyyymm) {
+                const [year, month] = yyyymm.split('-').map(Number);
+                return month - 1; // January = 0
+            }
+
+
             function updateChart(months, incomeData, expenseData) {
-                    const monthElements = document.querySelectorAll('.month');
-                    const totalMonths = Math.min(monthElements.length, months.length);
+                const monthElements = document.querySelectorAll('.month');
+                monthElements.forEach((m, i) => {
+                    const expenseBar = m.querySelector('.month-expense');
+                    const remainingBar = m.querySelector('.month-remaining');
+                    expenseBar.style.height = '0%';
+                    remainingBar.style.height = '100%';
+                });
 
-                    for (let i = 0; i < totalMonths; i++) {
-                        const income = incomeData[i] ?? 0;
-                        const expense = expenseData[i] ?? 0;
-                        const monthElement = monthElements[i];
+                months.forEach((monthStr, i) => {
+                    const date = new Date(monthStr + '-01');
+                    const idx = date.getMonth(); // 0–11 (Jan–Dec)
+                    const monthElement = monthElements[idx];
+                    if (!monthElement) return;
 
-                        const expenseBar = monthElement.querySelector('.month-expense');
-                        const remainingBar = monthElement.querySelector('.month-remaining');
+                    const income = incomeData[i] ?? 0;
+                    const expense = expenseData[i] ?? 0;
 
-                        // calculate percentage of expense relative to income
-                        const expensePercent = income > 0 ? Math.min((expense / income) * 100, 100) : 0;
-                        const remainingPercent = 100 - expensePercent;
+                    const expensePercent = income > 0 ? Math.min((expense / income) * 100, 100) : 0;
+                    const remainingPercent = 100 - expensePercent;
 
-                        // Update bar widths dynamically
-                        expenseBar.style.width = `${expensePercent}%`;
-                        remainingBar.style.width = `${remainingPercent}%`;
+                    const expenseBar = monthElement.querySelector('.month-expense');
+                    const remainingBar = monthElement.querySelector('.month-remaining');
 
-                        // Tooltip or label for debugging
-                        expenseBar.title = `Expense: ${formatCurrency(expense)}`;
-                        remainingBar.title = `Remaining: ${formatCurrency(income - expense)}`;
-                    }
+                    expenseBar.style.height = `${expensePercent}%`;
+                    remainingBar.style.height = `${remainingPercent}%`;
+
+                    expenseBar.title = `Expense: ${formatCurrency(expense)}`;
+                    remainingBar.title = `Remaining: ${formatCurrency(income - expense)}`;
+                });
             }
 
             document.addEventListener('DOMContentLoaded', () => {
                 updateBudgetCardStatsFromServer();
-                loadMonthlyBudgetData(); // ✅ fetch & render monthly data
+                loadMonthlyBudgetData();
+            });
+            const now = new Date();
+            document.querySelectorAll('.month').forEach((m, i) => {
+                m.classList.toggle('active', i === now.getMonth());
             });
             /* -------- Budget End -------- */
         </script>
