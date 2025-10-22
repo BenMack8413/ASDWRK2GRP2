@@ -6,6 +6,14 @@
         <title>Dashboard</title>
 
         <link rel="stylesheet" href="./css/style.css" />
+        <style>
+            /* small helper to show dragging state without touching your external css */
+            .widget.dragging { opacity: 0.5; transform: scale(0.98); }
+            .widget-placeholder { border: 2px dashed rgba(0,0,0,0.08); height: 60px; margin: 8px 0; }
+            .top_row { display: flex; gap: 12px; flex-wrap: wrap; }
+            .card.small, .card.medium, .card.half { min-width: 220px; }
+            .widget { cursor: grab; }
+        </style>
     </head>
     <body>
         <div class="dashboard">
@@ -39,28 +47,26 @@
                     "
                 >
                     <h1>Dashboard</h1>
+                    <div class="layout-controls"> 
+                        <button class="add-income-btn" onclick="saveLayout()">Save Layout</button>
+                        <button class="export-btn" onclick="resetLayout()">Reset</button>
+                    </div>
                 </div>
-                <div class="top_row">
-                    <div class="card small">
+
+                <div class="top_row" id="widgetsContainer">
+                    <div class="widget card small" draggable="true" id="widget-balance" data-id="widget-balance">
                         <div class="widget_header">
                             <div><h3>Current Balance</h3></div>
                             <div class="balance_amount" id="currentBalance">$0</div>
                         </div>
                     </div>
-                    <div class="card medium">
+
+                    <div class="widget card medium" draggable="true" id="widget-miniTx" data-id="widget-miniTx">
                         <h3 style="margin-bottom: 8px">Latest transactions</h3>
-                        <div
-                            id="miniTx"
-                            style="
-                                display: flex;
-                                flex-direction: column;
-                                gap: 8px;
-                            "
-                        >
-                            <!-- small tx preview -->
-                        </div>
+                        <div id="miniTx" style="display: flex; flex-direction: column; gap: 8px;"></div>
                     </div>
-                    <div class="card medium">
+
+                    <div class="widget card medium" draggable="true" id="widget-incomeChart" data-id="widget-incomeChart">
                         <div class="widget_header">
                             <div>
                                 <h3>Income</h3>
@@ -72,21 +78,13 @@
                         </div>
                     </div>
 
-                    <div class="card half">
+                    <div class="widget card half" draggable="true" id="widget-recentTx" data-id="widget-recentTx">
                         <h3>Payment history</h3>
-                        <div class="transactions" id="recentTx">
-                            <!-- recent transactions here-->
-                        </div>
+                        <div class="transactions" id="recentTx"></div>
                     </div>
-                </div>
 
-                <div class="widgets">
-                    <div
-                        class="widget"
-                        draggable="true"
-                        data-id="widget-pie"
-                        id="widget-pie"
-                    >
+                    <!-- additional widgets (spend pie / activity) remain movable below -->
+                    <div class="widget" draggable="true" data-id="widget-pie" id="widget-pie">
                         <div class="widget-header">
                             <div>
                                 <h3>Spending by category</h3>
@@ -98,12 +96,7 @@
                         </div>
                     </div>
 
-                    <div
-                        class="widget"
-                        draggable="true"
-                        data-id="widget-activity"
-                        id="widget-activity"
-                    >
+                    <div class="widget" draggable="true" data-id="widget-activity" id="widget-activity">
                         <div class="widget-header">
                             <div>
                                 <h3>Activity</h3>
@@ -119,13 +112,13 @@
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
-                // --- CONFIG ---
+
                 const INCOME_API = '/api/incomes';
                 const BUDGET_ID = 1; // update if you use another budget id
 
-                // keep a small sample object for non-income placeholders (expenses/categories)
+
                 const sample = {
-                    recentTx: [], // will be filled from API
+                    recentTx: [],
                     monthly: {
                         months: [],
                         income: [],
@@ -301,14 +294,12 @@
                     return { keys, labels };
                 }
 
-                // Fetch incomes from API and populate dashboard widgets
                 async function loadIncomesForDashboard() {
                     try {
                         const res = await fetch(`${INCOME_API}?budget_id=${BUDGET_ID}`);
                         if (!res.ok) throw new Error('Failed to fetch incomes');
                         const incomes = await res.json();
 
-                        // Build recentTx from incomes (most recent first)
                         const sorted = incomes.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
 
                         sample.recentTx = sorted.slice(0, 8).map((inc) => ({
@@ -318,10 +309,9 @@
                             amount: Number(inc.amount) || 0,
                         }));
 
-                        // Calculate total income (sum of all incomes)
                         const totalIncome = incomes.reduce((s, x) => s + (Number(x.amount) || 0), 0);
 
-                        // Prepare monthly totals for the last 7 months
+
                         const { keys, labels } = getLastNMonthLabels(7);
                         const monthMap = Object.fromEntries(keys.map((k) => [k, 0]));
                         incomes.forEach((inc) => {
@@ -335,12 +325,10 @@
                         sample.monthly.months = labels;
                         sample.monthly.income = keys.map((k) => Math.round((monthMap[k] || 0) * 100) / 100);
 
-                        // Update UI pieces
                         document.getElementById('currentBalance').textContent = formatCurrency(totalIncome);
                         renderRecentTx();
                         renderMiniTx();
 
-                        // Update charts if they exist
                         if (incomeChart) {
                             incomeChart.data.labels = sample.monthly.months.slice(-6);
                             incomeChart.data.datasets[0].data = sample.monthly.income.slice(-6);
@@ -353,12 +341,12 @@
                         }
                     } catch (err) {
                         console.error('loadIncomesForDashboard error:', err);
-                        // keep placeholders if API call fails
                     }
                 }
 
                 const LAYOUT_KEY = 'mb_dashboard_layout_v1';
                 const HIDDEN_KEY = 'mb_dashboard_hidden_v1';
+                const widgetsContainer = document.getElementById('widgetsContainer');
 
                 function getHiddenWidgets() {
                     return [...document.querySelectorAll('.widget')]
@@ -373,20 +361,22 @@
 
                 function saveLayout() {
                     try {
-                        const widgetsContainer = document.querySelector('.widgets');
                         if (!widgetsContainer) return;
                         const order = [...widgetsContainer.querySelectorAll('.widget')]
                             .map((w) => w.id)
                             .filter(Boolean);
                         localStorage.setItem(LAYOUT_KEY, JSON.stringify(order));
                         localStorage.setItem(HIDDEN_KEY, JSON.stringify(getHiddenWidgets()));
-                        alert('Layout saved');
+                        const b = document.createElement('span');
+                        b.textContent = 'Layout saved';
+                        b.style.marginLeft = '8px';
+                        setTimeout(() => b.remove(), 1200);
+                        document.body.appendChild(b);
                     } catch (e) {}
                 }
 
                 function loadLayout() {
                     try {
-                        const widgetsContainer = document.querySelector('.widgets');
                         if (!widgetsContainer) return;
                         const order = JSON.parse(localStorage.getItem(LAYOUT_KEY) || 'null');
                         if (order && Array.isArray(order)) {
@@ -413,10 +403,71 @@
                     } catch (e) {}
                 }
 
+                // Drag & drop support for widgets
+                function makeWidgetsDraggable() {
+                    if (!widgetsContainer) return;
+
+                    let draggingEl = null;
+
+                    function onDragStart(e) {
+                        draggingEl = this;
+                        this.classList.add('dragging');
+                        try {
+                            e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setData('text/plain', this.id);
+                        } catch (err) {}
+                    }
+                    function onDragEnd() {
+                        if (draggingEl) draggingEl.classList.remove('dragging');
+                        draggingEl = null;
+
+                        saveLayout();
+                    }
+
+                    function getDragAfterElement(container, y) {
+                        const draggableElements = [...container.querySelectorAll('.widget:not(.dragging)')];
+                        return draggableElements.reduce((closest, child) => {
+                            const box = child.getBoundingClientRect();
+                            const offset = y - box.top - box.height / 2;
+                            if (offset < 0 && offset > closest.offset) {
+                                return { offset, element: child };
+                            } else return closest;
+                        }, { offset: Number.NEGATIVE_INFINITY }).element || null;
+                    }
+
+                    widgetsContainer.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        const afterElement = getDragAfterElement(widgetsContainer, e.clientY);
+                        const dragging = document.querySelector('.widget.dragging');
+                        if (!dragging) return;
+                        if (afterElement == null) widgetsContainer.appendChild(dragging);
+                        else widgetsContainer.insertBefore(dragging, afterElement);
+                    });
+
+                    function attach() {
+                        document.querySelectorAll('.widget').forEach((w) => {
+                            if (!w.getAttribute('data-dnd')) {
+                                w.addEventListener('dragstart', onDragStart);
+                                w.addEventListener('dragend', onDragEnd);
+                                w.setAttribute('data-dnd', '1');
+                            }
+                        });
+                    }
+
+
+                    const observer = new MutationObserver(attach);
+                    observer.observe(widgetsContainer, { childList: true, subtree: false });
+
+
+                    attach();
+                }
+
                 (function init() {
-                    // initialize charts with placeholder data first
+
                     initCharts();
-                    // then load live incomes and refresh widgets/charts
+
+                    makeWidgetsDraggable();
+
                     loadIncomesForDashboard();
                     loadLayout();
                 })();
@@ -424,4 +475,5 @@
         </div>
     </body>
 </html>
+
 

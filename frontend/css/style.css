@@ -237,67 +237,19 @@ body {
     color: var(--accent);
 }
 
-/* Responsive Design */
-@media (max-width: 1400px) {
-    .top_row {
-        grid-template-columns: 280px 1fr;
-    }
-    
-    .top_row .card.half {
-        grid-column: 1 / -1;
-    }
+.layout-controls {
+  display: flex;
+  gap: 10px;      
+  align-items: center;
+  justify-content: flex-end;
 }
 
-@media (max-width: 1200px) {
-    .sidebar {
-        width: 200px;
-        padding: 24px 16px;
-    }
-    
-    .main {
-        margin-left: 200px;
-        width: calc(100% - 200px);
-        padding: 24px;
-    }
-    
-    .top_row {
-        grid-template-columns: 1fr;
-    }
-    
-    .widgets {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        padding: 20px;
-        border-radius: 0;
-    }
-    
-    .main {
-        margin-left: 0;
-        width: 100%;
-        padding: 20px;
-    }
-    
-    .nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .nav a {
-        flex: 1;
-        min-width: 120px;
-        justify-content: center;
-    }
+@media (max-width: 480px) {
+  .layout-controls {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
 }
 
 /* -------- Dashboard End -------- */
