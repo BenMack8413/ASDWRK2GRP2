@@ -1,344 +1,172 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Budget</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-        <link rel="stylesheet" href="./css/style.css" />
-    </head>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Budget</title>
 
-    <body>
-        <div class="dashboard">
-            <!--LEFT SIDE BAR STARTS HERE-->
-            <aside class="sidebar">
-                <div class="budget_name">My Budget</div>
-                <div>
-                    <div class="balance">Menu</div>
-                </div>
-                <nav class="nav">
-                    <a onclick="location.href='/dashboard.html';">Dashboard</a>
-                    <a class="active" onclick="location.href='/budget.html';">Budget</a>
-                    <a onclick="location.href='/income.html';">Income</a>
-                    <a onclick="location.href='/expenses.html';">Expenses</a>
-                    <a onclick="location.href='/chart.html';">Charts</a>
-                    <a onclick="location.href='/categories.html';">Categories</a>
-                    <a onclick="location.href='/saving-goals.html';">Saving Goals</a>
-                    <a onclick="location.href='/upcoming-payments.html';">Upcoming Payments</a>
-                    <a onclick="location.href='/account.html';">Settings</a>
-                </nav>
-            </aside>
-            <!--LEFT SIDE BAR END HERE-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
 
-            <!-- Main starts here -->
-            <main class="main">
-                <!-- Budget Header Section -->
-                <div class="budget-header">
-                    <div class="header-left">
-                        <h1>Budget</h1>
-                    </div>
-                    <div class="header-right">
-                        <button class="export-btn">
-                            <i class="fas fa-download"></i> Export
-                        </button>
-                        <button class="add-transaction-btn">
-                            <i class="fas fa-plus"></i> Add Transaction
-                        </button>
-                    </div>
-                </div>
 
-                <div class="budget-grid">
-                    <div class="card budget-card">
-                        <div class="budget-card-header">
-                            <div class="budget-card-title">Groceries</div>
-                            <i
-                                class="fas fa-shopping-basket"
-                                style="color: #4361ee"
-                            ></i>
-                        </div>
-                        <div class="budget-card-amount">$358.00</div>
-                        <div class="budget-card-subtitle">Budget</div>
-                        <div class="progress-bar">
-                            <div class="progress progress-groceries"></div>
-                        </div>
-                        <div class="budget-card-subtitle">
-                            65% of monthly budget
-                        </div>
-                    </div>
+  </head>
 
-                    <div class="card budget-card">
-                        <div class="budget-card-header">
-                            <div class="budget-card-title">Shopping</div>
-                            <i
-                                class="fas fa-shopping-bag"
-                                style="color: #4895ef"
-                            ></i>
-                        </div>
-                        <div class="budget-card-amount">$246.00</div>
-                        <div class="budget-card-subtitle">Budget</div>
-                        <div class="progress-bar">
-                            <div class="progress progress-shopping"></div>
-                        </div>
-                        <div class="budget-card-subtitle">
-                            45% of monthly budget
-                        </div>
-                    </div>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="budget_name">My Budget</div>
+        <div>
+          <div class="balance">Menu</div>
+        </div>
+        <nav class="nav">
+          <a onclick="location.href='/dashboard.html';">Dashboard</a>
+          <a class="active" onclick="location.href='/budget.html';">Budget</a>
+          <a onclick="location.href='/income.html';">Income</a>
+          <a onclick="location.href='/expenses.html';">Expenses</a>
+          <a onclick="location.href='/chart.html';">Charts</a>
+          <a onclick="location.href='/categories.html';">Categories</a>
+          <a onclick="location.href='/saving-goals.html';">Saving Goals</a>
+          <a onclick="location.href='/upcoming-payments.html';">Upcoming Payments</a>
+          <a onclick="location.href='/account.html';">Settings</a>
+        </nav>
+      </aside>
 
-                    <div class="card budget-card">
-                        <div class="budget-card-header">
-                            <div class="budget-card-title">Home needs</div>
-                            <i class="fas fa-home" style="color: #4cc9f0"></i>
-                        </div>
-                        <div class="budget-card-amount">$136.00</div>
-                        <div class="budget-card-subtitle">Budget</div>
-                        <div class="progress-bar">
-                            <div class="progress progress-home"></div>
-                        </div>
-                        <div class="budget-card-subtitle">
-                            30% of monthly budget
-                        </div>
-                    </div>
-
-                    <div class="card savings-card">
-                        <div class="savings-header">
-                            <div class="bank-name">Bank Jago</div>
-                            <div class="savings-date">12 Mar 2024</div>
-                        </div>
-                        <div class="savings-amount">$645.00</div>
-                        <div class="savings-change">
-                            <div class="change-positive">+$445.00</div>
-                            <div>Allocation Budget</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="main-content">
-                    <div class="left-column">
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <div class="time-filters">
-                                    <button class="filter-btn active">
-                                        Monthly
-                                    </button>
-                                    <button class="filter-btn">Weekly</button>
-                                    <button class="filter-btn">Export</button>
-                                </div>
-                            </div>
-
-                            <div class="month-scroller">
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 40%"
-                                        ></div>
-                                    </div>
-                                    Jan
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 60%"
-                                        ></div>
-                                    </div>
-                                    Feb
-                                </div>
-                                <div class="month active">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 85%"
-                                        ></div>
-                                    </div>
-                                    Mar
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 30%"
-                                        ></div>
-                                    </div>
-                                    Apr
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 25%"
-                                        ></div>
-                                    </div>
-                                    May
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 50%"
-                                        ></div>
-                                    </div>
-                                    Jun
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 70%"
-                                        ></div>
-                                    </div>
-                                    Jul
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 65%"
-                                        ></div>
-                                    </div>
-                                    Aug
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 45%"
-                                        ></div>
-                                    </div>
-                                    Sep
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 35%"
-                                        ></div>
-                                    </div>
-                                    Oct
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="budget-card-subtitle">Monthly</div>
-                                <div class="budget-card-title">
-                                    August 13, 2025
-                                </div>
-                                <div class="stat-value">$3,400</div>
-                                <div class="budget-card-subtitle">Budget</div>
-                            </div>
-
-                            <div class="stat-card">
-                                <div class="budget-card-subtitle">Expected</div>
-                                <div class="budget-card-title">Export</div>
-                                <div class="stat-value">$500.00</div>
-                                <div class="budget-card-subtitle">
-                                    Bill Sale
-                                </div>
-                            </div>
-
-                            <div class="stat-card">
-                                <div class="budget-card-subtitle">
-                                    Running Budget
-                                </div>
-                                <div class="budget-card-title">Today</div>
-                                <div class="stat-value">$500.00</div>
-                                <div class="budget-card-subtitle">
-                                    The amount that can be spent
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="right-column">
-                        <div class="budget-category">
-                            <h3 style="margin-bottom: 16px">Budget Category</h3>
-                            <div class="category-header">
-                                <div></div>
-                                <div>Budget</div>
-                                <div>Monthly Limit</div>
-                                <div>Spent Today</div>
-                                <div>Remaining</div>
-                                <div>Status</div>
-                            </div>
-                            <div class="category-row">
-                                <div class="category-icon icon-entertainment">
-                                    <i class="fas fa-film"></i>
-                                </div>
-                                <div>Entertainment</div>
-                                <div>$50.00</div>
-                                <div>$30.00</div>
-                                <div>$20.00</div>
-                                <div>
-                                    <span class="status-badge status-on-track"
-                                        >On Track</span
-                                    >
-                                </div>
-                            </div>
-                            <div class="category-row">
-                                <div class="category-icon icon-transportation">
-                                    <i class="fas fa-bus"></i>
-                                </div>
-                                <div>Transportation</div>
-                                <div>$25.00</div>
-                                <div>$15.00</div>
-                                <div>$10.00</div>
-                                <div>
-                                    <span class="status-badge status-near-limit"
-                                        >Near Limit</span
-                                    >
-                                </div>
-                            </div>
-
-                            <div class="category-chips">
-                                <div class="category-chip">
-                                    <i class="fas fa-utensils"></i>
-                                    <span>Eating & Drinking: $50.00</span>
-                                </div>
-                                <div class="category-chip">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <span>Education: $100.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+      <main class="main">
+        <div class="budget-header">
+          <div class="header-left">
+            <h1>Budget</h1>
+            <div class="muted small" id="current-month-label"></div>
+          </div>
+          <div class="header-right">
+            <button class="export-btn" id="exportCsvBtn">
+              <i class="fas fa-download"></i> Export CSV
+            </button>
+            <button class="add-transaction-btn" id="addTxBtn">
+              <i class="fas fa-plus"></i> Add Transaction
+            </button>
+          </div>
         </div>
 
-        <script>
-            /* -------- Budget Start -------- */
-            document.querySelectorAll('.filter-btn').forEach((button) => {
-                button.addEventListener('click', function () {
-                    document.querySelectorAll('.filter-btn').forEach((btn) => {
-                        btn.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                });
-            });
+        <!-- Top summary -->
+        <div class="budget-grid" id="budget-summary-grid">
+          <div class="card budget-card">
+            <div class="budget-card-header">
+              <div class="budget-card-title">Total Income</div>
+            </div>
+            <div class="budget-card-amount" id="total-income">$0.00</div>
+            <div class="budget-card-subtitle">This month</div>
+          </div>
 
-            document.querySelectorAll('.month').forEach((month) => {
-                month.addEventListener('click', function () {
-                    document.querySelectorAll('.month').forEach((m) => {
-                        m.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                });
-            });
+          <div class="card budget-card">
+            <div class="budget-card-header">
+              <div class="budget-card-title">Total Expenses</div>
+            </div>
+            <div class="budget-card-amount" id="total-expenses">$0.00</div>
+            <div class="budget-card-subtitle">This month</div>
+          </div>
 
-            document
-                .querySelector('.export-btn')
-                .addEventListener('click', function () {
-                    alert('Exported to Excel');
-                });
+          <div class="card budget-card">
+            <div class="budget-card-header">
+              <div class="budget-card-title">Remaining</div>
+            </div>
+            <div class="budget-card-amount" id="remaining">$0.00</div>
+            <div class="budget-card-subtitle">Income − Expenses</div>
+          </div>
 
-            document
-                .querySelector('.add-transaction-btn')
-                .addEventListener('click', function () {
-                    alert('Add Transaction will be here');
-                });
-            /* -------- Budget End -------- */
-        </script>
-    </body>
+          <div class="card savings-card" id="allocation-card">
+            <div class="savings-header">
+              <div class="bank-name">Allocation</div>
+              <div class="savings-date" id="allocation-date"></div>
+            </div>
+            <div class="savings-amount" id="allocation-amount">$0.00</div>
+            <div class="savings-change">
+              <div class="change-positive" id="allocation-change">+0</div>
+              <div>Monthly Budget Allocation</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div class="left-column">
+            <div class="chart-container">
+              <div class="chart-header">
+                <div class="time-filters">
+                  <button class="filter-btn active" data-range="month">
+                    Monthly
+                  </button>
+                  <button class="filter-btn" data-range="3month">3 months</button>
+                  <button class="filter-btn" data-range="year">Year</button>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:18px; align-items:stretch; flex-wrap:wrap;">
+                <div style="flex:1; min-width:280px;">
+                  <canvas id="categoryDonut"></canvas>
+                </div>
+                <div style="flex:2; min-width:320px;">
+                  <canvas id="monthlyLine"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="budget-card-subtitle">Monthly</div>
+                <div class="budget-card-title" id="stat-month-label">—</div>
+                <div class="stat-value" id="stat-month-budget">$—</div>
+                <div class="budget-card-subtitle">Budget</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="budget-card-subtitle">Expected</div>
+                <div class="budget-card-title">Remaining</div>
+                <div class="stat-value" id="stat-expected-remaining">$—</div>
+                <div class="budget-card-subtitle">Spendable</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="budget-card-subtitle">Running Budget</div>
+                <div class="budget-card-title">Today</div>
+                <div class="stat-value" id="stat-today">$—</div>
+                <div class="budget-card-subtitle">The amount that can be spent</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-column">
+            <div class="budget-category">
+              <h3 style="margin-bottom: 16px">Budget Category</h3>
+              <div class="category-header">
+                <div></div>
+                <div>Category</div>
+                <div>Budget</div>
+                <div>Spent</div>
+                <div>Remaining</div>
+                <div>Status</div>
+              </div>
+
+              <div id="categoriesContainer">
+                <!-- rendered rows here -->
+              </div>
+
+              <div style="margin-top:16px;">
+                <button id="addCategoryBudgetBtn" class="export-btn">
+                  <i class="fas fa-edit"></i> Save budgets (local)
+                </button>
+                <button id="resetBudgetsBtn" class="export-btn" style="margin-left:8px;">
+                  Reset budgets
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./scripts/budget.js"></script>
+  </body>
 </html>
