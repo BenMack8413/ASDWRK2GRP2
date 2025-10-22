@@ -195,6 +195,17 @@
                     });
                 }
 
+                const CATEGORY_COLORS = {
+                    Rent: '#3b5bd8',
+                    Food: '#16a34a',
+                    Transport: '#facc15',
+                    Shopping: '#f472b6',
+                    Saving: '#14b8a6',
+                    Investments: '#8b5cf6',
+                    Other: '#9ca3af',
+                };
+
+
                 let incomeChart, spendPie, activityBar;
                 function initCharts() {
                     const ctxIncome = safeCtx('incomeChart');
@@ -234,10 +245,13 @@
                         spendPie = new Chart(ctxPie, {
                             type: 'doughnut',
                             data: {
-                                labels: sample.categories.map((c) => c.label),
+                                labels: sample.categories.map(c => c.label),
                                 datasets: [
                                     {
-                                        data: sample.categories.map((c) => c.value),
+                                        data: sample.categories.map(c => c.value),
+                                        backgroundColor: sample.categories.map(
+                                            c => CATEGORY_COLORS[c.label] || '#9ca3af'
+                                        ),
                                         hoverOffset: 6,
                                     },
                                 ],
@@ -245,7 +259,19 @@
                             options: {
                                 responsive: true,
                                 maintainAspectRatio: false,
-                                plugins: { legend: { position: 'right' } },
+                                plugins: {
+                                    legend: { position: 'right' },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: (ctx) => {
+                                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                                const val = ctx.parsed;
+                                                const pct = ((val / total) * 100).toFixed(1);
+                                                return `${ctx.label}: ${formatCurrency(val)} (${pct}%)`;
+                                            },
+                                        },
+                                    },
+                                },
                             },
                         });
                     }
@@ -341,6 +367,39 @@
                         }
                     } catch (err) {
                         console.error('loadIncomesForDashboard error:', err);
+                    }
+                }
+
+                async function loadExpensesForDashboard() {
+                    try {
+                        const res = await fetch(`/api/expenses?budget_id=${BUDGET_ID}`);
+                        if (!res.ok) throw new Error('Failed to fetch expenses');
+                        const expenses = await res.json();
+
+                        // Group by category
+                        const totals = {};
+                        expenses.forEach(exp => {
+                            const cat = exp.category || 'Other';
+                            const amt = Number(exp.amount) || 0;
+                            totals[cat] = (totals[cat] || 0) + amt;
+                        });
+
+                        sample.categories = Object.keys(totals).map(k => ({
+                            label: k,
+                            value: totals[k],
+                        }));
+
+                        // Update pie chart
+                        if (spendPie) {
+                            spendPie.data.labels = sample.categories.map(c => c.label);
+                            spendPie.data.datasets[0].data = sample.categories.map(c => c.value);
+                            spendPie.data.datasets[0].backgroundColor = sample.categories.map(
+                                c => CATEGORY_COLORS[c.label] || '#9ca3af'
+                            );
+                            spendPie.update();
+                        }
+                    } catch (err) {
+                        console.error('loadExpensesForDashboard error:', err);
                     }
                 }
 
@@ -463,13 +522,14 @@
                 }
 
                 (function init() {
-
                     initCharts();
-
                     makeWidgetsDraggable();
-
-                    loadIncomesForDashboard();
-                    loadLayout();
+                    Promise.all([
+                        loadIncomesForDashboard(),
+                        loadExpensesForDashboard(),
+                    ]).then(() => {
+                        loadLayout();
+                    });
                 })();
             </script>
         </div>
