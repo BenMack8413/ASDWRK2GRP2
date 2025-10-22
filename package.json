@@ -28,6 +28,7 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "type": "commonjs",
     "bugs": {
         "url": "https://github.com/BenMack8413/ASDWRK2GRP2/issues"
     },
