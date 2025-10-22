@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Budget - Take Control of Your Finances</title>
+        <style>
+            :root {
+                --accent: #1062cd;
+                --accent-2: #0a4da6;
+                --panel: #ffffff;
+                --muted: #6b7280;
+                --card_shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    'Inter',
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    'Segoe UI',
+                    Roboto,
+                    'Helvetica Neue',
+                    Arial;
+                background: linear-gradient(135deg, #f3f6fb 0%, #e9edf5 100%);
+                color: #111;
+                line-height: 1.6;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            /* Header */
+            header {
+                padding: 20px 0;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 100;
+            }
+
+            .header-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .logo {
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--accent);
+                text-decoration: none;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 30px;
+                align-items: center;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: #374151;
+                font-weight: 500;
+                transition: color 0.3s;
+            }
+
+            .nav-links a:hover {
+                color: var(--accent);
+            }
+
+            .auth-buttons {
+                display: flex;
+                gap: 15px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s;
+                display: inline-block;
+                text-align: center;
+            }
+
+            .btn-outline {
+                border: 1px solid var(--accent);
+                color: var(--accent);
+                background: transparent;
+            }
+
+            .btn-outline:hover {
+                background: rgba(16, 98, 205, 0.05);
+            }
+
+            .btn-primary {
+                background: var(--accent);
+                color: white;
+                border: none;
+            }
+
+            .btn-primary:hover {
+                background: var(--accent-2);
+            }
+
+            /* Hero Section */
+            .hero {
+                padding: 160px 0 100px;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+                font-weight: 700;
+                margin-bottom: 20px;
+                color: #1a1a1a;
+                line-height: 1.2;
+            }
+
+            .hero p {
+                font-size: 20px;
+                color: #4b5563;
+                max-width: 700px;
+                margin: 0 auto 40px;
+            }
+
+            .hero-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 50px;
+            }
+
+            .hero-image {
+                max-width: 800px;
+                margin: 0 auto;
+                border-radius: 12px;
+                box-shadow: var(--card_shadow);
+                overflow: hidden;
+            }
+
+            .hero-image img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            /* Features Section */
+            .features {
+                padding: 100px 0;
+                background: white;
+            }
+
+            .section-title {
+                text-align: center;
+                margin-bottom: 60px;
+            }
+
+            .section-title h2 {
+                font-size: 36px;
+                font-weight: 700;
+                color: #1a1a1a;
+                margin-bottom: 15px;
+            }
+
+            .section-title p {
+                font-size: 18px;
+                color: #6b7280;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+            }
+
+            .feature-card {
+                background: #f9fafb;
+                padding: 30px;
+                border-radius: 12px;
+                text-align: center;
+                transition:
+                    transform 0.3s,
+                    box-shadow 0.3s;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--card_shadow);
+            }
+
+            .feature-icon {
+                width: 70px;
+                height: 70px;
+                margin: 0 auto 20px;
+                background: rgba(16, 98, 205, 0.1);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .feature-icon svg {
+                width: 30px;
+                height: 30px;
+                color: var(--accent);
+            }
+
+            .feature-card h3 {
+                font-size: 20px;
+                font-weight: 600;
+                margin-bottom: 15px;
+                color: #1a1a1a;
+            }
+
+            .feature-card p {
+                color: #6b7280;
+            }
+
+            /* CTA Section */
+            .cta {
+                padding: 100px 0;
+                text-align: center;
+                background: linear-gradient(
+                    135deg,
+                    var(--accent),
+                    var(--accent-2)
+                );
+                color: white;
+            }
+
+            .cta h2 {
+                font-size: 36px;
+                font-weight: 700;
+                margin-bottom: 20px;
+            }
+
+            .cta p {
+                font-size: 18px;
+                max-width: 600px;
+                margin: 0 auto 40px;
+                opacity: 0.9;
+            }
+
+            .cta .btn {
+                background: white;
+                color: var(--accent);
+                font-weight: 600;
+                padding: 12px 30px;
+            }
+
+            .cta .btn:hover {
+                background: #f3f4f6;
+            }
+
+            /* Footer */
+            footer {
+                padding: 50px 0;
+                background: #1a1a1a;
+                color: white;
+            }
+
+            .footer-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .footer-logo {
+                font-size: 20px;
+                font-weight: 700;
+                color: white;
+                text-decoration: none;
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 30px;
+            }
+
+            .footer-links a {
+                color: #d1d5db;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+            .footer-links a:hover {
+                color: white;
+            }
+
+            .copyright {
+                margin-top: 30px;
+                text-align: center;
+                color: #9ca3af;
+                font-size: 14px;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .hero h1 {
+                    font-size: 36px;
+                }
+
+                .hero p {
+                    font-size: 18px;
+                }
+
+                .hero-buttons {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .nav-links {
+                    display: none;
+                }
+
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .footer-content {
+                    flex-direction: column;
+                    gap: 20px;
+                    text-align: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <header>
+            <div class="container header-container">
+                <a href="#" class="logo">My Budget</a>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#">How It Works</a>
+                    <a href="#">Pricing</a>
+                    <div class="auth-buttons">
+                        <a href="login.html" class="btn btn-outline">Log In</a>
+                        <a href="login.html" class="btn btn-primary">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>Take Control of Your Finances</h1>
+                <p>
+                    Our intuitive budget tracking tool helps you create budgets,
+                    track expenses, and achieve your financial goals with ease.
+                </p>
+                <div class="hero-buttons">
+                    <a href="login.html" class="btn btn-primary"
+                        >Get Started Free</a
+                    >
+                    <a href="#features" class="btn btn-outline">Learn More</a>
+                </div>
+                <div class="hero-image">
+                    <!-- Budget app dashboard illustration -->
+                    <svg
+                        viewBox="0 0 800 450"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <rect
+                            x="0"
+                            y="0"
+                            width="800"
+                            height="450"
+                            fill="#f8fafc"
+                        />
+                        <rect
+                            x="50"
+                            y="40"
+                            width="700"
+                            height="60"
+                            rx="8"
+                            fill="white"
+                            stroke="#e5e7eb"
+                            stroke-width="1"
+                        />
+                        <rect
+                            x="70"
+                            y="55"
+                            width="120"
+                            height="30"
+                            rx="4"
+                            fill="#e5e7eb"
+                        />
+                        <rect
+                            x="210"
+                            y="55"
+                            width="80"
+                            height="30"
+                            rx="4"
+                            fill="#e5e7eb"
+                        />
+                        <rect
+                            x="310"
+                            y="55"
+                            width="80"
+                            height="30"
+                            rx="4"
+                            fill="#e5e7eb"
+                        />
+                        <rect
+                            x="410"
+                            y="55"
+                            width="80"
+                            height="30"
+                            rx="4"
+                            fill="#e5e7eb"
+                        />
+                        <rect
+                            x="610"
+                            y="55"
+                            width="120"
+                            height="30"
+                            rx="4"
+                            fill="#1062CD"
+                        />
+
+                        <rect
+                            x="50"
+                            y="120"
+                            width="340"
+                            height="300"
+                            rx="8"
+                            fill="white"
+                            stroke="#e5e7eb"
+                            stroke-width="1"
+                        />
+                        <rect
+                            x="70"
+                            y="140"
+                            width="300"
+                            height="30"
+                            rx="4"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="190"
+                            width="300"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="215"
+                            width="250"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="240"
+                            width="280"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="265"
+                            width="200"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="290"
+                            width="300"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="315"
+                            width="270"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="340"
+                            width="230"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+                        <rect
+                            x="70"
+                            y="365"
+                            width="300"
+                            height="15"
+                            rx="2"
+                            fill="#f3f4f6"
+                        />
+
+                        <rect
+                            x="410"
+                            y="120"
+                            width="340"
+                            height="140"
+                            rx="8"
+                            fill="white"
+                            stroke="#e5e7eb"
+                            stroke-width="1"
+                        />
+                        <rect
+                            x="430"
+                            y="140"
+                            width="300"
+                            height="100"
+                            rx="4"
+                            fill="#f0f9ff"
+                        />
+                        <circle
+                            cx="480"
+                            cy="190"
+                            r="40"
+                            fill="#1062CD"
+                            opacity="0.2"
+                        />
+                        <circle
+                            cx="580"
+                            cy="190"
+                            r="40"
+                            fill="#0ea5e9"
+                            opacity="0.4"
+                        />
+                        <circle
+                            cx="680"
+                            cy="190"
+                            r="40"
+                            fill="#38bdf8"
+                            opacity="0.6"
+                        />
+
+                        <rect
+                            x="410"
+                            y="280"
+                            width="340"
+                            height="140"
+                            rx="8"
+                            fill="white"
+                            stroke="#e5e7eb"
+                            stroke-width="1"
+                        />
+                        <rect
+                            x="430"
+                            y="300"
+                            width="300"
+                            height="100"
+                            rx="4"
+                            fill="#f0fdf4"
+                        />
+                        <rect
+                            x="450"
+                            y="320"
+                            width="260"
+                            height="15"
+                            rx="2"
+                            fill="#dcfce7"
+                        />
+                        <rect
+                            x="450"
+                            y="345"
+                            width="220"
+                            height="15"
+                            rx="2"
+                            fill="#dcfce7"
+                        />
+                        <rect
+                            x="450"
+                            y="370"
+                            width="240"
+                            height="15"
+                            rx="2"
+                            fill="#dcfce7"
+                        />
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Powerful Features for Your Finances</h2>
+                    <p>
+                        Everything you need to manage your money effectively and
+                        reach your financial goals
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                />
+                            </svg>
+                        </div>
+                        <h3>Budget Creation</h3>
+                        <p>
+                            Easily create customized budgets for different
+                            categories and track your spending against them.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                        </div>
+                        <h3>Expense Tracking</h3>
+                        <p>
+                            Monitor all your expenses in one place with
+                            intuitive categorization and spending insights.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                                />
+                            </svg>
+                        </div>
+                        <h3>Goal Setting</h3>
+                        <p>
+                            Set financial goals and track your progress with
+                            visual indicators and milestone celebrations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta">
+            <div class="container">
+                <h2>Ready to Take Control of Your Finances?</h2>
+                <p>
+                    Join thousands of users who are already achieving their
+                    financial goals with My Budget
+                </p>
+                <a href="login.html" class="btn">Get Started Now</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <a href="#" class="footer-logo">My Budget</a>
+                    <div class="footer-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Contact Us</a>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy; 2025 My Budget. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

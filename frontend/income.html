@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Income Tracking</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="./css/style.css" />
+    </head>
+
+    <body>
+        <div class="dashboard">
+            <!--LEFT SIDE BAR STARTS HERE-->
+            <aside class="sidebar">
+                <div class="budget_name">My Budget</div>
+                <div>
+                    <div class="balance">Menu</div>
+                </div>
+                <nav class="nav">
+                    <a onclick="location.href='/dashboard.html';">Dashboard</a>
+                    <a onclick="location.href='/budget.html';">Budget</a>
+                    <a class="active" onclick="location.href='/income.html';"
+                        >Income</a
+                    >
+                    <a onclick="location.href='/expenses.html';">Expenses</a>
+                    <a onclick="location.href='/chart.html';">Charts</a>
+                    <a onclick="location.href='/categories.html';"
+                        >Categories</a
+                    >
+                    <a onclick="location.href='/saving-goals.html';"
+                        >Saving Goals</a
+                    >
+                    <a onclick="location.href='/upcoming-payments.html';"
+                        >Upcoming Payments</a
+                    >
+                    <a onclick="location.href='/account.html';">Settings</a>
+                </nav>
+            </aside>
+            <!--LEFT SIDE BAR END HERE-->
+
+            <main class="main">
+                <div class="income-header">
+                    <div class="header-left">
+                        <h1>Income Tracking</h1>
+                    </div>
+                    <div class="header-right">
+                        <button class="add-income-btn" id="showIncomeForm">
+                            <i class="fas fa-plus"></i> Add Income
+                        </button>
+                    </div>
+                </div>
+
+                <div class="income-form-container" id="incomeForm">
+                    <div class="form-header">
+                        <h3>Add New Income</h3>
+                        <button class="close-form" id="closeIncomeForm">
+                            &times;
+                        </button>
+                    </div>
+                    <form id="incomeEntryForm">
+                        <div class="form-group">
+                            <label for="incomeSource">Income Source</label>
+                            <input
+                                type="text"
+                                id="incomeSource"
+                                required
+                                placeholder="Salary, Freelance, etc."
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="incomeAmount">Amount ($)</label>
+                            <input
+                                type="number"
+                                id="incomeAmount"
+                                required
+                                placeholder="0.00"
+                                step="0.01"
+                                min="0"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="incomeDate">Date</label>
+                            <input type="date" id="incomeDate" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="incomeFrequency">Frequency</label>
+                            <select id="incomeFrequency" required>
+                                <option value="">Select frequency</option>
+                                <option value="one-time">One-time</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="fortnightly">Fortnightly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="incomeDescription"
+                                >Description (Optional)</label
+                            >
+                            <input
+                                type="text"
+                                id="incomeDescription"
+                                placeholder="Additional details about this income"
+                            />
+                        </div>
+                        <div
+                            class="form-group full-width recurring-options"
+                            id="recurringOptions"
+                            style="display: none"
+                        >
+                            <input type="checkbox" id="setRecurring" />
+                            <label for="setRecurring"
+                                >Set as recurring income</label
+                            >
+                        </div>
+                        <div class="form-actions">
+                            <button
+                                type="button"
+                                class="cancel-btn"
+                                id="cancelIncomeForm"
+                            >
+                                Cancel
+                            </button>
+                            <button type="submit" class="submit-btn">
+                                Add Income
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="income-stats">
+                    <div class="stat-card stat-1">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-value" id="stat-total-income">$0</div>
+                        <div class="stat-title">
+                            Total Current Monthly Income
+                        </div>
+                    </div>
+                    <div class="stat-card stat-2">
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="stat-value" id="stat-expected-income">
+                            $0
+                        </div>
+                        <div class="stat-title">Expected This Month</div>
+                    </div>
+                    <div class="stat-card stat-3">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="stat-value" id="stat-income-sources">0</div>
+                        <div class="stat-title">Income Sources</div>
+                    </div>
+                </div>
+
+                <div class="income-list-container">
+                    <div class="list-header">
+                        <h3>Income History</h3>
+                        <div class="list-controls">
+                            <input
+                                type="text"
+                                class="search-box"
+                                placeholder="Search income..."
+                                id="searchIncome"
+                            />
+                            <select class="sort-select" id="sortIncome">
+                                <option value="date-desc">
+                                    Sort by: Date (Newest)
+                                </option>
+                                <option value="date-asc">
+                                    Sort by: Date (Oldest)
+                                </option>
+                                <option value="amount-desc">
+                                    Sort by: Amount (High to Low)
+                                </option>
+                                <option value="amount-asc">
+                                    Sort by: Amount (Low to High)
+                                </option>
+                                <option value="source">Sort by: Source</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="income-table">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Frequency</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incomeList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+
+    <script>
+        const API_ROOT = '/api/incomes';
+        const BUDGET_ID = 1;
+
+        const showIncomeFormBtn = document.getElementById('showIncomeForm');
+        const incomeForm = document.getElementById('incomeForm');
+        const closeIncomeFormBtn = document.getElementById('closeIncomeForm');
+        const cancelIncomeFormBtn = document.getElementById('cancelIncomeForm');
+        const incomeEntryForm = document.getElementById('incomeEntryForm');
+        const incomeFrequency = document.getElementById('incomeFrequency');
+        const recurringOptions = document.getElementById('recurringOptions');
+        const incomeList = document.getElementById('incomeList');
+        const searchIncome = document.getElementById('searchIncome');
+        const sortIncome = document.getElementById('sortIncome');
+
+        const formHeaderTitle = incomeForm.querySelector('.form-header h3');
+        const submitBtn = incomeEntryForm.querySelector(
+            'button[type="submit"]',
+        );
+        const inputSource = document.getElementById('incomeSource');
+        const inputAmount = document.getElementById('incomeAmount');
+        const inputDate = document.getElementById('incomeDate');
+        const inputFrequency = document.getElementById('incomeFrequency');
+        const inputDescription = document.getElementById('incomeDescription');
+        const inputRecurringCheckbox = document.getElementById('setRecurring');
+
+        /* ---- edit state ---- */
+        let editingIncomeId = null;
+
+        function openIncomeFormForCreate() {
+            editingIncomeId = null;
+            formHeaderTitle.textContent = 'Add New Income';
+            submitBtn.textContent = 'Add Income';
+            incomeEntryForm.reset();
+            recurringOptions.style.display = 'none';
+            incomeForm.classList.add('visible');
+
+            if (!inputDate.value) inputDate.valueAsDate = new Date();
+        }
+
+        function openIncomeFormForEdit(income) {
+            editingIncomeId = income.id;
+            formHeaderTitle.textContent = 'Edit Income';
+            submitBtn.textContent = 'Save Changes';
+
+            inputSource.value = income.source || '';
+            inputAmount.value =
+                typeof income.amount === 'number'
+                    ? income.amount.toFixed(2)
+                    : '';
+
+            inputDate.value = income.date ? income.date.split('T')[0] : '';
+            inputFrequency.value = income.frequency || '';
+            inputDescription.value = income.description || income.notes || '';
+            inputRecurringCheckbox.checked = false;
+            recurringOptions.style.display =
+                inputFrequency.value && inputFrequency.value !== 'one-time'
+                    ? 'flex'
+                    : 'none';
+            incomeForm.classList.add('visible');
+
+            inputSource.focus();
+        }
+
+        function hideIncomeForm() {
+            incomeForm.classList.remove('visible');
+            editingIncomeId = null;
+            incomeEntryForm.reset();
+
+            formHeaderTitle.textContent = 'Add New Income';
+            submitBtn.textContent = 'Add Income';
+            recurringOptions.style.display = 'none';
+        }
+
+        showIncomeFormBtn.addEventListener('click', openIncomeFormForCreate);
+        closeIncomeFormBtn.addEventListener('click', hideIncomeForm);
+        cancelIncomeFormBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            hideIncomeForm();
+        });
+
+        incomeFrequency.addEventListener('change', function () {
+            if (this.value !== 'one-time' && this.value !== '')
+                recurringOptions.style.display = 'flex';
+            else recurringOptions.style.display = 'none';
+        });
+
+        let incomes = [];
+
+        async function loadIncomes() {
+            try {
+                const res = await fetch(`${API_ROOT}?budget_id=${BUDGET_ID}`);
+                if (!res.ok)
+                    throw new Error(
+                        'Failed to load incomes: ' + res.statusText,
+                    );
+                incomes = await res.json();
+                renderIncomes();
+            } catch (err) {
+                console.error(err);
+                // alert('Could not load incomes from server. See console for details.');
+            }
+        }
+
+        async function createIncome(payload) {
+            try {
+                const res = await fetch(API_ROOT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Create failed: ' + txt);
+                }
+                const created = await res.json();
+                // add to local list
+                incomes.unshift(created);
+                renderIncomes();
+                return created;
+            } catch (err) {
+                console.error(err);
+                throw err;
+            }
+        }
+
+        async function updateIncomeOnServer(id, payload) {
+            try {
+                let res = await fetch(
+                    `${API_ROOT}/${id}?budget_id=${BUDGET_ID}`,
+                    {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    },
+                );
+                if (res.ok) return await res.json();
+
+                res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (res.ok) return await res.json();
+
+                const text = await res.text().catch(() => '');
+                throw new Error(
+                    `Update not supported or failed: ${res.status} ${text}`,
+                );
+            } catch (err) {
+                throw err;
+            }
+        }
+
+        async function deleteIncomeOnServer(id) {
+            try {
+                const res = await fetch(
+                    `${API_ROOT}/${id}?budget_id=${BUDGET_ID}`,
+                    { method: 'DELETE' },
+                );
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Delete failed: ' + txt);
+                }
+                incomes = incomes.filter((i) => i.id !== id);
+                renderIncomes();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete item on server.');
+            }
+        }
+
+        incomeEntryForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const source = inputSource.value.trim();
+            const amountRaw = inputAmount.value;
+            const amount = parseFloat(amountRaw);
+            const date = inputDate.value;
+            const frequency = inputFrequency.value;
+            const description = inputDescription.value;
+            const isRecurring = inputRecurringCheckbox.checked;
+
+            if (!date || !Number.isFinite(amount)) {
+                alert('Please provide valid date and amount.');
+                return;
+            }
+
+            const payload = {
+                budget_id: BUDGET_ID,
+                amount,
+                date,
+                source,
+                frequency,
+                description,
+                account_id: null,
+            };
+
+            try {
+                if (editingIncomeId == null) {
+                    await createIncome(payload);
+                    hideIncomeForm();
+                    alert('Income added successfully!');
+                } else {
+                    try {
+                        const updated = await updateIncomeOnServer(
+                            editingIncomeId,
+                            payload,
+                        );
+
+                        if (updated && updated.id) {
+                            incomes = incomes.map((i) =>
+                                i.id === updated.id ? updated : i,
+                            );
+                        } else {
+                            await loadIncomes();
+                        }
+                        hideIncomeForm();
+                        alert('Income updated successfully!');
+                    } catch (updateErr) {
+                        console.warn(
+                            'Update failed, falling back to recreate+delete:',
+                            updateErr,
+                        );
+                        const created = await createIncome(payload);
+
+                        try {
+                            await deleteIncomeOnServer(editingIncomeId);
+                        } catch (delErr) {
+                            console.warn(
+                                'Failed to delete old income after fallback create:',
+                                delErr,
+                            );
+                        }
+                        hideIncomeForm();
+                        alert('Income updated (by creating a new record).');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to save income: ' + (err.message || err));
+            } finally {
+                editingIncomeId = null;
+            }
+        });
+
+        function updateIncomeStats(incomes) {
+            const now = new Date();
+            let totalIncome = 0;
+            let expectedThisMonth = 0;
+
+            incomes.forEach((i) => {
+                const amount = i.amount || 0;
+                totalIncome += amount;
+
+                const incomeDate = new Date(i.date);
+
+                switch ((i.frequency || '').toLowerCase()) {
+                    case 'monthly':
+                        if (incomeDate <= now) expectedThisMonth += amount;
+                        break;
+                    case 'weekly':
+                        if (incomeDate <= now) expectedThisMonth += amount * 4;
+                        break;
+                    case 'yearly':
+                        if (incomeDate <= now) expectedThisMonth += amount / 12;
+                        break;
+                    default:
+                        if (
+                            incomeDate.getMonth() === now.getMonth() &&
+                            incomeDate.getFullYear() === now.getFullYear()
+                        ) {
+                            expectedThisMonth += amount;
+                        }
+                }
+            });
+
+            const sources = new Set(incomes.map((i) => i.source)).size;
+
+            document.getElementById('stat-total-income').textContent =
+                `$${totalIncome.toFixed(2)}`;
+            document.getElementById('stat-expected-income').textContent =
+                `$${expectedThisMonth.toFixed(2)}`;
+            document.getElementById('stat-income-sources').textContent =
+                sources;
+        }
+
+        function renderIncomes() {
+            incomeList.innerHTML = '';
+
+            incomes.forEach((income) => {
+                const row = document.createElement('tr');
+                row.classList.add('income-row');
+
+                row.innerHTML = `
+      <td>
+        <div class="income-source">
+          <div class="source-icon"><i class="fas fa-wallet"></i></div>
+          <div class="income-source-text"></div>
+        </div>
+      </td>
+      <td class="income-amount"></td>
+      <td class="income-date"></td>
+      <td>
+        <span class="income-frequency">${income.frequency || 'One-time'}</span>
+      </td>
+      <td>
+        <div class="income-actions">
+          <button class="edit-btn" type="button" title="Edit"><i class="fas fa-edit"></i></button>
+          <button class="delete-btn" type="button" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>
+    `;
+
+                row.querySelector('.income-source-text').textContent =
+                    income.source || '';
+                row.querySelector('.income-amount').textContent =
+                    `$${(income.amount || 0).toFixed(2)}`;
+                row.querySelector('.income-date').textContent = new Date(
+                    income.date,
+                ).toLocaleDateString();
+
+                row.querySelector('.edit-btn').addEventListener('click', () => {
+                    openIncomeFormForEdit(income);
+                });
+
+                row.querySelector('.delete-btn').addEventListener(
+                    'click',
+                    async () => {
+                        if (!confirm('Delete this income?')) return;
+                        try {
+                            await deleteIncomeOnServer(income.id);
+                        } catch (err) {
+                            console.error(err);
+                            alert('Failed to delete income.');
+                        }
+                    },
+                );
+
+                incomeList.appendChild(row);
+            });
+
+            updateIncomeStats(incomes);
+        }
+
+        searchIncome.addEventListener('input', () => {
+            const q = searchIncome.value.trim().toLowerCase();
+            if (!q) {
+                renderIncomes();
+                return;
+            }
+            const filtered = incomes.filter(
+                (i) =>
+                    (i.source || '').toLowerCase().includes(q) ||
+                    (i.description || i.notes || '').toLowerCase().includes(q),
+            );
+
+            const prev = incomes;
+            incomes = filtered;
+            renderIncomes();
+            incomes = prev;
+        });
+
+        sortIncome.addEventListener('change', () => {
+            const mode = sortIncome.value;
+
+            incomes.sort((a, b) => {
+                if (mode === 'date-desc')
+                    return new Date(b.date) - new Date(a.date);
+                if (mode === 'date-asc')
+                    return new Date(a.date) - new Date(b.date);
+                if (mode === 'amount-desc')
+                    return (b.amount || 0) - (a.amount || 0);
+                if (mode === 'amount-asc')
+                    return (a.amount || 0) - (b.amount || 0);
+                if (mode === 'source')
+                    return (a.source || '').localeCompare(b.source || '');
+                return 0;
+            });
+            renderIncomes();
+        });
+
+        document.getElementById('incomeDate').valueAsDate = new Date();
+        document.addEventListener('DOMContentLoaded', loadIncomes);
+        loadIncomes();
+    </script>
+</html>

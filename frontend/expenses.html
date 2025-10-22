@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Expenses</title>
+        <link rel="stylesheet" href="./css/style.css" />
+    </head>
+
+    <body>
+        <div class="dashboard">
+            <!--LEFT SIDE BAR STARTS HERE-->
+            <aside class="sidebar">
+                <div class="budget_name">My Budget</div>
+                <div>
+                    <div class="balance">Menu</div>
+                </div>
+                <nav class="nav">
+                    <a onclick="location.href='/dashboard.html';">Dashboard</a>
+                    <a onclick="location.href='/budget.html';">Budget</a>
+                    <a onclick="location.href='/income.html';">Income</a>
+                    <a class="active" onclick="location.href='/expenses.html';"
+                        >Expenses</a
+                    >
+                    <a onclick="location.href='/chart.html';">Charts</a>
+                    <a onclick="location.href='/categories.html';"
+                        >Categories</a
+                    >
+                    <a onclick="location.href='/saving-goals.html';"
+                        >Saving Goals</a
+                    >
+                    <a onclick="location.href='/upcoming-payments.html';"
+                        >Upcoming Payments</a
+                    >
+                    <a onclick="location.href='/account.html';">Settings</a>
+                </nav>
+            </aside>
+            <!--LEFT SIDE BAR END HERE-->
+
+            <main class="main">
+                <div class="expense-header">
+                    <h1 class="title">Expense Tracking</h1>
+                    <button class="addExpenseButton" id="addExpense">
+                        + Add Expense
+                    </button>
+                </div>
+
+                <div class="expenseContainer">
+                    <table class="expenseTable" id="expenseTable">
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>$500</td>
+                                <td>Groceries</td>
+                                <td>Weekly grocery shopping</td>
+                                <td>1st January 2026</td>
+                                <td>Weekly</td>
+                            </tr>
+                            <tr>
+                                <td>$150</td>
+                                <td>Utilities</td>
+                                <td>Monthly utility bills</td>
+                                <td>13th January 2026</td>
+                                <td>Monthly</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
