@@ -79,7 +79,7 @@ module.exports = (db) => {
         }
     });
 
-    app.get('/verify', requireAuth, (req, res) => {
+    router.get('/verify', requireAuth, (req, res) => {
         res.status(200).json({
             message: 'Token is valid',
             user: req.user,

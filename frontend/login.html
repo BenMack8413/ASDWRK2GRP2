@@ -6,6 +6,17 @@
         <title>Login / Signup - My Budget</title>
         <link rel="stylesheet" href="./css/style.css" />
         <style>
+            .error {
+                color: #e74c3c;
+                font-size: 0.9em;
+                margin-top: 4px;
+            }
+
+            input.error-field {
+                border: 1px solid #e74c3c;
+                outline: none;
+            }
+
             body {
                 margin: 0;
                 font-family:
@@ -51,7 +62,7 @@
                     <div class="form-group">
                         <label for="login-username">Email</label>
                         <input
-                            type="text"
+                            type="email"
                             id="login-username"
                             name="username"
                             class="form-input"
@@ -191,38 +202,86 @@
                 }
             });
 
-            // Form submission
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email.trim());
+            }
+
+            function showError(input, message) {
+                let errorEl = input.nextElementSibling;
+                input.classList.add('error-field'); // add red border
+                if (!errorEl || !errorEl.classList.contains('error')) {
+                    errorEl = document.createElement('div');
+                    errorEl.classList.add('error');
+                    input.insertAdjacentElement('afterend', errorEl);
+                }
+                errorEl.textContent = message;
+            }
+
+            function clearError(input) {
+                input.classList.remove('error-field');
+                const errorEl = input.nextElementSibling;
+                if (errorEl && errorEl.classList.contains('error')) {
+                    errorEl.remove();
+                }
+            }
+
+            // Signup form
             document
                 .getElementById('signupForm')
                 .addEventListener('submit', function (e) {
-                    e.preventDefault(); // stop page reload
-                    const username =
-                        document.getElementById('signup-username').value;
-                    const email = document.getElementById('signup-email').value;
+                    e.preventDefault();
+
+                    const username = document
+                        .getElementById('signup-username')
+                        .value.trim();
+                    const emailInput = document.getElementById('signup-email');
+                    const email = emailInput.value.trim();
                     const password =
                         document.getElementById('signup-password').value;
                     const remember =
                         document.getElementById('signup-remember').checked;
 
-                    // Call your signup function here
-                    // console.log('Signup:', { username, email, password, remember });
+                    clearError(emailInput);
+                    if (!email) {
+                        showError(emailInput, 'Email is required.');
+                        return;
+                    }
+                    if (!isValidEmail(email)) {
+                        showError(
+                            emailInput,
+                            'Please enter a valid email address.',
+                        );
+                        return;
+                    }
+
                     signup(username, email, password, remember);
                 });
 
-            // Watch for login form submit
             document
                 .getElementById('loginForm')
                 .addEventListener('submit', function (e) {
                     e.preventDefault();
-                    const username =
-                        document.getElementById('login-username').value;
+
+                    const username = document
+                        .getElementById('login-username')
+                        .value.trim();
                     const password =
                         document.getElementById('login-password').value;
                     const remember =
                         document.getElementById('login-remember').checked;
 
-                    // Call your login function here
-                    // console.log('Login:', { username, password, remember });
+                    if (!isValidEmail(username)) {
+                        const loginInput =
+                            document.getElementById('login-username');
+                        clearError(loginInput);
+                        showError(
+                            loginInput,
+                            'Please enter a valid email address.',
+                        );
+                        return;
+                    }
+
                     login(username, password, remember);
                 });
         </script>
