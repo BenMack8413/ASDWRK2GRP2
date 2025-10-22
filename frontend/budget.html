@@ -10,6 +10,38 @@
         />
         <link rel="stylesheet" href="./css/style.css" />
     </head>
+    <style>
+/* expense = grey (bottom) */
+.month-expense {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #cbd5e1; /* grey */
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    transition: height 300ms ease, bottom 300ms ease;
+}
+
+/* remaining = blue (on top of expense) */
+.month-remaining {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: #4f46e5; /* blue */
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    transition: height 300ms ease, bottom 300ms ease;
+}
+
+/* if expense exceeds income, show expense full and remaining 0 (clamped) */
+.month .label {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--muted, #6b7280);
+}
+</style>
 
     <body>
         <div class="dashboard">
@@ -139,91 +171,71 @@
                             <div class="month-scroller">
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 40%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Jan
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 60%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Feb
                                 </div>
                                 <div class="month active">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 85%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Mar
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 30%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Apr
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 25%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     May
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 50%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Jun
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 70%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Jul
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 65%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Aug
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 45%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Sep
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div
-                                            class="month-progress"
-                                            style="height: 35%"
-                                        ></div>
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
                                     </div>
                                     Oct
                                 </div>
@@ -321,6 +333,9 @@
         <script>
             /* -------- Budget Start -------- */
 
+            // Chart container elements
+
+            // Cards at the bottom of the page
             const statGrid = document.getElementById('stats-grid');
             const statIncome = document.getElementById('stats-income');
             const statExpense = document.getElementById('stats-expense');
@@ -356,11 +371,11 @@
                     alert('Add Transaction will be here');
                 });
 
-            function RenderBudgets() {
+            async function RenderBudgets() {
                 // Placeholder for future budget rendering logic
             }
 
-            async function updateBudgetStatsFromServer() {
+            async function updateBudgetCardStatsFromServer() {
                 try {
                     // replace with a real summary endpoint that returns numbers
                     const res = await fetch('/api/summary'); 
@@ -384,7 +399,66 @@
                     : n;
             }
 
-            document.addEventListener('DOMContentLoaded', updateBudgetStatsFromServer);
+            // Example month data — replace with real data from server:
+            // Array index order matches rendered months (Jan..Oct here)
+            const monthData = [
+                { income: 3400, expense: 800 }, // Jan
+                { income: 3200, expense: 1200 }, // Feb
+                { income: 3400, expense: 500 }, // Mar
+                { income: 3000, expense: 900 }, // Apr
+                { income: 3500, expense: 2500 }, // May
+                { income: 3600, expense: 1000 }, // Jun
+                { income: 3400, expense: 1200 }, // Jul
+                { income: 3300, expense: 1800 }, // Aug
+                { income: 3400, expense: 1400 }, // Sep
+                { income: 3400, expense: 300 }, // Oct
+            ];
+
+            function renderMonthBars(dataArray) {
+                const months = Array.from(document.querySelectorAll('.month'));
+                months.forEach((monthEl, idx) => {
+                    const data = dataArray[idx] || { income: 0, expense: 0 };
+                    const income = Number(data.income) || 0;
+                    const expense = Number(data.expense) || 0;
+
+                    // compute percentages relative to income; if income is 0, fall back to clamped representation
+                    let expensePct = 0;
+                    let remainingPct = 0;
+
+                    if (income > 0) {
+                        expensePct = (expense / income) * 100;
+                        // clamp expense to 100
+                        expensePct = Math.min(100, expensePct);
+                        remainingPct = Math.max(0, Math.min(100 - expensePct, ((income - expense) / income) * 100));
+                    } else {
+                        // if no income, show expense as 100% if any expense, remaining 0
+                        expensePct = expense > 0 ? 100 : 0;
+                        remainingPct = 0;
+                    }
+
+                    // If expense > income, show expense full 100% and remaining 0
+                    if (expense > income && income > 0) {
+                        expensePct = 100;
+                        remainingPct = 0;
+                    }
+
+                    const expenseDiv = monthEl.querySelector('.month-expense');
+                    const remainingDiv = monthEl.querySelector('.month-remaining');
+
+                    // set heights and bottom offsets so remaining stacks above expense
+                    expenseDiv.style.height = `${expensePct}%`;
+                    remainingDiv.style.bottom = `${expensePct}%`;
+                    remainingDiv.style.height = `${remainingPct}%`;
+
+                    // optionally set title/tooltip with numeric values
+                    monthEl.title = `Income: ${formatCurrency(income)} • Expense: ${formatCurrency(expense)} • Remaining: ${formatCurrency(Math.max(0, income - expense))}`;
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', updateBudgetCardStatsFromServer);
+            document.addEventListener('DOMContentLoaded', () => {
+                renderMonthBars(monthData);
+            });
             /* -------- Budget End -------- */
         </script>
     </body>
