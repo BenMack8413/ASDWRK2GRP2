@@ -356,13 +356,6 @@
                 renderExpenses();
             }
 
-            function clearExpenses() {
-                localStorage.removeItem('expenses');
-                expenses = [];
-                renderExpenses();
-                updateCards();
-            }
-
             sortExpense.onchange = sortExpenses;
             searchExpense.oninput = searchExpenses;
             expenseForm.onsubmit = formSubmission;
@@ -370,9 +363,6 @@
             document.addEventListener('keydown', function(e) {
                 if (e.key === '[') {
                     addTestExpense();
-                }
-                if (e.key === ']') {
-                    clearExpenses();
                 }
             });
 

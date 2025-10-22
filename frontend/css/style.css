@@ -544,12 +544,32 @@ body {
     overflow: hidden;
 }
 
-.month-progress {
+.month-expense {
     position: absolute;
+    left: 0;
+    right: 0;
     bottom: 0;
-    width: 100%;
-    border-radius: 15px;
-    background: var(--accent);
+    background: #cbd5e1; /* grey */
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    transition: height 300ms ease, bottom 300ms ease;
+}
+
+.month-remaining {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: #4f46e5; /* blue */
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    transition: height 300ms ease, bottom 300ms ease;
+}
+
+.month .label {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--muted, #6b7280);
 }
 
 .stats-grid {

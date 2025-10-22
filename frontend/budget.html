@@ -10,38 +10,6 @@
         />
         <link rel="stylesheet" href="./css/style.css" />
     </head>
-    <style>
-/* expense = grey (bottom) */
-.month-expense {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #cbd5e1; /* grey */
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    transition: height 300ms ease, bottom 300ms ease;
-}
-
-/* remaining = blue (on top of expense) */
-.month-remaining {
-    position: absolute;
-    left: 0;
-    right: 0;
-    background: #4f46e5; /* blue */
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    transition: height 300ms ease, bottom 300ms ease;
-}
-
-/* if expense exceeds income, show expense full and remaining 0 (clamped) */
-.month .label {
-    text-align: center;
-    font-size: 12px;
-    margin-top: 4px;
-    color: var(--muted, #6b7280);
-}
-</style>
 
     <body>
         <div class="dashboard">
@@ -239,6 +207,20 @@
                                     </div>
                                     Oct
                                 </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
+                                    </div>
+                                    Nov
+                                </div>
+                                <div class="month">
+                                    <div class="month-bar">
+                                        <div class="month-expense"></div>
+                                        <div class="month-remaining"></div>
+                                    </div>
+                                    Dec
+                                </div>
                             </div>
                         </div>
 
@@ -371,18 +353,16 @@
                     alert('Add Transaction will be here');
                 });
 
-            async function RenderBudgets() {
-                // Placeholder for future budget rendering logic
-            }
-
             async function updateBudgetCardStatsFromServer() {
                 try {
                     // replace with a real summary endpoint that returns numbers
-                    const res = await fetch('/api/summary'); 
-                    const summary = res.ok ? await res.json() : null;
+                    const res = await fetch('/api/budget'); 
+                        if (!res.ok) throw new Error('Failed to fetch budget data');
 
-                    const income = summary?.income ?? 700;
-                    const expense = summary?.expense ?? 400;
+                    const summary = await res.json();
+
+                    const income = summary?.income ?? 0;
+                    const expense = summary?.expense ?? 0;
                     const running = summary?.running ?? (income - expense);
 
                     document.getElementById('stat-income').textContent = formatCurrency(income);
@@ -412,6 +392,8 @@
                 { income: 3300, expense: 1800 }, // Aug
                 { income: 3400, expense: 1400 }, // Sep
                 { income: 3400, expense: 300 }, // Oct
+                { income: 5200, expense: 900 }, // Oct
+                { income: 2800, expense: 2000 }, // Oct
             ];
 
             function renderMonthBars(dataArray) {
