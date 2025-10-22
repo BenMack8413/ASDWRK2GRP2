@@ -230,31 +230,31 @@
                             </div>
                         </div>
 
-                        <div class="stats-grid">
+                        <div class="stats-grid" id="stats-grid">
                             <div class="stat-card">
                                 <div class="budget-card-subtitle">Monthly</div>
                                 <div class="budget-card-title">
-                                    August 13, 2025
+                                    Income
                                 </div>
-                                <div class="stat-value">$3,400</div>
-                                <div class="budget-card-subtitle">Budget</div>
+                                <div class="stat-value" id="stat-income">$3,400</div>
+                                <div class="budget-card-subtitle">Amount Earning</div>
                             </div>
 
                             <div class="stat-card">
-                                <div class="budget-card-subtitle">Expected</div>
-                                <div class="budget-card-title">Export</div>
-                                <div class="stat-value">$500.00</div>
+                                <div class="budget-card-subtitle">Monthly</div>
+                                <div class="budget-card-title">Expense</div>
+                                <div class="stat-value" id="stat-expense">$500.00</div>
                                 <div class="budget-card-subtitle">
-                                    Bill Sale
+                                    Amount Paying
                                 </div>
                             </div>
 
                             <div class="stat-card">
                                 <div class="budget-card-subtitle">
-                                    Running Budget
+                                    Monthly
                                 </div>
-                                <div class="budget-card-title">Today</div>
-                                <div class="stat-value">$500.00</div>
+                                <div class="budget-card-title">Running Budget</div>
+                                <div class="stat-value" id="stat-running">$500.00</div>
                                 <div class="budget-card-subtitle">
                                     The amount that can be spent
                                 </div>
@@ -320,6 +320,12 @@
 
         <script>
             /* -------- Budget Start -------- */
+
+            const statGrid = document.getElementById('stats-grid');
+            const statIncome = document.getElementById('stats-income');
+            const statExpense = document.getElementById('stats-expense');
+            const statRun = document.getElementById('stats-running');
+
             document.querySelectorAll('.filter-btn').forEach((button) => {
                 button.addEventListener('click', function () {
                     document.querySelectorAll('.filter-btn').forEach((btn) => {
@@ -349,6 +355,36 @@
                 .addEventListener('click', function () {
                     alert('Add Transaction will be here');
                 });
+
+            function RenderBudgets() {
+                // Placeholder for future budget rendering logic
+            }
+
+            async function updateBudgetStatsFromServer() {
+                try {
+                    // replace with a real summary endpoint that returns numbers
+                    const res = await fetch('/api/summary'); 
+                    const summary = res.ok ? await res.json() : null;
+
+                    const income = summary?.income ?? 700;
+                    const expense = summary?.expense ?? 400;
+                    const running = summary?.running ?? (income - expense);
+
+                    document.getElementById('stat-income').textContent = formatCurrency(income);
+                    document.getElementById('stat-expense').textContent = formatCurrency(expense);
+                    document.getElementById('stat-running').textContent = formatCurrency(running);
+                } catch (err) {
+                    console.error('Failed to update budget stats', err);
+                }
+            }
+
+            function formatCurrency(n) {
+                return typeof n === 'number'
+                    ? n.toLocaleString(undefined, { style: 'currency', currency: 'AUD' })
+                    : n;
+            }
+
+            document.addEventListener('DOMContentLoaded', updateBudgetStatsFromServer);
             /* -------- Budget End -------- */
         </script>
     </body>
