@@ -44,7 +44,7 @@
                     <div class="card small">
                         <div class="widget_header">
                             <div><h3>Current Balance</h3></div>
-                            <div class="balance_amount">$99,999</div>
+                            <div class="balance_amount" id="currentBalance">$0</div>
                         </div>
                     </div>
                     <div class="card medium">
@@ -119,50 +119,16 @@
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
+                // --- CONFIG ---
+                const INCOME_API = '/api/incomes';
+                const BUDGET_ID = 1; // update if you use another budget id
+
+                // keep a small sample object for non-income placeholders (expenses/categories)
                 const sample = {
-                    recentTx: [
-                        {
-                            id: 1,
-                            title: 'Deposit to Amex',
-                            date: '2 September',
-                            amount: -1230,
-                        },
-                        {
-                            id: 2,
-                            title: 'Deposit from PayPal',
-                            date: '1 September',
-                            amount: +2450,
-                        },
-                        {
-                            id: 3,
-                            title: 'Refund',
-                            date: '31 August',
-                            amount: +130,
-                        },
-                        {
-                            id: 4,
-                            title: 'Purchase iPhone 16 Pro Max',
-                            date: '31 August',
-                            amount: -2849,
-                        },
-                        {
-                            id: 5,
-                            title: 'Deposit from NAB',
-                            date: '30 August',
-                            amount: +600,
-                        },
-                    ],
+                    recentTx: [], // will be filled from API
                     monthly: {
-                        months: [
-                            'Mar',
-                            'Apr',
-                            'May',
-                            'Jun',
-                            'Jul',
-                            'Aug',
-                            'Sep',
-                        ],
-                        income: [7000, 7000, 7000, 7000, 7000, 7000, 7000],
+                        months: [],
+                        income: [],
                         expense: [6800, 6600, 5900, 6650, 6500, 6900, 6000],
                     },
                     categories: [
@@ -181,6 +147,18 @@
                     return el && el.getContext ? el.getContext('2d') : null;
                 }
 
+                function formatCurrency(amount) {
+                    try {
+                        return amount.toLocaleString(undefined, {
+                            style: 'currency',
+                            currency: 'USD',
+                            minimumFractionDigits: 2,
+                        });
+                    } catch (e) {
+                        return '$' + Number(amount).toFixed(2);
+                    }
+                }
+
                 function renderRecentTx() {
                     const container = document.getElementById('recentTx');
                     if (!container) return;
@@ -192,25 +170,14 @@
                         left.className = 'meta';
                         const dot = document.createElement('div');
                         dot.className = 'dot';
-                        dot.textContent = tx.title.split(' ')[0][0] || '•';
+                        dot.textContent = (tx.title || '•')[0] || '•';
                         left.appendChild(dot);
                         const txt = document.createElement('div');
                         txt.innerHTML = `<div style="font-weight:600">${tx.title}</div><div class="muted">${tx.date}</div>`;
                         left.appendChild(txt);
                         const amt = document.createElement('div');
                         amt.style.fontWeight = 700;
-                        try {
-                            amt.textContent =
-                                (tx.amount > 0 ? '+' : '') +
-                                tx.amount.toLocaleString('en-US', {
-                                    style: 'currency',
-                                    currency: 'USD',
-                                    minimumFractionDigits: 0,
-                                });
-                        } catch (e) {
-                            amt.textContent =
-                                (tx.amount > 0 ? '+' : '') + tx.amount;
-                        }
+                        amt.textContent = (tx.amount > 0 ? '+' : '') + formatCurrency(tx.amount);
                         if (tx.amount < 0) amt.style.color = '#ff5c68';
                         else if (tx.amount > 0) amt.style.color = '#16a34a';
                         el.appendChild(left);
@@ -229,8 +196,7 @@
                         row.style.justifyContent = 'space-between';
                         row.style.alignItems = 'center';
                         row.style.padding = '6px 0';
-                        const amountText =
-                            (tx.amount > 0 ? '+' : '') + tx.amount;
+                        const amountText = (tx.amount > 0 ? '+' : '') + formatCurrency(tx.amount);
                         row.innerHTML = `<div style="font-size:13px">${tx.title}</div><div style="font-weight:700">${amountText}</div>`;
                         mini.appendChild(row);
                     });
@@ -240,7 +206,10 @@
                 function initCharts() {
                     const ctxIncome = safeCtx('incomeChart');
                     if (ctxIncome) {
-                        const months = sample.monthly.months;
+                        const months = sample.monthly.months.length
+                            ? sample.monthly.months
+                            : getLastNMonthLabels(7).labels;
+
                         incomeChart = new Chart(ctxIncome, {
                             type: 'line',
                             data: {
@@ -252,26 +221,8 @@
                                         fill: false,
                                         tension: 0.3,
                                         borderWidth: 2,
-                                        borderColor: 'rgba(59,91,216,0.95)',
                                         pointBackgroundColor: '#fff',
-                                        pointBorderColor:
-                                            'rgba(59,91,216,0.95)',
-                                        backgroundColor:
-                                            'rgba(26, 115, 232, 0.1)',
-                                        tension: 0.4,
-                                        fill: true,
-                                    },
-                                    {
-                                        label: 'Expense',
-                                        data: sample.monthly.expense.slice(-6),
-                                        fill: false,
-                                        tension: 0.3,
-                                        borderWidth: 2,
-                                        borderColor: 'rgba(200,50,80,0.9)',
-                                        pointBackgroundColor: '#fff',
-                                        pointBorderColor: 'rgba(200,50,80,0.9)',
-                                        backgroundColor:
-                                            'rgba(234, 67, 53, 0.1)',
+                                        pointBorderColor: 'rgba(59,91,216,0.95)',
                                         tension: 0.4,
                                         fill: true,
                                     },
@@ -293,9 +244,7 @@
                                 labels: sample.categories.map((c) => c.label),
                                 datasets: [
                                     {
-                                        data: sample.categories.map(
-                                            (c) => c.value,
-                                        ),
+                                        data: sample.categories.map((c) => c.value),
                                         hoverOffset: 6,
                                     },
                                 ],
@@ -313,30 +262,18 @@
                         activityBar = new Chart(ctxBar, {
                             type: 'bar',
                             data: {
-                                labels: [
-                                    'Mar',
-                                    'Apr',
-                                    'May',
-                                    'Jun',
-                                    'Jul',
-                                    'Aug',
-                                    'Sep',
-                                ],
+                                labels: getLastNMonthLabels(7).labels,
                                 datasets: [
                                     {
                                         label: 'Income',
-                                        data: [
-                                            7000, 7000, 7000, 7000, 7000, 7000,
-                                            7000,
-                                        ],
+                                        data: sample.monthly.income.length
+                                            ? sample.monthly.income
+                                            : [7000, 7000, 7000, 7000, 7000, 7000, 7000],
                                         stack: 'a',
                                     },
                                     {
                                         label: 'Spending',
-                                        data: [
-                                            6800, 6600, 5900, 6650, 6500, 6900,
-                                            6000,
-                                        ],
+                                        data: sample.monthly.expense,
                                         stack: 'a',
                                     },
                                 ],
@@ -351,6 +288,75 @@
                     }
                 }
 
+                function getLastNMonthLabels(n) {
+                    const labels = [];
+                    const keys = []; // YYYY-MM keys
+                    const now = new Date();
+                    for (let i = n - 1; i >= 0; i--) {
+                        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                        keys.push(key);
+                        labels.push(d.toLocaleString(undefined, { month: 'short' }));
+                    }
+                    return { keys, labels };
+                }
+
+                // Fetch incomes from API and populate dashboard widgets
+                async function loadIncomesForDashboard() {
+                    try {
+                        const res = await fetch(`${INCOME_API}?budget_id=${BUDGET_ID}`);
+                        if (!res.ok) throw new Error('Failed to fetch incomes');
+                        const incomes = await res.json();
+
+                        // Build recentTx from incomes (most recent first)
+                        const sorted = incomes.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                        sample.recentTx = sorted.slice(0, 8).map((inc) => ({
+                            id: inc.id,
+                            title: inc.description || inc.source || 'Income',
+                            date: new Date(inc.date).toLocaleDateString(),
+                            amount: Number(inc.amount) || 0,
+                        }));
+
+                        // Calculate total income (sum of all incomes)
+                        const totalIncome = incomes.reduce((s, x) => s + (Number(x.amount) || 0), 0);
+
+                        // Prepare monthly totals for the last 7 months
+                        const { keys, labels } = getLastNMonthLabels(7);
+                        const monthMap = Object.fromEntries(keys.map((k) => [k, 0]));
+                        incomes.forEach((inc) => {
+                            if (!inc.date) return;
+                            const d = new Date(inc.date);
+                            if (isNaN(d)) return;
+                            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                            if (monthMap[key] != null) monthMap[key] += Number(inc.amount) || 0;
+                        });
+
+                        sample.monthly.months = labels;
+                        sample.monthly.income = keys.map((k) => Math.round((monthMap[k] || 0) * 100) / 100);
+
+                        // Update UI pieces
+                        document.getElementById('currentBalance').textContent = formatCurrency(totalIncome);
+                        renderRecentTx();
+                        renderMiniTx();
+
+                        // Update charts if they exist
+                        if (incomeChart) {
+                            incomeChart.data.labels = sample.monthly.months.slice(-6);
+                            incomeChart.data.datasets[0].data = sample.monthly.income.slice(-6);
+                            incomeChart.update();
+                        }
+                        if (activityBar) {
+                            activityBar.data.labels = getLastNMonthLabels(7).labels;
+                            activityBar.data.datasets[0].data = sample.monthly.income;
+                            activityBar.update();
+                        }
+                    } catch (err) {
+                        console.error('loadIncomesForDashboard error:', err);
+                        // keep placeholders if API call fails
+                    }
+                }
+
                 const LAYOUT_KEY = 'mb_dashboard_layout_v1';
                 const HIDDEN_KEY = 'mb_dashboard_hidden_v1';
 
@@ -361,54 +367,40 @@
                 }
                 function saveHiddenState() {
                     try {
-                        localStorage.setItem(
-                            HIDDEN_KEY,
-                            JSON.stringify(getHiddenWidgets()),
-                        );
+                        localStorage.setItem(HIDDEN_KEY, JSON.stringify(getHiddenWidgets()));
                     } catch (e) {}
                 }
 
                 function saveLayout() {
-                    if (!widgetsContainer) return;
                     try {
-                        const order = [
-                            ...widgetsContainer.querySelectorAll('.widget'),
-                        ]
+                        const widgetsContainer = document.querySelector('.widgets');
+                        if (!widgetsContainer) return;
+                        const order = [...widgetsContainer.querySelectorAll('.widget')]
                             .map((w) => w.id)
                             .filter(Boolean);
                         localStorage.setItem(LAYOUT_KEY, JSON.stringify(order));
-                        localStorage.setItem(
-                            HIDDEN_KEY,
-                            JSON.stringify(getHiddenWidgets()),
-                        );
+                        localStorage.setItem(HIDDEN_KEY, JSON.stringify(getHiddenWidgets()));
                         alert('Layout saved');
                     } catch (e) {}
                 }
 
                 function loadLayout() {
-                    if (!widgetsContainer) return;
                     try {
-                        const order = JSON.parse(
-                            localStorage.getItem(LAYOUT_KEY) || 'null',
-                        );
+                        const widgetsContainer = document.querySelector('.widgets');
+                        if (!widgetsContainer) return;
+                        const order = JSON.parse(localStorage.getItem(LAYOUT_KEY) || 'null');
                         if (order && Array.isArray(order)) {
                             order.forEach((id) => {
                                 const el = document.getElementById(id);
                                 if (el) widgetsContainer.appendChild(el);
                             });
                         }
-                        const hidden = JSON.parse(
-                            localStorage.getItem(HIDDEN_KEY) || 'null',
-                        );
+                        const hidden = JSON.parse(localStorage.getItem(HIDDEN_KEY) || 'null');
                         if (hidden && Array.isArray(hidden)) {
-                            document
-                                .querySelectorAll('.widget')
-                                .forEach((w) => {
-                                    const visible = !hidden.includes(w.id);
-                                    w.style.display = visible
-                                        ? 'block'
-                                        : 'none';
-                                });
+                            document.querySelectorAll('.widget').forEach((w) => {
+                                const visible = !hidden.includes(w.id);
+                                w.style.display = visible ? 'block' : 'none';
+                            });
                         }
                     } catch (e) {}
                 }
@@ -422,12 +414,14 @@
                 }
 
                 (function init() {
-                    renderRecentTx();
-                    renderMiniTx();
+                    // initialize charts with placeholder data first
                     initCharts();
+                    // then load live incomes and refresh widgets/charts
+                    loadIncomesForDashboard();
                     loadLayout();
                 })();
             </script>
         </div>
     </body>
 </html>
+
