@@ -1,18 +1,23 @@
-const createExpensesRouter = require('../expenses');
+const Database = require('better-sqlite3');
 
 describe('expenses table', () => {
     let db;
+
     beforeAll(() => {
+        // use in-memory DB for tests to avoid touching real DB file
         db = new Database(':memory:');
-    
-        const schemaPath = path.join(__dirname, '..', 'backend', 'schema.sql');
-        const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-        db.exec(schemaSql);
-    
-        db.prepare(
-            `INSERT OR IGNORE INTO accounts (account_id, budget_id, name, currency, balance)
-         VALUES (?, ?, ?, ?, ?)`,
-        ).run(1, 1, 'Test Account', 'USD', 0);
+
+        // create a minimal expenses table consistent with frontend fields
+        db.exec(`
+            CREATE TABLE IF NOT EXISTS expenses (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                source TEXT NOT NULL,
+                amount REAL NOT NULL,
+                date TEXT,
+                frequency TEXT,
+                description TEXT
+            );
+        `);
     });
 
     afterAll(() => {
