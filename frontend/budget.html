@@ -49,11 +49,8 @@
                         <h1>Budget</h1>
                     </div>
                     <div class="header-right">
-                        <button class="export-btn">
-                            <i class="fas fa-download"></i> Export
-                        </button>
                         <button class="add-transaction-btn">
-                            <i class="fas fa-plus"></i> Add Transaction
+                            <i class="fas fa-plus"></i> Add Budget
                         </button>
                     </div>
                 </div>
@@ -62,10 +59,6 @@
                     <div class="card budget-card">
                         <div class="budget-card-header">
                             <div class="budget-card-title">Groceries</div>
-                            <i
-                                class="fas fa-shopping-basket"
-                                style="color: #4361ee"
-                            ></i>
                         </div>
                         <div class="budget-card-amount">$358.00</div>
                         <div class="budget-card-subtitle">Budget</div>
@@ -80,10 +73,6 @@
                     <div class="card budget-card">
                         <div class="budget-card-header">
                             <div class="budget-card-title">Shopping</div>
-                            <i
-                                class="fas fa-shopping-bag"
-                                style="color: #4895ef"
-                            ></i>
                         </div>
                         <div class="budget-card-amount">$246.00</div>
                         <div class="budget-card-subtitle">Budget</div>
@@ -98,7 +87,6 @@
                     <div class="card budget-card">
                         <div class="budget-card-header">
                             <div class="budget-card-title">Home needs</div>
-                            <i class="fas fa-home" style="color: #4cc9f0"></i>
                         </div>
                         <div class="budget-card-amount">$136.00</div>
                         <div class="budget-card-subtitle">Budget</div>
@@ -132,7 +120,6 @@
                                         Monthly
                                     </button>
                                     <button class="filter-btn">Weekly</button>
-                                    <button class="filter-btn">Export</button>
                                 </div>
                             </div>
 
@@ -230,14 +217,14 @@
                                 <div class="budget-card-title">
                                     Income
                                 </div>
-                                <div class="stat-value" id="stat-income">$3,400</div>
+                                <div class="stat-value" id="stat-income">$700.00</div>
                                 <div class="budget-card-subtitle">Amount Earning</div>
                             </div>
 
                             <div class="stat-card">
                                 <div class="budget-card-subtitle">Monthly</div>
                                 <div class="budget-card-title">Expense</div>
-                                <div class="stat-value" id="stat-expense">$500.00</div>
+                                <div class="stat-value" id="stat-expense">$400.00</div>
                                 <div class="budget-card-subtitle">
                                     Amount Paying
                                 </div>
@@ -248,7 +235,7 @@
                                     Monthly
                                 </div>
                                 <div class="budget-card-title">Running Budget</div>
-                                <div class="stat-value" id="stat-running">$500.00</div>
+                                <div class="stat-value" id="stat-running">$300.00</div>
                                 <div class="budget-card-subtitle">
                                     The amount that can be spent
                                 </div>
@@ -318,10 +305,7 @@
             // Chart container elements
 
             // Cards at the bottom of the page
-            const statGrid = document.getElementById('stats-grid');
-            const statIncome = document.getElementById('stats-income');
-            const statExpense = document.getElementById('stats-expense');
-            const statRun = document.getElementById('stats-running');
+            const statGrid = document.getElementById('stat-grid');
 
             document.querySelectorAll('.filter-btn').forEach((button) => {
                 button.addEventListener('click', function () {
@@ -342,12 +326,6 @@
             });
 
             document
-                .querySelector('.export-btn')
-                .addEventListener('click', function () {
-                    alert('Exported to Excel');
-                });
-
-            document
                 .querySelector('.add-transaction-btn')
                 .addEventListener('click', function () {
                     alert('Add Transaction will be here');
@@ -355,7 +333,6 @@
 
             async function updateBudgetCardStatsFromServer() {
                 try {
-                    // replace with a real summary endpoint that returns numbers
                     const res = await fetch('/api/budget'); 
                         if (!res.ok) throw new Error('Failed to fetch budget data');
 
@@ -379,67 +356,51 @@
                     : n;
             }
 
-            // Example month data — replace with real data from server:
-            // Array index order matches rendered months (Jan..Oct here)
-            const monthData = [
-                { income: 3400, expense: 800 }, // Jan
-                { income: 3200, expense: 1200 }, // Feb
-                { income: 3400, expense: 500 }, // Mar
-                { income: 3000, expense: 900 }, // Apr
-                { income: 3500, expense: 2500 }, // May
-                { income: 3600, expense: 1000 }, // Jun
-                { income: 3400, expense: 1200 }, // Jul
-                { income: 3300, expense: 1800 }, // Aug
-                { income: 3400, expense: 1400 }, // Sep
-                { income: 3400, expense: 300 }, // Oct
-                { income: 5200, expense: 900 }, // Oct
-                { income: 2800, expense: 2000 }, // Oct
-            ];
+            async function loadMonthlyBudgetData() {
+                try {
+                    const res = await fetch('/api/budget/monthly');
+                    if (!res.ok) throw new Error('Failed to fetch monthly data');
+                    const data = await res.json();
 
-            function renderMonthBars(dataArray) {
-                const months = Array.from(document.querySelectorAll('.month'));
-                months.forEach((monthEl, idx) => {
-                    const data = dataArray[idx] || { income: 0, expense: 0 };
-                    const income = Number(data.income) || 0;
-                    const expense = Number(data.expense) || 0;
+                    const months = data.map(d => d.month);
+                    const incomeData = data.map(d => d.income);
+                    const expenseData = data.map(d => d.expense);
 
-                    // compute percentages relative to income; if income is 0, fall back to clamped representation
-                    let expensePct = 0;
-                    let remainingPct = 0;
-
-                    if (income > 0) {
-                        expensePct = (expense / income) * 100;
-                        // clamp expense to 100
-                        expensePct = Math.min(100, expensePct);
-                        remainingPct = Math.max(0, Math.min(100 - expensePct, ((income - expense) / income) * 100));
-                    } else {
-                        // if no income, show expense as 100% if any expense, remaining 0
-                        expensePct = expense > 0 ? 100 : 0;
-                        remainingPct = 0;
-                    }
-
-                    // If expense > income, show expense full 100% and remaining 0
-                    if (expense > income && income > 0) {
-                        expensePct = 100;
-                        remainingPct = 0;
-                    }
-
-                    const expenseDiv = monthEl.querySelector('.month-expense');
-                    const remainingDiv = monthEl.querySelector('.month-remaining');
-
-                    // set heights and bottom offsets so remaining stacks above expense
-                    expenseDiv.style.height = `${expensePct}%`;
-                    remainingDiv.style.bottom = `${expensePct}%`;
-                    remainingDiv.style.height = `${remainingPct}%`;
-
-                    // optionally set title/tooltip with numeric values
-                    monthEl.title = `Income: ${formatCurrency(income)} • Expense: ${formatCurrency(expense)} • Remaining: ${formatCurrency(Math.max(0, income - expense))}`;
-                });
+                    updateChart(months, incomeData, expenseData);
+                } catch (err) {
+                    console.error('Failed to load monthly data:', err);
+                }
             }
 
-            document.addEventListener('DOMContentLoaded', updateBudgetCardStatsFromServer);
+            function updateChart(months, incomeData, expenseData) {
+                    const monthElements = document.querySelectorAll('.month');
+                    const totalMonths = Math.min(monthElements.length, months.length);
+
+                    for (let i = 0; i < totalMonths; i++) {
+                        const income = incomeData[i] ?? 0;
+                        const expense = expenseData[i] ?? 0;
+                        const monthElement = monthElements[i];
+
+                        const expenseBar = monthElement.querySelector('.month-expense');
+                        const remainingBar = monthElement.querySelector('.month-remaining');
+
+                        // calculate percentage of expense relative to income
+                        const expensePercent = income > 0 ? Math.min((expense / income) * 100, 100) : 0;
+                        const remainingPercent = 100 - expensePercent;
+
+                        // Update bar widths dynamically
+                        expenseBar.style.width = `${expensePercent}%`;
+                        remainingBar.style.width = `${remainingPercent}%`;
+
+                        // Tooltip or label for debugging
+                        expenseBar.title = `Expense: ${formatCurrency(expense)}`;
+                        remainingBar.title = `Remaining: ${formatCurrency(income - expense)}`;
+                    }
+            }
+
             document.addEventListener('DOMContentLoaded', () => {
-                renderMonthBars(monthData);
+                updateBudgetCardStatsFromServer();
+                loadMonthlyBudgetData(); // ✅ fetch & render monthly data
             });
             /* -------- Budget End -------- */
         </script>
