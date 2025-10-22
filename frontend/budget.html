@@ -4,10 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Budget</title>
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
         <link rel="stylesheet" href="./css/style.css" />
     </head>
 
@@ -21,21 +18,13 @@
                 </div>
                 <nav class="nav">
                     <a onclick="location.href='/dashboard.html';">Dashboard</a>
-                    <a class="active" onclick="location.href='/budget.html';"
-                        >Budget</a
-                    >
+                    <a class="active" onclick="location.href='/budget.html';">Budget</a>
                     <a onclick="location.href='/income.html';">Income</a>
                     <a onclick="location.href='/expenses.html';">Expenses</a>
                     <a onclick="location.href='/chart.html';">Charts</a>
-                    <a onclick="location.href='/categories.html';"
-                        >Categories</a
-                    >
-                    <a onclick="location.href='/saving-goals.html';"
-                        >Saving Goals</a
-                    >
-                    <a onclick="location.href='/upcoming-payments.html';"
-                        >Upcoming Payments</a
-                    >
+                    <a onclick="location.href='/categories.html';">Categories</a>
+                    <a onclick="location.href='/saving-goals.html';">Saving Goals</a>
+                    <a onclick="location.href='/upcoming-payments.html';">Upcoming Payments</a>
                     <a onclick="location.href='/account.html';">Settings</a>
                 </nav>
             </aside>
@@ -49,39 +38,23 @@
                         <h1>Budget</h1>
                     </div>
                     <div class="header-right">
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
                         <button class="add-transaction-btn">
-                            <i class="fas fa-plus"></i> Add Budget
+                            <i class="fas fa-plus"></i> Add Transaction
                         </button>
                     </div>
                 </div>
 
-                <!-- Add Budget Modal -->
-                <div id="budgetModal" class="modal" style="display:none;">
-                    <div class="modal-content">
-                        <h2>Add New Budget</h2>
-
-                        <label>Budget Title</label>
-                        <input type="text" id="budgetTitle" placeholder="e.g. Groceries" required />
-
-                        <label>Amount (AUD)</label>
-                        <input type="number" id="budgetAmount" min="0" required />
-
-                        <div id="budgetPercentage">0% of running budget</div>
-                        <progress id="budgetProgress" value="0" max="100"></progress>
-
-                        <div class="modal-buttons">
-                        <button id="saveBudgetBtn">Save</button>
-                        <button id="cancelBudgetBtn">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="budget-grid" id="budgetGrid">
-                    <!-- Card with content -->
+                <div class="budget-grid">
                     <div class="card budget-card">
                         <div class="budget-card-header">
                             <div class="budget-card-title">Groceries</div>
+                            <i
+                                class="fas fa-shopping-basket"
+                                style="color: #4361ee"
+                            ></i>
                         </div>
                         <div class="budget-card-amount">$358.00</div>
                         <div class="budget-card-subtitle">Budget</div>
@@ -93,43 +66,49 @@
                         </div>
                     </div>
 
-                    <!-- Blank card 1 -->
                     <div class="card budget-card">
                         <div class="budget-card-header">
-                            <div class="budget-card-title"></div> <!-- Empty title -->
+                            <div class="budget-card-title">Shopping</div>
+                            <i
+                                class="fas fa-shopping-bag"
+                                style="color: #4895ef"
+                            ></i>
                         </div>
-                        <div class="budget-card-amount"></div> <!-- Empty amount -->
-                        <div class="budget-card-subtitle"></div> <!-- Empty subtitle -->
+                        <div class="budget-card-amount">$246.00</div>
+                        <div class="budget-card-subtitle">Budget</div>
                         <div class="progress-bar">
-                            <div class="progress"></div> <!-- Empty progress bar -->
+                            <div class="progress progress-shopping"></div>
                         </div>
-                        <div class="budget-card-subtitle"></div> <!-- Empty subtitle -->
+                        <div class="budget-card-subtitle">
+                            45% of monthly budget
+                        </div>
                     </div>
 
-                    <!-- Blank card 2 -->
                     <div class="card budget-card">
                         <div class="budget-card-header">
-                            <div class="budget-card-title"></div>
+                            <div class="budget-card-title">Home needs</div>
+                            <i class="fas fa-home" style="color: #4cc9f0"></i>
                         </div>
-                        <div class="budget-card-amount"></div>
-                        <div class="budget-card-subtitle"></div>
+                        <div class="budget-card-amount">$136.00</div>
+                        <div class="budget-card-subtitle">Budget</div>
                         <div class="progress-bar">
-                            <div class="progress"></div>
+                            <div class="progress progress-home"></div>
                         </div>
-                        <div class="budget-card-subtitle"></div>
+                        <div class="budget-card-subtitle">
+                            30% of monthly budget
+                        </div>
                     </div>
 
-                    <!-- Blank card 3 -->
-                    <div class="card budget-card">
-                        <div class="budget-card-header">
-                            <div class="budget-card-title"></div>
+                    <div class="card savings-card">
+                        <div class="savings-header">
+                            <div class="bank-name">Bank Jago</div>
+                            <div class="savings-date">12 Mar 2024</div>
                         </div>
-                        <div class="budget-card-amount"></div>
-                        <div class="budget-card-subtitle"></div>
-                        <div class="progress-bar">
-                            <div class="progress"></div>
+                        <div class="savings-amount">$645.00</div>
+                        <div class="savings-change">
+                            <div class="change-positive">+$445.00</div>
+                            <div>Allocation Budget</div>
                         </div>
-                        <div class="budget-card-subtitle"></div>
                     </div>
                 </div>
 
@@ -141,124 +120,185 @@
                                     <button class="filter-btn active">
                                         Monthly
                                     </button>
+                                    <button class="filter-btn">Weekly</button>
+                                    <button class="filter-btn">Export</button>
                                 </div>
                             </div>
 
                             <div class="month-scroller">
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 40%"
+                                        ></div>
                                     </div>
                                     Jan
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 60%"
+                                        ></div>
                                     </div>
                                     Feb
                                 </div>
                                 <div class="month active">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 85%"
+                                        ></div>
                                     </div>
                                     Mar
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 30%"
+                                        ></div>
                                     </div>
                                     Apr
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 25%"
+                                        ></div>
                                     </div>
                                     May
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 50%"
+                                        ></div>
                                     </div>
                                     Jun
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 70%"
+                                        ></div>
                                     </div>
                                     Jul
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 65%"
+                                        ></div>
                                     </div>
                                     Aug
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 45%"
+                                        ></div>
                                     </div>
                                     Sep
                                 </div>
                                 <div class="month">
                                     <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
+                                        <div
+                                            class="month-progress"
+                                            style="height: 35%"
+                                        ></div>
                                     </div>
                                     Oct
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
-                                    </div>
-                                    Nov
-                                </div>
-                                <div class="month">
-                                    <div class="month-bar">
-                                        <div class="month-expense"></div>
-                                        <div class="month-remaining"></div>
-                                    </div>
-                                    Dec
                                 </div>
                             </div>
                         </div>
 
-                        <div class="stats-grid" id="stats-grid">
+                        <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="budget-card-subtitle">Monthly</div>
                                 <div class="budget-card-title">
-                                    Income
+                                    August 13, 2025
                                 </div>
-                                <div class="stat-value" id="stat-income">$700.00</div>
-                                <div class="budget-card-subtitle">Amount Earning</div>
+                                <div class="stat-value">$3,400</div>
+                                <div class="budget-card-subtitle">Budget</div>
                             </div>
 
                             <div class="stat-card">
-                                <div class="budget-card-subtitle">Monthly</div>
-                                <div class="budget-card-title">Expense</div>
-                                <div class="stat-value" id="stat-expense">$400.00</div>
+                                <div class="budget-card-subtitle">Expected</div>
+                                <div class="budget-card-title">Export</div>
+                                <div class="stat-value">$500.00</div>
                                 <div class="budget-card-subtitle">
-                                    Amount Paying
+                                    Bill Sale
                                 </div>
                             </div>
 
                             <div class="stat-card">
                                 <div class="budget-card-subtitle">
-                                    Monthly
+                                    Running Budget
                                 </div>
-                                <div class="budget-card-title">Running Budget</div>
-                                <div class="stat-value" id="stat-running">$300.00</div>
+                                <div class="budget-card-title">Today</div>
+                                <div class="stat-value">$500.00</div>
                                 <div class="budget-card-subtitle">
                                     The amount that can be spent
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-column">
+                        <div class="budget-category">
+                            <h3 style="margin-bottom: 16px">Budget Category</h3>
+                            <div class="category-header">
+                                <div></div>
+                                <div>Budget</div>
+                                <div>Monthly Limit</div>
+                                <div>Spent Today</div>
+                                <div>Remaining</div>
+                                <div>Status</div>
+                            </div>
+                            <div class="category-row">
+                                <div class="category-icon icon-entertainment">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                                <div>Entertainment</div>
+                                <div>$50.00</div>
+                                <div>$30.00</div>
+                                <div>$20.00</div>
+                                <div>
+                                    <span class="status-badge status-on-track"
+                                        >On Track</span
+                                    >
+                                </div>
+                            </div>
+                            <div class="category-row">
+                                <div class="category-icon icon-transportation">
+                                    <i class="fas fa-bus"></i>
+                                </div>
+                                <div>Transportation</div>
+                                <div>$25.00</div>
+                                <div>$15.00</div>
+                                <div>$10.00</div>
+                                <div>
+                                    <span class="status-badge status-near-limit"
+                                        >Near Limit</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="category-chips">
+                                <div class="category-chip">
+                                    <i class="fas fa-utensils"></i>
+                                    <span>Eating & Drinking: $50.00</span>
+                                </div>
+                                <div class="category-chip">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Education: $100.00</span>
                                 </div>
                             </div>
                         </div>
@@ -269,15 +309,14 @@
 
         <script>
             /* -------- Budget Start -------- */
-
-            // Chart container elements
-
-            // Cards at the bottom of the page
-            const statGrid = document.getElementById('stat-grid');
-            const monthNameToIndex = {
-                Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
-                Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
-            };
+            document.querySelectorAll('.filter-btn').forEach((button) => {
+                button.addEventListener('click', function () {
+                    document.querySelectorAll('.filter-btn').forEach((btn) => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
 
             document.querySelectorAll('.month').forEach((month) => {
                 month.addEventListener('click', function () {
@@ -288,252 +327,18 @@
                 });
             });
 
-            async function updateBudgetCardStatsFromServer() {
-                try {
-                    const res = await fetch('/api/budget'); 
-                        if (!res.ok) throw new Error('Failed to fetch budget data');
-
-                    const summary = await res.json();
-
-                    const income = summary?.income ?? 0;
-                    const expense = summary?.expense ?? 0;
-                    const running = summary?.running ?? (income - expense);
-
-                    document.getElementById('stat-income').textContent = formatCurrency(income);
-                    document.getElementById('stat-expense').textContent = formatCurrency(expense);
-                    document.getElementById('stat-running').textContent = formatCurrency(running);
-                } catch (err) {
-                    console.error('Failed to update budget stats', err);
-                }
-            }
-
-            function formatCurrency(n) {
-                return typeof n === 'number'
-                    ? n.toLocaleString(undefined, { style: 'currency', currency: 'AUD' })
-                    : n;
-            }
-
-            async function loadMonthlyBudgetData() {
-                try {
-                    const res = await fetch('/api/budget/monthly');
-                    if (!res.ok) throw new Error('Failed to fetch monthly data');
-                    const data = await res.json();
-
-                    const months = data.map(d => d.month);
-                    const incomeData = data.map(d => d.income);
-                    const expenseData = data.map(d => d.expense);
-
-                    updateChart(months, incomeData, expenseData);
-                } catch (err) {
-                    console.error('Failed to load monthly data:', err);
-                }
-            }
-
-            function monthIndexFromYYYYMM(yyyymm) {
-                const [year, month] = yyyymm.split('-').map(Number);
-                return month - 1; // January = 0
-            }
-
-
-            function updateChart(months, incomeData, expenseData) {
-                const monthElements = document.querySelectorAll('.month');
-                monthElements.forEach((m, i) => {
-                    const expenseBar = m.querySelector('.month-expense');
-                    const remainingBar = m.querySelector('.month-remaining');
-                    expenseBar.style.height = '0%';
-                    remainingBar.style.height = '100%';
+            document
+                .querySelector('.export-btn')
+                .addEventListener('click', function () {
+                    alert('Exported to Excel');
                 });
 
-                months.forEach((monthStr, i) => {
-                    const date = new Date(monthStr + '-01');
-                    const idx = date.getMonth(); // 0–11 (Jan–Dec)
-                    const monthElement = monthElements[idx];
-                    if (!monthElement) return;
-
-                    const income = incomeData[i] ?? 0;
-                    const expense = expenseData[i] ?? 0;
-
-                    const expensePercent = income > 0 ? Math.min((expense / income) * 100, 100) : 0;
-                    const remainingPercent = 100 - expensePercent;
-
-                    const expenseBar = monthElement.querySelector('.month-expense');
-                    const remainingBar = monthElement.querySelector('.month-remaining');
-
-                    expenseBar.style.height = `${expensePercent}%`;
-                    remainingBar.style.height = `${remainingPercent}%`;
-
-                    expenseBar.title = `Expense: ${formatCurrency(expense)}`;
-                    remainingBar.title = `Remaining: ${formatCurrency(income - expense)}`;
+            document
+                .querySelector('.add-transaction-btn')
+                .addEventListener('click', function () {
+                    alert('Add Transaction will be here');
                 });
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                updateBudgetCardStatsFromServer();
-                loadMonthlyBudgetData();
-            });
-            const now = new Date();
-            document.querySelectorAll('.month').forEach((m, i) => {
-                m.classList.toggle('active', i === now.getMonth());
-            });
             /* -------- Budget End -------- */
-
-            /* -------- Add Budget Modal + Dynamic Cards -------- */
-
-            const addBudgetBtn = document.querySelector('.add-transaction-btn');
-            const budgetGrid = document.getElementById('budgetGrid');
-            const budgetModal = document.getElementById('budgetModal');
-            const saveBudgetBtn = document.getElementById('saveBudgetBtn');
-            const cancelBudgetBtn = document.getElementById('cancelBudgetBtn');
-            const budgetTitleInput = document.getElementById('budgetTitle');
-            const budgetAmountInput = document.getElementById('budgetAmount');
-            const budgetPercentageText = document.getElementById('budgetPercentage');
-            const budgetProgress = document.getElementById('budgetProgress');
-
-            // Show modal
-            addBudgetBtn.addEventListener('click', () => {
-            budgetModal.style.display = 'flex';
-            budgetTitleInput.value = '';
-            budgetAmountInput.value = '';
-            budgetProgress.value = 0;
-            budgetPercentageText.textContent = '0% of running budget';
-            });
-
-            // Hide modal
-            cancelBudgetBtn.addEventListener('click', () => {
-            budgetModal.style.display = 'none';
-            });
-
-            // Update percentage preview live
-            budgetAmountInput.addEventListener('input', async () => {
-            const amount = parseFloat(budgetAmountInput.value) || 0;
-            const running = await getRunningBudget();
-            const percent = running > 0 ? Math.min((amount / running) * 100, 100) : 0;
-            budgetProgress.value = percent;
-            budgetPercentageText.textContent = `${percent.toFixed(1)}% of running budget`;
-            });
-
-            // Get running budget
-            async function getRunningBudget() {
-            try {
-                const res = await fetch('/api/budget');
-                const data = await res.json();
-                return data?.running ?? 0;
-            } catch (err) {
-                console.error('Error fetching running budget', err);
-                return 0;
-            }
-            }
-
-            // Save budget (and update UI + backend)
-            saveBudgetBtn.addEventListener('click', async () => {
-                const title = budgetTitleInput.value.trim();
-                const amount = parseFloat(budgetAmountInput.value);
-                if (!title || isNaN(amount) || amount <= 0) return alert('Enter valid data');
-
-                try {
-                    const res = await fetch('/api/budget_simple', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ title, amount })
-                    });
-                    if (!res.ok) throw new Error('Failed to save budget');
-
-                    const saved = await res.json();
-                    addBudgetCard(saved.title, saved.amount, calculatePercentage(saved.amount));
-                    budgetModal.style.display = 'none';
-                } catch (err) {
-                    console.error('Error saving budget', err);
-                }
-            });
-
-            // Function to render one card
-            function addBudgetCard(title, amount, percentUsed) {
-                const budgetGrid = document.getElementById('budgetGrid');
-
-                // Look for the first blank card
-                let blankCard = null;
-                const cards = Array.from(budgetGrid.children);
-                for (const card of cards) {
-                    const titleEl = card.querySelector('.budget-card-title');
-                    const amountEl = card.querySelector('.budget-card-amount');
-                    if (!titleEl.textContent.trim() && !amountEl.textContent.trim()) {
-                        blankCard = card;
-                        break;
-                    }
-                }
-
-                if (!blankCard) {
-                    // No blank cards left, create a new one
-                    blankCard = document.createElement('div');
-                    blankCard.className = 'card budget-card';
-                    blankCard.innerHTML = `
-                        <div class="budget-card-header">
-                            <div class="budget-card-title"></div>
-                        </div>
-                        <div class="budget-card-amount"></div>
-                        <div class="budget-card-subtitle"></div>
-                        <div class="progress-bar">
-                            <div class="progress"></div>
-                        </div>
-                        <div class="budget-card-subtitle"></div>
-                    `;
-                    budgetGrid.appendChild(blankCard);
-                }
-
-                // Fill the blank card with new budget info
-                blankCard.querySelector('.budget-card-title').textContent = title;
-                blankCard.querySelector('.budget-card-amount').textContent = formatCurrency(amount);
-                const progressEl = blankCard.querySelector('.progress');
-                progressEl.style.width = `${percentUsed}%`;
-                const subtitleEls = blankCard.querySelectorAll('.budget-card-subtitle');
-                if (subtitleEls.length >= 2) {
-                    subtitleEls[0].textContent = 'Budget';
-                    subtitleEls[1].textContent = `${percentUsed.toFixed(1)}% of running budget`;
-                }
-            }
-
-
-
-            // Load existing budgets on page load
-            async function loadBudgets() {
-                try {
-                    const res = await fetch('/api/budget_simple');
-                    if (!res.ok) throw new Error('Failed to load budgets');
-                    const data = await res.json();
-
-                    const cards = Array.from(budgetGrid.children);
-                    // Clear all cards
-                    cards.forEach(card => {
-                        const titleEl = card.querySelector('.budget-card-title');
-                        const amountEl = card.querySelector('.budget-card-amount');
-                        const subtitles = card.querySelectorAll('.budget-card-subtitle');
-                        const progressEl = card.querySelector('.progress');
-                        titleEl.textContent = '';
-                        amountEl.textContent = '';
-                        subtitles.forEach(sub => sub.textContent = '');
-                        if (progressEl) progressEl.style.width = '0%';
-                    });
-
-                    data.forEach(b => addBudgetCard(b.title, b.amount, calculatePercentage(b.amount)));
-                } catch (err) {
-                    console.error('Error loading budgets', err);
-                }
-            }
-
-            function calculatePercentage(amount) {
-                const running = parseFloat(document.getElementById('stat-running').textContent.replace(/[^\d.-]/g, '')) || 1;
-                return Math.min((amount / running) * 100, 100);
-            }
-
-
-            // Extends existing DOMContentLoaded to include budgets
-            document.addEventListener('DOMContentLoaded', async () => {
-                await updateBudgetCardStatsFromServer();
-                await loadMonthlyBudgetData();
-                await loadBudgets();
-            });
-
-
         </script>
     </body>
 </html>

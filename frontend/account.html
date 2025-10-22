@@ -22,18 +22,10 @@
                     <a onclick="location.href='/income.html';">Income</a>
                     <a onclick="location.href='/expenses.html';">Expenses</a>
                     <a onclick="location.href='/chart.html';">Charts</a>
-                    <a onclick="location.href='/categories.html';"
-                        >Categories</a
-                    >
-                    <a onclick="location.href='/saving-goals.html';"
-                        >Saving Goals</a
-                    >
-                    <a onclick="location.href='/upcoming-payments.html';"
-                        >Upcoming Payments</a
-                    >
-                    <a class="active" onclick="location.href='/account.html';"
-                        >Settings</a
-                    >
+                    <a onclick="location.href='/categories.html';">Categories</a>
+                    <a onclick="location.href='/saving-goals.html';">Saving Goals</a>
+                    <a onclick="location.href='/upcoming-payments.html';">Upcoming Payments</a>
+                    <a class="active" onclick="location.href='/account.html';">Settings</a>
                 </nav>
             </aside>
             <!--LEFT SIDE BAR END HERE-->
@@ -80,87 +72,46 @@
                         <span id="creationDate" class="value"></span>
                     </div>
                 </div>
-                <!-- Replace this section in your account.html -->
-                <div class="card">
-                    <h1>User Settings</h1>
-                    <div class="settings-container" id="settingsContainer">
-                        <div class="setting-item">
-                            <div class="setting-label">Dark Mode</div>
-                            <div class="setting-control">
-                                <label class="switch">
-                                    <input
-                                        type="checkbox"
-                                        id="darkModeToggle"
-                                    />
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="setting-item">
-                            <div class="setting-label">Language</div>
-                            <div class="setting-control">
-                                <select
-                                    class="language-select"
-                                    id="languageSelect"
-                                >
-                                    <option value="en">English</option>
-                                    <option value="es">Español</option>
-                                    <option value="fr">Français</option>
-                                    <option value="de">Deutsch</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        style="
-                            display: flex;
-                            align-items: center;
-                            margin-top: 20px;
-                        "
-                    >
-                        <button id="saveBtn">Save All</button>
-                        <span class="status" id="statusText">—</span>
-                    </div>
-                </div>
-                <div id="user-data-buttons">
-                    <input type="file" id="importFile" accept=".sqlite" />
-                    <button onclick="handleImport()">Import User Data</button>
-                    <button id="downloadUserData" class="btn">
-                        Download My Data
-                    </button>
-                </div>
+<!-- Replace this section in your account.html -->
+<div class="card">
+    <h1>User Settings</h1>
+    <div class="settings-container" id="settingsContainer">
+        <div class="setting-item">
+            <div class="setting-label">Dark Mode</div>
+            <div class="setting-control">
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="setting-item">
+            <div class="setting-label">Language</div>
+            <div class="setting-control">
+                <select class="language-select" id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; margin-top: 20px;">
+        <button id="saveBtn">Save All</button>
+        <span class="status" id="statusText">—</span>
+    </div>
+</div>
             </main>
         </div>
     </body>
-    <script src="./scripts/token.js"></script>
-    <script src="./scripts/settings.js"></script>
-    <script src="./scripts/importExport.js"></script>
+    <script src="/scripts/token.js"></script>
+    <script src="/scripts/settings.js"></script>
     <script>
         window.onload = loadAccountInfo();
         document
             .getElementById('saveBtn')
             .addEventListener('click', saveSettings);
         window.addEventListener('DOMContentLoaded', fetchSettings);
-    </script>
-    <script>
-        function handleImport() {
-            const fileInput = document.getElementById('importFile');
-            const file = fileInput.files[0];
-            importUserData(file);
-        }
-    </script>
-    <script>
-        // Attach click listener
-        document
-            .getElementById('downloadUserData')
-            .addEventListener('click', async () => {
-                try {
-                    // Call your existing export function
-                    await exportUserData();
-                } catch (err) {
-                    console.error('Error exporting user data:', err);
-                    alert('Failed to download user data');
-                }
-            });
     </script>
 </html>
