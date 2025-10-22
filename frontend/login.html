@@ -161,6 +161,16 @@
             switchToLogin.addEventListener('click', showLogin);
             switchToSignup.addEventListener('click', showSignup);
 
+            // Show correct tab based on button pressed on index.html
+            const showTab = sessionStorage.getItem('showTab');
+            if (showTab === 'signup') {
+                showSignup();
+            } else {
+                showLogin();
+            }
+            sessionStorage.removeItem('showTab');
+
+        
             // Form submission
             document
                 .getElementById('signupForm')

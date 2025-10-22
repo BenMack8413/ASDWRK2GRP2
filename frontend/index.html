@@ -351,8 +351,8 @@
                     <a href="#">How It Works</a>
                     <a href="#">Pricing</a>
                     <div class="auth-buttons">
-                        <a href="login.html" class="btn btn-outline">Log In</a>
-                        <a href="login.html" class="btn btn-primary">Sign Up</a>
+                        <a href="login.html" id="loginBtn" class="btn btn-outline">Log In</a>
+                        <a href="login.html" id="signupBtn" class="btn btn-primary">Sign Up</a>
                     </div>
                 </div>
             </div>
@@ -716,4 +716,13 @@
             </div>
         </footer>
     </body>
+    <script>
+document.getElementById('loginBtn').addEventListener('click', (e) => {
+    sessionStorage.setItem('showTab', 'login');
+});
+
+document.getElementById('signupBtn').addEventListener('click', (e) => {
+    sessionStorage.setItem('showTab', 'signup');
+});
+</script>
 </html>
