@@ -719,6 +719,64 @@ body {
         display: none;
     }
 }
+
+/* small helpers for budget page */
+.progress-small {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progress-small > i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.category-row .budget-input {
+  width: 100%;
+  max-width: 110px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #e6e9ef;
+  font-size: 14px;
+}
+
+.category-row .spent-amount {
+  color: #111;
+  font-weight: 600;
+}
+
+.category-row .remaining-amount {
+  font-weight: 600;
+}
+
+.category-row .status-badge.small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+#categoriesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* make donut and line canvas responsive */
+#categoryDonut, #monthlyLine {
+  max-height: 260px;
+  width: 100% !important;
+}
+
+/* small responsive tweaks */
+@media (max-width: 768px) {
+  .budget-grid { grid-template-columns: 1fr; }
+  .chart-container { height: auto; }
+}
+
 /* -------- Budget End -------- */
 /* BUDGET HTML PAGE END */
 
