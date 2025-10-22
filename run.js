@@ -18,6 +18,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+console.log('Module type:', import.meta.url ? 'ESM' : 'CommonJS');
+
 // --- Serve all static frontend files from frontend/
 app.use(express.static(path.join(__dirname, 'frontend')));
 
