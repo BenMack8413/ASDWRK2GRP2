@@ -141,7 +141,6 @@
                                     <button class="filter-btn active">
                                         Monthly
                                     </button>
-                                    <button class="filter-btn">Weekly</button>
                                 </div>
                             </div>
 
@@ -279,15 +278,6 @@
                 Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
                 Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
             };
-
-            document.querySelectorAll('.filter-btn').forEach((button) => {
-                button.addEventListener('click', function () {
-                    document.querySelectorAll('.filter-btn').forEach((btn) => {
-                        btn.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                });
-            });
 
             document.querySelectorAll('.month').forEach((month) => {
                 month.addEventListener('click', function () {
