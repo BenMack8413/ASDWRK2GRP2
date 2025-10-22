@@ -79,6 +79,13 @@ module.exports = (db) => {
         }
     });
 
+    app.get('/verify', requireAuth, (req, res) => {
+        res.status(200).json({
+            message: 'Token is valid',
+            user: req.user,
+        });
+    });
+
     router.get('/me', requireAuth, (req, res) => {
         res.json({ message: 'Authenticated user', user: req.user });
     });

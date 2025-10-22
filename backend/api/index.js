@@ -21,7 +21,7 @@ module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
     router.use('/categories', createCategoriesRouter(db));
     router.use('/importExport', createImportExportRouter(db));
     router.use('/settings', createSettingsRouter(db));
-    
+
     // router.use('/sampleApiRouter', sampleApiRouter(db));
 
     return router;
