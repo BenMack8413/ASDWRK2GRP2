@@ -4,6 +4,10 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Expenses</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
         <link rel="stylesheet" href="./css/style.css" />
     </head>
 
@@ -38,43 +42,341 @@
             <!--LEFT SIDE BAR END HERE-->
 
             <main class="main">
-                <div class="expense-header">
-                    <h1 class="title">Expense Tracking</h1>
-                    <button class="addExpenseButton" id="addExpense">
-                        + Add Expense
-                    </button>
+                <h1 class="title">Expense Tracking</h1>
+                <div class="expenseStats">
+                    <div class="stat-card stat-1">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-value" id="stat-total-expense">$0.00</div>
+                        <div class="stat-title">Total Monthly Expense</div>
+                    </div>
+                    <div class="stat-card stat-2">
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="stat-value" id="stat-expected-expense">$0.00</div>
+                        <div class="stat-title">Payment This Month</div>
+                    </div>
+                    <div class="stat-card stat-3">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="stat-value" id="stat-expense-sources">0</div>
+                        <div class="stat-title">Expense Sources</div>
+                    </div>
                 </div>
-
+                <div class="expenseHeader">
+                    <div class="list-controls">
+                            <input
+                                type="text"
+                                class="search-box"
+                                placeholder="Search expense..."
+                                id="searchExpense"
+                            />
+                            <select class="sort-select" id="sortExpense">
+                                <option value="date-desc">
+                                    Sort by: Date (Newest)
+                                </option>
+                                <option value="date-asc">
+                                    Sort by: Date (Oldest)
+                                </option>
+                                <option value="amount-desc">
+                                    Sort by: Amount (High to Low)
+                                </option>
+                                <option value="amount-asc">
+                                    Sort by: Amount (Low to High)
+                                </option>
+                                <option value="source">
+                                    Sort by: Source
+                                </option>
+                            </select>
+                    </div>
+                </div>
                 <div class="expenseContainer">
-                    <table class="expenseTable" id="expenseTable">
-                        <thead>
-                            <tr>
-                                <th>Amount</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Date</th>
-                                <th>Frequency</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>$500</td>
-                                <td>Groceries</td>
-                                <td>Weekly grocery shopping</td>
-                                <td>1st January 2026</td>
-                                <td>Weekly</td>
-                            </tr>
-                            <tr>
-                                <td>$150</td>
-                                <td>Utilities</td>
-                                <td>Monthly utility bills</td>
-                                <td>13th January 2026</td>
-                                <td>Monthly</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <table class="expenseTable" id="expenseTable">
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Frequency</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenseTableBody"></tbody>
+                </table>
                 </div>
+                <button class="addExpenseButton" id="addExpense">+ Add Expense</button>
+
+                <form id="expenseForm" style="display:none; margin-top:20px;">
+                    <label>
+                        <div class="formSub">Source</div>
+                        <input type="text" placeholder="Source" name="Source" required />
+                    </label>
+                    <label>
+                        <div class="formSub">Amount</div>
+                        <input type="text" placeholder="Amount" name="Amount" required />
+                    </label>
+                    <label>
+                        <div class="formSub">Date</div>
+                        <input type="date" name="date" required />
+                    </label>
+                    <label>
+                        <div class="formSub">Frequency</div>
+                        <select name="Frequency" required>
+                            <option value="" disabled selected>Select frequency</option>
+                            <option value="One-time">One-time</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                    </label>
+                    <label>
+                        <div class="formSub">Description</div>
+                        <input type="text" placeholder="Description" name="Description" />
+                    </label>
+                    <label>
+                        <button type="submit">Submit</button>
+                    </label>
+                </form>
             </main>
         </div>
+        <script>
+
+            const addExpenseBtn = document.getElementById('addExpense');
+            const expenseForm = document.getElementById('expenseForm');
+            const searchExpense = document.getElementById('searchExpense');
+            const sortExpense = document.getElementById('sortExpense');
+            const expenseTableBody = document.getElementById('expenseTableBody');
+
+            let expenses = [];
+
+            addExpenseBtn.onclick = function() {
+                if (expenseForm.style.display === 'none' || expenseForm.style.display === '') {
+                    expenseForm.style.display = 'block';
+                } else {
+                    expenseForm.style.display = 'none';
+                }
+            };
+
+            async function loadExpenses() {
+                try {
+                    const res = await fetch('/api/expenses');
+                    if (!res.ok) throw new Error('Failed to fetch');
+                    expenses = await res.json();
+                } catch (err) {
+                    console.warn('Falling back to localStorage/sample data:', err);
+                    const stored = localStorage.getItem('expenses');
+                    if (stored) {
+                        try {
+                            expenses = JSON.parse(stored);
+                        } catch {
+                            expenses = [];
+                        }
+                    } else {
+                        expenses = [
+                            { source: 'Rent', amount: 1200, date: '2024-06-01', frequency: 'Monthly', description: 'June Rent' },
+                            { source: 'Groceries', amount: 300, date: '2024-06-05', frequency: 'Weekly', description: 'Weekly groceries' },
+                            { source: 'Utilities', amount: 150, date: '2024-06-03', frequency: 'Monthly', description: 'Electricity and water' },
+                        ];
+                    }
+                }
+                renderExpenses();
+            }
+
+            async function createExpenseOnServer(payload) {
+                try {
+                    const res = await fetch('/api/expenses', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+                    if (!res.ok) throw new Error('Create failed');
+                    const created = await res.json();
+                    // push server record (with id) into local array and re-render
+                    expenses.unshift(created);
+                    renderExpenses();
+                    return created;
+                } catch (err) {
+                    console.error('createExpenseOnServer error', err);
+                    throw err;
+                }
+            }
+
+            async function deleteExpenseOnServer(id) {
+                try {
+                    const res = await fetch('/api/expenses/' + id, { method: 'DELETE' });
+                    if (!res.ok) throw new Error('Delete failed');
+                    // remove from local array and re-render
+                    expenses = expenses.filter(e => e.id !== Number(id));
+                    renderExpenses();
+                } catch (err) {
+                    console.error('deleteExpenseOnServer error', err);
+                }
+            }
+
+
+            function renderExpenses() {
+                expenseTableBody.innerHTML = '';
+                expenses.forEach((expense, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${expense.source || ''}</td>
+                        <td>$${(Number(expense.amount) || 0).toFixed(2)}</td>
+                        <td>${expense.date || ''}</td>
+                        <td>${expense.frequency || ''}</td>
+                        <td>${expense.description || ''}</td>
+                        <td>
+                            ${expense.id ? `<button class="delete-btn" data-id="${expense.id}">Delete</button>` : ''}
+                        </td>
+                    `;
+                    expenseTableBody.appendChild(row);
+                });
+                updateCards();
+            }
+
+            async function formSubmission(event) {
+                event.preventDefault();
+                const formData = new FormData(expenseForm);
+
+                const source = formData.get('Source');
+                const amount = parseFloat(formData.get('Amount'));
+                const date = formData.get('date');
+                const frequency = formData.get('Frequency');
+                const description = formData.get('Description');
+
+                try {
+                    await createExpenseOnServer({ source, amount, date, frequency, description });
+                    expenseForm.reset();
+                    expenseForm.style.display = 'none';
+                } catch (err) {
+                    alert('Failed to save expense to server. See console for details.');
+                }
+            };
+
+            function searchExpenses() {
+                const filter = searchExpense.value.toLowerCase();
+                const rows = expenseTableBody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const [source, amount, date, frequency, description] = Array.from(row.cells).map(c => c.textContent.toLowerCase());
+
+                    row.style.display = 
+                        (source.includes(filter) || amount.includes(filter) || date.includes(filter) || frequency.includes(filter) || description.includes(filter))
+                        ? '' 
+                        : 'none';
+                });
+            };
+
+            function sortExpenses() {
+                const criteria = sortExpense.value;
+                expenses.sort((a, b) => {
+                    switch (criteria) {
+                        case 'date-desc':
+                            return new Date(b.date) - new Date(a.date);
+                        case 'date-asc':
+                            return new Date(a.date) - new Date(b.date);
+                        case 'amount-desc':
+                            return b.amount - a.amount;
+                        case 'amount-asc':
+                            return a.amount - b.amount;
+                        case 'source':
+                            return a.source.localeCompare(b.source);
+                        default:
+                            return 0;
+                    }
+                });
+                renderExpenses();
+            }
+
+            function updateCards() {
+                const frequencyMap = {
+                    "One-time": 1,
+                    "Daily": 30,
+                    "Weekly": 4,
+                    "Monthly": 1,
+                    "Yearly": 1/12
+                };
+
+                // Calculate total monthly expense minus any one time expenses
+                const totalMonthly = expenses.reduce((sum, e) => {
+                    const freq = frequencyMap[e.frequency] || 0;
+                    return sum + (parseFloat(e.amount) * freq);
+                }, 0);
+
+                const expectedThisMonth = expenses.reduce((sum, e) => {
+                    const date = new Date(e.date);
+                    const now = new Date();
+                    const sameMonth = date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                    if (sameMonth) {
+                        return sum + parseFloat(e.amount);
+                    }
+                    return sum;
+                }, 0);
+
+
+                const sources = new Set(expenses.map(e => e.source));
+                const numSources = sources.size;
+
+                document.getElementById('stat-total-expense').textContent = `$${totalMonthly.toFixed(2)}`;
+                document.getElementById('stat-expected-expense').textContent = `$${expectedThisMonth.toFixed(2)}`;
+                document.getElementById('stat-expense-sources').textContent = numSources;
+            }
+
+            expenseTableBody.addEventListener('click', (e) => {
+                const btn = e.target.closest('button.delete-btn');
+                if (!btn) return;
+                const id = btn.dataset.id;
+                if (id) {
+                    deleteExpenseOnServer(id);
+                }
+            });
+
+            function addTestExpense() {
+
+                const randomAmount = (Math.random() * 1000 + 10).toFixed(2);
+
+                const now = new Date();
+                const daysAgo = Math.floor(Math.random() * 90);
+                const randomDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+                const dateStr = randomDate.toISOString().split('T')[0];
+
+                const testExpense = {
+                    source: 'Test Source',
+                    amount: parseFloat(randomAmount),
+                    date: dateStr,
+                    frequency: 'Monthly',
+                    description: 'Test expense'
+                };
+                expenses.push(testExpense);
+                localStorage.setItem('expenses', JSON.stringify(expenses));
+                renderExpenses();
+            }
+
+            function clearExpenses() {
+                localStorage.removeItem('expenses');
+                expenses = [];
+                renderExpenses();
+                updateCards();
+            }
+
+            sortExpense.onchange = sortExpenses;
+            searchExpense.oninput = searchExpenses;
+            expenseForm.onsubmit = formSubmission;
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '[') {
+                    addTestExpense();
+                }
+                if (e.key === ']') {
+                    clearExpenses();
+                }
+            });
+
+            loadExpenses();
+        </script>
     </body>
 </html>

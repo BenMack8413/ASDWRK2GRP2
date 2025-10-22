@@ -91,7 +91,6 @@ CREATE TABLE IF NOT EXISTS incomes (
 
 CREATE INDEX IF NOT EXISTS idx_incomes_budget_date ON incomes(budget_id, date);
 
-
 -- TRANSACTIONS (header)
 CREATE TABLE IF NOT EXISTS transactions (
   transaction_id INTEGER PRIMARY KEY,
