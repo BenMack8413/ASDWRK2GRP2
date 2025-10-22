@@ -13,20 +13,6 @@ module.exports = function createBudgetRouter(db) {
         const monthPrefix = `${yyyy}-${mm}`; // e.g. "2025-10"
 
         try {
-            // Example queries
-/*            const incomeRow = db
-                .prepare(`
-                    SELECT COALESCE(SUM(amount), 0) AS total_cents
-                    FROM incomes
-                `)
-                .get();
-            const expenseRow = db
-                .prepare(`
-                    SELECT COALESCE(SUM(amount), 0) AS total 
-                    FROM expenses
-                    `)
-                .get(); */
-            
             const incomeRows = db
             .prepare(`
                 SELECT amount, frequency
@@ -142,8 +128,5 @@ module.exports = function createBudgetRouter(db) {
             res.status(500).json({ error: 'Failed to compute monthly data' });
         }
     });
-
-
-
     return router;
 }

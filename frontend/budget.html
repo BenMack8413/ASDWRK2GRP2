@@ -55,7 +55,30 @@
                     </div>
                 </div>
 
-                <div class="budget-grid">
+                <!-- Add Budget Modal -->
+                <div id="budgetModal" class="modal" style="display:none;">
+                    <div class="modal-content">
+                        <h2>Add New Budget</h2>
+
+                        <label>Budget Title</label>
+                        <input type="text" id="budgetTitle" placeholder="e.g. Groceries" required />
+
+                        <label>Amount (AUD)</label>
+                        <input type="number" id="budgetAmount" min="0" required />
+
+                        <div id="budgetPercentage">0% of running budget</div>
+                        <progress id="budgetProgress" value="0" max="100"></progress>
+
+                        <div class="modal-buttons">
+                        <button id="saveBudgetBtn">Save</button>
+                        <button id="cancelBudgetBtn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="budget-grid" id="budgetGrid">
+                    <!-- Card with content -->
                     <div class="card budget-card">
                         <div class="budget-card-header">
                             <div class="budget-card-title">Groceries</div>
@@ -70,44 +93,43 @@
                         </div>
                     </div>
 
+                    <!-- Blank card 1 -->
                     <div class="card budget-card">
                         <div class="budget-card-header">
-                            <div class="budget-card-title">Shopping</div>
+                            <div class="budget-card-title"></div> <!-- Empty title -->
                         </div>
-                        <div class="budget-card-amount">$246.00</div>
-                        <div class="budget-card-subtitle">Budget</div>
+                        <div class="budget-card-amount"></div> <!-- Empty amount -->
+                        <div class="budget-card-subtitle"></div> <!-- Empty subtitle -->
                         <div class="progress-bar">
-                            <div class="progress progress-shopping"></div>
+                            <div class="progress"></div> <!-- Empty progress bar -->
                         </div>
-                        <div class="budget-card-subtitle">
-                            45% of monthly budget
-                        </div>
+                        <div class="budget-card-subtitle"></div> <!-- Empty subtitle -->
                     </div>
 
+                    <!-- Blank card 2 -->
                     <div class="card budget-card">
                         <div class="budget-card-header">
-                            <div class="budget-card-title">Home needs</div>
+                            <div class="budget-card-title"></div>
                         </div>
-                        <div class="budget-card-amount">$136.00</div>
-                        <div class="budget-card-subtitle">Budget</div>
+                        <div class="budget-card-amount"></div>
+                        <div class="budget-card-subtitle"></div>
                         <div class="progress-bar">
-                            <div class="progress progress-home"></div>
+                            <div class="progress"></div>
                         </div>
-                        <div class="budget-card-subtitle">
-                            30% of monthly budget
-                        </div>
+                        <div class="budget-card-subtitle"></div>
                     </div>
 
-                    <div class="card savings-card">
-                        <div class="savings-header">
-                            <div class="bank-name">Bank Jago</div>
-                            <div class="savings-date">12 Mar 2024</div>
+                    <!-- Blank card 3 -->
+                    <div class="card budget-card">
+                        <div class="budget-card-header">
+                            <div class="budget-card-title"></div>
                         </div>
-                        <div class="savings-amount">$645.00</div>
-                        <div class="savings-change">
-                            <div class="change-positive">+$445.00</div>
-                            <div>Allocation Budget</div>
+                        <div class="budget-card-amount"></div>
+                        <div class="budget-card-subtitle"></div>
+                        <div class="progress-bar">
+                            <div class="progress"></div>
                         </div>
+                        <div class="budget-card-subtitle"></div>
                     </div>
                 </div>
 
@@ -276,12 +298,6 @@
                 });
             });
 
-            document
-                .querySelector('.add-transaction-btn')
-                .addEventListener('click', function () {
-                    alert('Add Transaction will be here');
-                });
-
             async function updateBudgetCardStatsFromServer() {
                 try {
                     const res = await fetch('/api/budget'); 
@@ -370,6 +386,164 @@
                 m.classList.toggle('active', i === now.getMonth());
             });
             /* -------- Budget End -------- */
+
+            /* -------- Add Budget Modal + Dynamic Cards -------- */
+
+            const addBudgetBtn = document.querySelector('.add-transaction-btn');
+            const budgetGrid = document.getElementById('budgetGrid');
+            const budgetModal = document.getElementById('budgetModal');
+            const saveBudgetBtn = document.getElementById('saveBudgetBtn');
+            const cancelBudgetBtn = document.getElementById('cancelBudgetBtn');
+            const budgetTitleInput = document.getElementById('budgetTitle');
+            const budgetAmountInput = document.getElementById('budgetAmount');
+            const budgetPercentageText = document.getElementById('budgetPercentage');
+            const budgetProgress = document.getElementById('budgetProgress');
+
+            // Show modal
+            addBudgetBtn.addEventListener('click', () => {
+            budgetModal.style.display = 'flex';
+            budgetTitleInput.value = '';
+            budgetAmountInput.value = '';
+            budgetProgress.value = 0;
+            budgetPercentageText.textContent = '0% of running budget';
+            });
+
+            // Hide modal
+            cancelBudgetBtn.addEventListener('click', () => {
+            budgetModal.style.display = 'none';
+            });
+
+            // Update percentage preview live
+            budgetAmountInput.addEventListener('input', async () => {
+            const amount = parseFloat(budgetAmountInput.value) || 0;
+            const running = await getRunningBudget();
+            const percent = running > 0 ? Math.min((amount / running) * 100, 100) : 0;
+            budgetProgress.value = percent;
+            budgetPercentageText.textContent = `${percent.toFixed(1)}% of running budget`;
+            });
+
+            // Get running budget
+            async function getRunningBudget() {
+            try {
+                const res = await fetch('/api/budget');
+                const data = await res.json();
+                return data?.running ?? 0;
+            } catch (err) {
+                console.error('Error fetching running budget', err);
+                return 0;
+            }
+            }
+
+            // Save budget (and update UI + backend)
+            saveBudgetBtn.addEventListener('click', async () => {
+                const title = budgetTitleInput.value.trim();
+                const amount = parseFloat(budgetAmountInput.value);
+                if (!title || isNaN(amount) || amount <= 0) return alert('Enter valid data');
+
+                try {
+                    const res = await fetch('/api/budget_simple', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title, amount })
+                    });
+                    if (!res.ok) throw new Error('Failed to save budget');
+
+                    const saved = await res.json();
+                    addBudgetCard(saved.title, saved.amount, calculatePercentage(saved.amount));
+                    budgetModal.style.display = 'none';
+                } catch (err) {
+                    console.error('Error saving budget', err);
+                }
+            });
+
+            // Function to render one card
+            function addBudgetCard(title, amount, percentUsed) {
+                const budgetGrid = document.getElementById('budgetGrid');
+
+                // Look for the first blank card
+                let blankCard = null;
+                const cards = Array.from(budgetGrid.children);
+                for (const card of cards) {
+                    const titleEl = card.querySelector('.budget-card-title');
+                    const amountEl = card.querySelector('.budget-card-amount');
+                    if (!titleEl.textContent.trim() && !amountEl.textContent.trim()) {
+                        blankCard = card;
+                        break;
+                    }
+                }
+
+                if (!blankCard) {
+                    // No blank cards left, create a new one
+                    blankCard = document.createElement('div');
+                    blankCard.className = 'card budget-card';
+                    blankCard.innerHTML = `
+                        <div class="budget-card-header">
+                            <div class="budget-card-title"></div>
+                        </div>
+                        <div class="budget-card-amount"></div>
+                        <div class="budget-card-subtitle"></div>
+                        <div class="progress-bar">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="budget-card-subtitle"></div>
+                    `;
+                    budgetGrid.appendChild(blankCard);
+                }
+
+                // Fill the blank card with new budget info
+                blankCard.querySelector('.budget-card-title').textContent = title;
+                blankCard.querySelector('.budget-card-amount').textContent = formatCurrency(amount);
+                const progressEl = blankCard.querySelector('.progress');
+                progressEl.style.width = `${percentUsed}%`;
+                const subtitleEls = blankCard.querySelectorAll('.budget-card-subtitle');
+                if (subtitleEls.length >= 2) {
+                    subtitleEls[0].textContent = 'Budget';
+                    subtitleEls[1].textContent = `${percentUsed.toFixed(1)}% of running budget`;
+                }
+            }
+
+
+
+            // Load existing budgets on page load
+            async function loadBudgets() {
+                try {
+                    const res = await fetch('/api/budget_simple');
+                    if (!res.ok) throw new Error('Failed to load budgets');
+                    const data = await res.json();
+
+                    const cards = Array.from(budgetGrid.children);
+                    // Clear all cards
+                    cards.forEach(card => {
+                        const titleEl = card.querySelector('.budget-card-title');
+                        const amountEl = card.querySelector('.budget-card-amount');
+                        const subtitles = card.querySelectorAll('.budget-card-subtitle');
+                        const progressEl = card.querySelector('.progress');
+                        titleEl.textContent = '';
+                        amountEl.textContent = '';
+                        subtitles.forEach(sub => sub.textContent = '');
+                        if (progressEl) progressEl.style.width = '0%';
+                    });
+
+                    data.forEach(b => addBudgetCard(b.title, b.amount, calculatePercentage(b.amount)));
+                } catch (err) {
+                    console.error('Error loading budgets', err);
+                }
+            }
+
+            function calculatePercentage(amount) {
+                const running = parseFloat(document.getElementById('stat-running').textContent.replace(/[^\d.-]/g, '')) || 1;
+                return Math.min((amount / running) * 100, 100);
+            }
+
+
+            // Extends existing DOMContentLoaded to include budgets
+            document.addEventListener('DOMContentLoaded', async () => {
+                await updateBudgetCardStatsFromServer();
+                await loadMonthlyBudgetData();
+                await loadBudgets();
+            });
+
+
         </script>
     </body>
 </html>

@@ -1,7 +1,7 @@
 const express = require('express');
 const { db } = require('../db');
 
-module.exports = function createExpenseRouter() {
+module.exports = function createExpenseRouter(db) {
     const router = express.Router();
 
     // Ensure simple expenses table exists

@@ -9,6 +9,7 @@ const createCategoriesRouter = require('./categories');
 const createImportExportRouter = require('./importExport');
 const createSettingsRouter = require('./settings');
 const createBudgetRouter = require('./budget');
+const createBudgetSimpleRouter = require('./budget_simple');
 // const sampleApiRouter = require('./sampleapi');
 
 module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
@@ -25,6 +26,7 @@ module.exports = function createApiRouter(db /*, createTransactionAtomic*/) {
     router.use('/importExport', createImportExportRouter(db));
     router.use('/settings', createSettingsRouter(db));
     router.use('/budget', createBudgetRouter(db));
+    router.use('/budget_simple', createBudgetSimpleRouter());
     
     // router.use('/sampleApiRouter', sampleApiRouter(db));
 
