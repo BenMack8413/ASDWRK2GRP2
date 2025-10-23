@@ -3,9 +3,30 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Login / Signup - My Budget</title>
+        <title>Login / Signup - Saniriser</title>
         <link rel="stylesheet" href="./css/style.css" />
         <style>
+            .error {
+                color: #e74c3c;
+                font-size: 0.9em;
+                margin-top: 4px;
+            }
+
+            .error-box {
+                background-color: #fdecea;
+                border: 1px solid #f5c2c0;
+                color: #b71c1c;
+                padding: 10px 12px;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                font-size: 0.95em;
+            }
+
+            input.error-field {
+                border: 1px solid #e74c3c;
+                outline: none;
+            }
+
             body {
                 margin: 0;
                 font-family:
@@ -30,7 +51,7 @@
     <body>
         <div class="auth-container">
             <div class="auth-left">
-                <h1>My Budget</h1>
+                <h1>Saniriser</h1>
                 <p>Take control of your finances with our intuitive budget tracking tool. Create budgets, track expenses, and achieve your financial goals.</p>
             </div>
             <div class="auth-right">
@@ -43,9 +64,14 @@
                 <form class="auth-form active" id="loginForm">
                     <h2>Welcome Back</h2>
                     <div class="form-group">
-                        <label for="login-username">Username or Email</label>
+                        <div
+                            id="login-error"
+                            class="error-box"
+                            style="display: none"
+                        ></div>
+                        <label for="login-username">Email</label>
                         <input
-                            type="text"
+                            type="email"
                             id="login-username"
                             name="username"
                             class="form-input"
@@ -80,6 +106,11 @@
                 <form class="auth-form" id="signupForm">
                     <h2>Create Account</h2>
                     <div class="form-group">
+                        <div
+                            id="signup-error"
+                            class="error-box"
+                            style="display: none"
+                        ></div>
                         <label for="signup-username">Username</label>
                         <input
                             type="text"
@@ -124,6 +155,7 @@
                 </form>
             </div>
         </div>
+    <script src="/scripts/token.js"></script>
 
         <script>
             // Tab switching functionality
@@ -162,154 +194,154 @@
             }
             sessionStorage.removeItem('showTab');
 
-        
-            // Form submission
+            // look for existing tokens
+            window.addEventListener('DOMContentLoaded', async () => {
+                const token = getToken();
+                if (isLoggedIn()) {
+                    try {
+                        const response = await fetch('/api/user/verify', {
+                            method: 'GET',
+                            headers: { authorization: `Bearer ${token}` },
+                        });
+
+                        if (response.ok) {
+                            window.location.href = 'dashboard.html';
+                        } else {
+                            removeToken();
+                        }
+                    } catch (err) {
+                        console.error('Token verification failed:', err);
+                    }
+                }
+            });
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email.trim());
+            }
+
+            function showError(input, message) {
+                let errorEl = input.nextElementSibling;
+                input.classList.add('error-field'); // add red border
+                if (!errorEl || !errorEl.classList.contains('error')) {
+                    errorEl = document.createElement('div');
+                    errorEl.classList.add('error');
+                    input.insertAdjacentElement('afterend', errorEl);
+                }
+                errorEl.textContent = message;
+            }
+
+            function clearError(input) {
+                input.classList.remove('error-field');
+                const errorEl = input.nextElementSibling;
+                if (errorEl && errorEl.classList.contains('error')) {
+                    errorEl.remove();
+                }
+            }
+
+            function showFormError(formId, message) {
+                const box = document.getElementById(formId);
+                box.textContent = message;
+                box.style.display = 'block';
+            }
+
+            function clearFormError(formId) {
+                const box = document.getElementById(formId);
+                box.textContent = '';
+                box.style.display = 'none';
+            }
+
+            // Signup form
             document
                 .getElementById('signupForm')
                 .addEventListener('submit', function (e) {
-                    e.preventDefault(); // stop page reload
-                    const username =
-                        document.getElementById('signup-username').value;
-                    const email = document.getElementById('signup-email').value;
+                    e.preventDefault();
+
+                    clearFormError('signup-error');
+
+                    const username = document
+                        .getElementById('signup-username')
+                        .value.trim();
+                    const emailInput = document.getElementById('signup-email');
+                    const email = emailInput.value.trim();
                     const password =
                         document.getElementById('signup-password').value;
                     const remember =
                         document.getElementById('signup-remember').checked;
 
-                    // Call your signup function here
-                    console.log('Signup:', { username, email, password, remember });
-                    // signup(username, email, password, remember);
+                    clearError(emailInput);
+                    if (!email) {
+                        showError(emailInput, 'Email is required.');
+                        return;
+                    }
+                    if (!isValidEmail(email)) {
+                        showError(
+                            emailInput,
+                            'Please enter a valid email address.',
+                        );
+                        return;
+                    }
+
+                    signup(username, email, password, remember)
+                        .then((result) => {
+                            if (!result.success) {
+                                showFormError('signup-error', result.error);
+                                return;
+                            }
+                            // Redirect on success
+                            window.location.href = '/dashboard.html';
+                        })
+                        .catch((err) => {
+                            showFormError(
+                                'signup-error',
+                                'Network error. Please try again.',
+                            );
+                            console.error(err);
+                        });
                 });
 
-            // Watch for login form submit
             document
                 .getElementById('loginForm')
                 .addEventListener('submit', function (e) {
                     e.preventDefault();
-                    const username =
-                        document.getElementById('login-username').value;
+
+                    clearFormError('login-error');
+                    const username = document
+                        .getElementById('login-username')
+                        .value.trim();
                     const password =
                         document.getElementById('login-password').value;
                     const remember =
                         document.getElementById('login-remember').checked;
 
-                    // Call your login function here
-                    console.log('Login:', { username, password, remember });
-                    // login(username, password, remember);
+                    if (!isValidEmail(username)) {
+                        const loginInput =
+                            document.getElementById('login-username');
+                        clearError(loginInput);
+                        showError(
+                            loginInput,
+                            'Please enter a valid email address.',
+                        );
+                        return;
+                    }
+
+                    login(username, password, remember)
+                        .then((result) => {
+                            if (!result.success) {
+                                showFormError('login-error', result.error);
+                                return;
+                            }
+                            // Redirect on success
+                            window.location.href = '/dashboard.html';
+                        })
+                        .catch((err) => {
+                            showFormError(
+                                'login-error',
+                                'Network error. Please try again.',
+                            );
+                            console.error(err);
+                        });
                 });
         </script>
     </body>
 </html>
-
-<!-- Original login file below -->
-<!-- <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Login / Signup</title>
-        <link rel="stylesheet" href="/css/styles.css" />
-    </head>
-    <body>
-        <section id="signup">
-            <h2>Sign Up</h2>
-            <form id="signupForm">
-                <label for="signup-username">Username:</label>
-                <input
-                    type="text"
-                    id="signup-username"
-                    name="username"
-                    required
-                />
-
-                <label for="signup-email">Email:</label>
-                <input type="email" id="signup-email" name="email" required />
-
-                <label for="signup-password">Password:</label>
-                <input
-                    type="password"
-                    id="signup-password"
-                    name="password"
-                    required
-                />
-
-                <label>
-                    <input
-                        type="checkbox"
-                        id="signup-remember"
-                        name="remember"
-                    />
-                    Remember me
-                </label>
-
-                <button type="submit">Sign Up</button>
-            </form>
-        </section>
-
-        <hr />
-
-        <section id="login">
-            <h2>Log In</h2>
-            <form id="loginForm">
-                <label for="login-username">Username or Email:</label>
-                <input
-                    type="text"
-                    id="login-username"
-                    name="username"
-                    required
-                />
-
-                <label for="login-password">Password:</label>
-                <input
-                    type="password"
-                    id="login-password"
-                    name="password"
-                    required
-                />
-
-                <label>
-                    <input
-                        type="checkbox"
-                        id="login-remember"
-                        name="remember"
-                    />
-                    Remember me
-                </label>
-
-                <button type="submit">Log In</button>
-            </form>
-        </section>
-
-        <script src="/scripts/token.js"></script>
-        <script>
-
-            document
-                .getElementById('signupForm')
-                .addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    const username =
-                        document.getElementById('signup-username').value;
-                    const email = document.getElementById('signup-email').value;
-                    const password =
-                        document.getElementById('signup-password').value;
-                    const remember =
-                        document.getElementById('signup-remember').checked;
-
-                    signup(username, email, password, remember);
-                });
-
-            document
-                .getElementById('loginForm')
-                .addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    const username =
-                        document.getElementById('login-username').value;
-                    const password =
-                        document.getElementById('login-password').value;
-                    const remember =
-                        document.getElementById('login-remember').checked;
-
-                    login(username, password, remember); 
-                });
-        </script>
-    </body>
-</html> -->

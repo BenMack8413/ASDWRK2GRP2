@@ -22,7 +22,7 @@
 
   const CATEGORY_COLORS = {
     Rent: '#3b5bd8',
-    Food: '#16a34a',
+    Groceries: '#16a34a',
     Transport: '#facc15',
     Shopping: '#f472b6',
     Saving: '#14b8a6',
