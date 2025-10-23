@@ -220,18 +220,12 @@
     totalExpensesEl.textContent = fmt(totalExpenseThisMonth / 100);
     remainingEl.textContent = fmt(remainingCents / 100);
 
-    // allocation card
-    document.getElementById('allocation-date').textContent = new Date().toLocaleDateString();
-    document.getElementById('allocation-amount').textContent = fmt(budgetTotalDollars);
-    document.getElementById('allocation-change').textContent = `+${fmt(budgetTotalDollars)}`;
-
     // stats
     statMonthLabel.textContent = new Date().toLocaleString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
     statMonthBudget.textContent = fmt(budgetTotalDollars);
     statExpectedRemaining.textContent = fmt((remainingCents / 100));
     statToday.textContent = fmt((remainingCents / 100));
 
-    // update donut (spent per category) done elsewhere
   }
 
 async function drawDonut() {
@@ -406,10 +400,6 @@ async function drawDonut() {
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-  });
-
-  addTxBtn.addEventListener('click', () => {
-    alert('Open transaction modal (not implemented). You can add transactions using the Income/Expenses pages.');
   });
 
   addCategoryBudgetBtn.addEventListener('click', () => {
