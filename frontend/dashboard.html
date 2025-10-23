@@ -376,7 +376,7 @@
                         if (!res.ok) throw new Error('Failed to fetch expenses');
                         const expenses = await res.json();
 
-                        // Group by category
+
                         const totals = {};
                         expenses.forEach(exp => {
                             const cat = exp.category || 'Other';
@@ -389,7 +389,17 @@
                             value: totals[k],
                         }));
 
-                        // Update pie chart
+                        const { keys } = getLastNMonthLabels(7);
+                        const monthMap = Object.fromEntries(keys.map(k => [k, 0]));
+                        expenses.forEach(exp => {
+                            if (!exp.date) return;
+                            const d = new Date(exp.date);
+                            if (isNaN(d)) return;
+                            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                            if (monthMap[key] != null) monthMap[key] += Number(exp.amount) || 0;
+                        });
+                        sample.monthly.expense = keys.map(k => Math.round((monthMap[k] || 0) * 100) / 100);
+
                         if (spendPie) {
                             spendPie.data.labels = sample.categories.map(c => c.label);
                             spendPie.data.datasets[0].data = sample.categories.map(c => c.value);
@@ -398,10 +408,17 @@
                             );
                             spendPie.update();
                         }
+
+                        if (activityBar) {
+                            activityBar.data.datasets[1].data = sample.monthly.expense;
+                            activityBar.update();
+                        }
+
                     } catch (err) {
                         console.error('loadExpensesForDashboard error:', err);
                     }
                 }
+
 
                 const LAYOUT_KEY = 'mb_dashboard_layout_v1';
                 const HIDDEN_KEY = 'mb_dashboard_hidden_v1';
@@ -521,16 +538,17 @@
                     attach();
                 }
 
-                (function init() {
-                    initCharts();
-                    makeWidgetsDraggable();
-                    Promise.all([
-                        loadIncomesForDashboard(),
-                        loadExpensesForDashboard(),
-                    ]).then(() => {
-                        loadLayout();
-                    });
-                })();
+            (function init() {
+                initCharts();
+                makeWidgetsDraggable();
+                Promise.all([
+                    loadIncomesForDashboard(),
+                    loadExpensesForDashboard(),
+                ]).then(() => {
+                    loadLayout();
+                });
+            })();
+
             </script>
         </div>
     </body>

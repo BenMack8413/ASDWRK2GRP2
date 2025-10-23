@@ -1,4 +1,3 @@
-// backend/api/budget.js
 (() => {
   const API_ROOT_INCOME = '/api/incomes';
   const API_ROOT_EXPENSES = '/api/expenses';
@@ -21,6 +20,16 @@
   const addTxBtn = document.getElementById('addTxBtn');
   const addCategoryBudgetBtn = document.getElementById('addCategoryBudgetBtn');
   const resetBudgetsBtn = document.getElementById('resetBudgetsBtn');
+
+  const CATEGORY_COLORS = {
+    Rent: '#3b5bd8',
+    Food: '#16a34a',
+    Transport: '#facc15',
+    Shopping: '#f472b6',
+    Saving: '#14b8a6',
+    Investments: '#8b5cf6',
+    Other: '#9ca3af',
+  };
 
   // charts
   let donutChart = null;
@@ -225,37 +234,64 @@
     // update donut (spent per category) done elsewhere
   }
 
-  // Draw donut chart
-  function drawDonut(sums = {}) {
-    const labels = Object.keys(sums);
-    const data = labels.map((l) => Math.abs(sums[l] || 0) / 100); // dollars
+async function drawDonut() {
+    try {
+        const res = await fetch(`/api/expenses?budget_id=1`);
+        if (!res.ok) throw new Error('Failed to fetch expenses');
+        const expenses = await res.json();
 
-    const ctx = document.getElementById('categoryDonut').getContext('2d');
-    if (donutChart) {
-      donutChart.data.labels = labels;
-      donutChart.data.datasets[0].data = data;
-      donutChart.update();
-      return;
+        // Group by category
+        const totals = {};
+        expenses.forEach(exp => {
+            const cat = exp.category || 'Other';
+            const amt = Number(exp.amount) || 0;
+            totals[cat] = (totals[cat] || 0) + amt;
+        });
+
+        const labels = Object.keys(totals);
+        const data = Object.values(totals);
+        const backgroundColors = labels.map(
+            c => CATEGORY_COLORS[c] || '#9ca3af'
+        );
+
+        const ctx = document.getElementById('categoryDonut').getContext('2d');
+
+        // Destroy previous chart if it exists
+        if (window.categoryDonutChart) window.categoryDonutChart.destroy();
+
+        window.categoryDonutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: backgroundColors,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                const val = ctx.parsed;
+                                const pct = ((val / total) * 100).toFixed(1);
+                                return `${ctx.label}: $${val.toFixed(2)} (${pct}%)`;
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    } catch (err) {
+        console.error('drawDonut error:', err);
+        alert('Failed to load data');
     }
-
-    donutChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [
-          {
-            data,
-            /* default colours - Chart.js will pick if left empty */
-          },
-        ],
-      },
-      options: {
-        plugins: {
-          legend: { position: 'right' },
-        },
-      },
-    });
-  }
+}
 
   // Draw monthly line chart
   function drawMonthly(numMonths = 12) {
