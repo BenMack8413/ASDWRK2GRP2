@@ -62,35 +62,46 @@ async function signup(username, email, password, rememberMe) {
 
         const data = await response.json();
 
-        if (response.ok) {
-            try {
-                await login(email, password, rememberMe);
-                return 'Signup successful! You can now log in.';
-            } catch (loginError) {
-                return 'Signup successful, but login failed. Please try logging in manually.';
-            }
-        } else {
-            return `Signup failed: ${data.error}`;
+        if (!response.ok) {
+            return { success: false, error: data.error || 'Signup failed.' };
         }
+
+        // Attempt login automatically
+        const loginResult = await login(email, password, rememberMe);
+
+        if (!loginResult.success) {
+            return {
+                success: false,
+                error: 'Signup successful, but login failed. Please log in manually.',
+            };
+        }
+
+        return { success: true, data: loginResult.data };
     } catch (err) {
-        return `Error: ${err.message}`;
+        return { success: false, error: `Signup failed: ${err.message}` };
     }
 }
 
 async function login(email, password, rememberMe = false) {
-    const response = await fetch('/api/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, rememberMe }),
-    });
-    const data = await response.json();
+    try {
+        const response = await fetch('/api/user/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, rememberMe }),
+        });
 
-    if (response.ok && data.token) {
+        const data = await response.json();
+
+        if (!response.ok || !data.token) {
+            return { success: false, error: data.error || 'Login failed.' };
+        }
+
+        // Save token
         saveToken(data.token, rememberMe);
-        window.location.href = '/dashboard.html';
-        return data;
-    } else {
-        throw new Error(data.error || 'Login failed');
+
+        return { success: true, data };
+    } catch (err) {
+        return { success: false, error: `Login failed: ${err.message}` };
     }
 }
 
@@ -184,4 +195,4 @@ window.login = login;
 window.logout = logout;
 window.deleteUser = deleteUser;
 
-module.exports = { signup, login, getToken, removeToken };
+module.exports = { signup, login, getToken, removeToken, isLoggedIn };

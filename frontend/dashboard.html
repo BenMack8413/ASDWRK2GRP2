@@ -8,11 +8,28 @@
         <link rel="stylesheet" href="./css/style.css" />
         <style>
             /* small helper to show dragging state without touching your external css */
-            .widget.dragging { opacity: 0.5; transform: scale(0.98); }
-            .widget-placeholder { border: 2px dashed rgba(0,0,0,0.08); height: 60px; margin: 8px 0; }
-            .top_row { display: flex; gap: 12px; flex-wrap: wrap; }
-            .card.small, .card.medium, .card.half { min-width: 220px; }
-            .widget { cursor: grab; }
+            .widget.dragging {
+                opacity: 0.5;
+                transform: scale(0.98);
+            }
+            .widget-placeholder {
+                border: 2px dashed rgba(0, 0, 0, 0.08);
+                height: 60px;
+                margin: 8px 0;
+            }
+            .top_row {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .card.small,
+            .card.medium,
+            .card.half {
+                min-width: 220px;
+            }
+            .widget {
+                cursor: grab;
+            }
         </style>
     </head>
     <body>
@@ -47,26 +64,54 @@
                     "
                 >
                     <h1>Dashboard</h1>
-                    <div class="layout-controls"> 
-                        <button class="add-income-btn" onclick="saveLayout()">Save Layout</button>
-                        <button class="export-btn" onclick="resetLayout()">Reset</button>
+                    <div class="layout-controls">
+                        <button class="add-income-btn" onclick="saveLayout()">
+                            Save Layout
+                        </button>
+                        <button class="export-btn" onclick="resetLayout()">
+                            Reset
+                        </button>
                     </div>
                 </div>
 
                 <div class="top_row" id="widgetsContainer">
-                    <div class="widget card small" draggable="true" id="widget-balance" data-id="widget-balance">
+                    <div
+                        class="widget card small"
+                        draggable="true"
+                        id="widget-balance"
+                        data-id="widget-balance"
+                    >
                         <div class="widget_header">
                             <div><h3>Current Balance</h3></div>
-                            <div class="balance_amount" id="currentBalance">$0</div>
+                            <div class="balance_amount" id="currentBalance">
+                                $0
+                            </div>
                         </div>
                     </div>
 
-                    <div class="widget card medium" draggable="true" id="widget-miniTx" data-id="widget-miniTx">
+                    <div
+                        class="widget card medium"
+                        draggable="true"
+                        id="widget-miniTx"
+                        data-id="widget-miniTx"
+                    >
                         <h3 style="margin-bottom: 8px">Latest transactions</h3>
-                        <div id="miniTx" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                        <div
+                            id="miniTx"
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 8px;
+                            "
+                        ></div>
                     </div>
 
-                    <div class="widget card medium" draggable="true" id="widget-incomeChart" data-id="widget-incomeChart">
+                    <div
+                        class="widget card medium"
+                        draggable="true"
+                        id="widget-incomeChart"
+                        data-id="widget-incomeChart"
+                    >
                         <div class="widget_header">
                             <div>
                                 <h3>Income</h3>
@@ -78,13 +123,23 @@
                         </div>
                     </div>
 
-                    <div class="widget card half" draggable="true" id="widget-recentTx" data-id="widget-recentTx">
+                    <div
+                        class="widget card half"
+                        draggable="true"
+                        id="widget-recentTx"
+                        data-id="widget-recentTx"
+                    >
                         <h3>Payment history</h3>
                         <div class="transactions" id="recentTx"></div>
                     </div>
 
                     <!-- additional widgets (spend pie / activity) remain movable below -->
-                    <div class="widget" draggable="true" data-id="widget-pie" id="widget-pie">
+                    <div
+                        class="widget"
+                        draggable="true"
+                        data-id="widget-pie"
+                        id="widget-pie"
+                    >
                         <div class="widget-header">
                             <div>
                                 <h3>Spending by category</h3>
@@ -96,7 +151,12 @@
                         </div>
                     </div>
 
-                    <div class="widget" draggable="true" data-id="widget-activity" id="widget-activity">
+                    <div
+                        class="widget"
+                        draggable="true"
+                        data-id="widget-activity"
+                        id="widget-activity"
+                    >
                         <div class="widget-header">
                             <div>
                                 <h3>Activity</h3>
@@ -112,10 +172,8 @@
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
-
                 const INCOME_API = '/api/incomes';
                 const BUDGET_ID = 1; // update if you use another budget id
-
 
                 const sample = {
                     recentTx: [],
@@ -170,7 +228,9 @@
                         left.appendChild(txt);
                         const amt = document.createElement('div');
                         amt.style.fontWeight = 700;
-                        amt.textContent = (tx.amount > 0 ? '+' : '') + formatCurrency(tx.amount);
+                        amt.textContent =
+                            (tx.amount > 0 ? '+' : '') +
+                            formatCurrency(tx.amount);
                         if (tx.amount < 0) amt.style.color = '#ff5c68';
                         else if (tx.amount > 0) amt.style.color = '#16a34a';
                         el.appendChild(left);
@@ -189,7 +249,9 @@
                         row.style.justifyContent = 'space-between';
                         row.style.alignItems = 'center';
                         row.style.padding = '6px 0';
-                        const amountText = (tx.amount > 0 ? '+' : '') + formatCurrency(tx.amount);
+                        const amountText =
+                            (tx.amount > 0 ? '+' : '') +
+                            formatCurrency(tx.amount);
                         row.innerHTML = `<div style="font-size:13px">${tx.title}</div><div style="font-weight:700">${amountText}</div>`;
                         mini.appendChild(row);
                     });
@@ -226,7 +288,8 @@
                                         tension: 0.3,
                                         borderWidth: 2,
                                         pointBackgroundColor: '#fff',
-                                        pointBorderColor: 'rgba(59,91,216,0.95)',
+                                        pointBorderColor:
+                                            'rgba(59,91,216,0.95)',
                                         tension: 0.4,
                                         fill: true,
                                     },
@@ -287,7 +350,10 @@
                                         label: 'Income',
                                         data: sample.monthly.income.length
                                             ? sample.monthly.income
-                                            : [7000, 7000, 7000, 7000, 7000, 7000, 7000],
+                                            : [
+                                                  7000, 7000, 7000, 7000, 7000,
+                                                  7000, 7000,
+                                              ],
                                         stack: 'a',
                                     },
                                     {
@@ -312,21 +378,33 @@
                     const keys = []; // YYYY-MM keys
                     const now = new Date();
                     for (let i = n - 1; i >= 0; i--) {
-                        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                        const d = new Date(
+                            now.getFullYear(),
+                            now.getMonth() - i,
+                            1,
+                        );
                         const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
                         keys.push(key);
-                        labels.push(d.toLocaleString(undefined, { month: 'short' }));
+                        labels.push(
+                            d.toLocaleString(undefined, { month: 'short' }),
+                        );
                     }
                     return { keys, labels };
                 }
 
                 async function loadIncomesForDashboard() {
                     try {
-                        const res = await fetch(`${INCOME_API}?budget_id=${BUDGET_ID}`);
+                        const res = await fetch(
+                            `${INCOME_API}?budget_id=${BUDGET_ID}`,
+                        );
                         if (!res.ok) throw new Error('Failed to fetch incomes');
                         const incomes = await res.json();
 
-                        const sorted = incomes.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+                        const sorted = incomes
+                            .slice()
+                            .sort(
+                                (a, b) => new Date(b.date) - new Date(a.date),
+                            );
 
                         sample.recentTx = sorted.slice(0, 8).map((inc) => ({
                             id: inc.id,
@@ -335,34 +413,46 @@
                             amount: Number(inc.amount) || 0,
                         }));
 
-                        const totalIncome = incomes.reduce((s, x) => s + (Number(x.amount) || 0), 0);
-
+                        const totalIncome = incomes.reduce(
+                            (s, x) => s + (Number(x.amount) || 0),
+                            0,
+                        );
 
                         const { keys, labels } = getLastNMonthLabels(7);
-                        const monthMap = Object.fromEntries(keys.map((k) => [k, 0]));
+                        const monthMap = Object.fromEntries(
+                            keys.map((k) => [k, 0]),
+                        );
                         incomes.forEach((inc) => {
                             if (!inc.date) return;
                             const d = new Date(inc.date);
                             if (isNaN(d)) return;
                             const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-                            if (monthMap[key] != null) monthMap[key] += Number(inc.amount) || 0;
+                            if (monthMap[key] != null)
+                                monthMap[key] += Number(inc.amount) || 0;
                         });
 
                         sample.monthly.months = labels;
-                        sample.monthly.income = keys.map((k) => Math.round((monthMap[k] || 0) * 100) / 100);
+                        sample.monthly.income = keys.map(
+                            (k) => Math.round((monthMap[k] || 0) * 100) / 100,
+                        );
 
-                        document.getElementById('currentBalance').textContent = formatCurrency(totalIncome);
+                        document.getElementById('currentBalance').textContent =
+                            formatCurrency(totalIncome);
                         renderRecentTx();
                         renderMiniTx();
 
                         if (incomeChart) {
-                            incomeChart.data.labels = sample.monthly.months.slice(-6);
-                            incomeChart.data.datasets[0].data = sample.monthly.income.slice(-6);
+                            incomeChart.data.labels =
+                                sample.monthly.months.slice(-6);
+                            incomeChart.data.datasets[0].data =
+                                sample.monthly.income.slice(-6);
                             incomeChart.update();
                         }
                         if (activityBar) {
-                            activityBar.data.labels = getLastNMonthLabels(7).labels;
-                            activityBar.data.datasets[0].data = sample.monthly.income;
+                            activityBar.data.labels =
+                                getLastNMonthLabels(7).labels;
+                            activityBar.data.datasets[0].data =
+                                sample.monthly.income;
                             activityBar.update();
                         }
                     } catch (err) {
@@ -422,7 +512,8 @@
 
                 const LAYOUT_KEY = 'mb_dashboard_layout_v1';
                 const HIDDEN_KEY = 'mb_dashboard_hidden_v1';
-                const widgetsContainer = document.getElementById('widgetsContainer');
+                const widgetsContainer =
+                    document.getElementById('widgetsContainer');
 
                 function getHiddenWidgets() {
                     return [...document.querySelectorAll('.widget')]
@@ -431,18 +522,26 @@
                 }
                 function saveHiddenState() {
                     try {
-                        localStorage.setItem(HIDDEN_KEY, JSON.stringify(getHiddenWidgets()));
+                        localStorage.setItem(
+                            HIDDEN_KEY,
+                            JSON.stringify(getHiddenWidgets()),
+                        );
                     } catch (e) {}
                 }
 
                 function saveLayout() {
                     try {
                         if (!widgetsContainer) return;
-                        const order = [...widgetsContainer.querySelectorAll('.widget')]
+                        const order = [
+                            ...widgetsContainer.querySelectorAll('.widget'),
+                        ]
                             .map((w) => w.id)
                             .filter(Boolean);
                         localStorage.setItem(LAYOUT_KEY, JSON.stringify(order));
-                        localStorage.setItem(HIDDEN_KEY, JSON.stringify(getHiddenWidgets()));
+                        localStorage.setItem(
+                            HIDDEN_KEY,
+                            JSON.stringify(getHiddenWidgets()),
+                        );
                         const b = document.createElement('span');
                         b.textContent = 'Layout saved';
                         b.style.marginLeft = '8px';
@@ -454,19 +553,27 @@
                 function loadLayout() {
                     try {
                         if (!widgetsContainer) return;
-                        const order = JSON.parse(localStorage.getItem(LAYOUT_KEY) || 'null');
+                        const order = JSON.parse(
+                            localStorage.getItem(LAYOUT_KEY) || 'null',
+                        );
                         if (order && Array.isArray(order)) {
                             order.forEach((id) => {
                                 const el = document.getElementById(id);
                                 if (el) widgetsContainer.appendChild(el);
                             });
                         }
-                        const hidden = JSON.parse(localStorage.getItem(HIDDEN_KEY) || 'null');
+                        const hidden = JSON.parse(
+                            localStorage.getItem(HIDDEN_KEY) || 'null',
+                        );
                         if (hidden && Array.isArray(hidden)) {
-                            document.querySelectorAll('.widget').forEach((w) => {
-                                const visible = !hidden.includes(w.id);
-                                w.style.display = visible ? 'block' : 'none';
-                            });
+                            document
+                                .querySelectorAll('.widget')
+                                .forEach((w) => {
+                                    const visible = !hidden.includes(w.id);
+                                    w.style.display = visible
+                                        ? 'block'
+                                        : 'none';
+                                });
                         }
                     } catch (e) {}
                 }
@@ -501,23 +608,41 @@
                     }
 
                     function getDragAfterElement(container, y) {
-                        const draggableElements = [...container.querySelectorAll('.widget:not(.dragging)')];
-                        return draggableElements.reduce((closest, child) => {
-                            const box = child.getBoundingClientRect();
-                            const offset = y - box.top - box.height / 2;
-                            if (offset < 0 && offset > closest.offset) {
-                                return { offset, element: child };
-                            } else return closest;
-                        }, { offset: Number.NEGATIVE_INFINITY }).element || null;
+                        const draggableElements = [
+                            ...container.querySelectorAll(
+                                '.widget:not(.dragging)',
+                            ),
+                        ];
+                        return (
+                            draggableElements.reduce(
+                                (closest, child) => {
+                                    const box = child.getBoundingClientRect();
+                                    const offset = y - box.top - box.height / 2;
+                                    if (offset < 0 && offset > closest.offset) {
+                                        return { offset, element: child };
+                                    } else return closest;
+                                },
+                                { offset: Number.NEGATIVE_INFINITY },
+                            ).element || null
+                        );
                     }
 
                     widgetsContainer.addEventListener('dragover', (e) => {
                         e.preventDefault();
-                        const afterElement = getDragAfterElement(widgetsContainer, e.clientY);
-                        const dragging = document.querySelector('.widget.dragging');
+                        const afterElement = getDragAfterElement(
+                            widgetsContainer,
+                            e.clientY,
+                        );
+                        const dragging =
+                            document.querySelector('.widget.dragging');
                         if (!dragging) return;
-                        if (afterElement == null) widgetsContainer.appendChild(dragging);
-                        else widgetsContainer.insertBefore(dragging, afterElement);
+                        if (afterElement == null)
+                            widgetsContainer.appendChild(dragging);
+                        else
+                            widgetsContainer.insertBefore(
+                                dragging,
+                                afterElement,
+                            );
                     });
 
                     function attach() {
@@ -530,10 +655,11 @@
                         });
                     }
 
-
                     const observer = new MutationObserver(attach);
-                    observer.observe(widgetsContainer, { childList: true, subtree: false });
-
+                    observer.observe(widgetsContainer, {
+                        childList: true,
+                        subtree: false,
+                    });
 
                     attach();
                 }
@@ -553,5 +679,3 @@
         </div>
     </body>
 </html>
-
-
