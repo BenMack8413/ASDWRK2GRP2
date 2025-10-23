@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'frontend')));
 
 // --- Mount API routes
-app.use('/api', createApiRouter(db));
+app.use('/api', createApiRouter(db, createTransactionAtomic));
 
 // --- SPA / fallback: only return index.html for non-file, non-api requests
 // This prevents serving index.html to requests for /css/foo.css (those requests have an extension)

@@ -25,23 +25,17 @@
                 justify-content: center;
                 padding: 20px;
             }
-        </style>
+            </style>
     </head>
     <body>
         <div class="auth-container">
             <div class="auth-left">
                 <h1>My Budget</h1>
-                <p>
-                    Take control of your finances with our intuitive budget
-                    tracking tool. Create budgets, track expenses, and achieve
-                    your financial goals.
-                </p>
+                <p>Take control of your finances with our intuitive budget tracking tool. Create budgets, track expenses, and achieve your financial goals.</p>
             </div>
             <div class="auth-right">
                 <div class="auth-tabs">
-                    <button class="auth-tab active" id="loginTab">
-                        Log In
-                    </button>
+                    <button class="auth-tab active" id="loginTab">Log In</button>
                     <button class="auth-tab" id="signupTab">Sign Up</button>
                 </div>
 
@@ -49,7 +43,7 @@
                 <form class="auth-form active" id="loginForm">
                     <h2>Welcome Back</h2>
                     <div class="form-group">
-                        <label for="login-username">Email</label>
+                        <label for="login-username">Username or Email</label>
                         <input
                             type="text"
                             id="login-username"
@@ -78,8 +72,7 @@
                     </div>
                     <button type="submit" class="submit-btn">Log In</button>
                     <div class="switch-form">
-                        Don't have an account?
-                        <a id="switchToSignup">Sign up</a>
+                        Don't have an account? <a id="switchToSignup">Sign up</a>
                     </div>
                 </form>
 
@@ -126,8 +119,7 @@
                     </div>
                     <button type="submit" class="submit-btn">Sign Up</button>
                     <div class="switch-form">
-                        Already have an account?
-                        <a id="switchToLogin">Log in</a>
+                        Already have an account? <a id="switchToLogin">Log in</a>
                     </div>
                 </form>
             </div>
@@ -161,6 +153,16 @@
             switchToLogin.addEventListener('click', showLogin);
             switchToSignup.addEventListener('click', showSignup);
 
+            // Show correct tab based on button pressed on index.html
+            const showTab = sessionStorage.getItem('showTab');
+            if (showTab === 'signup') {
+                showSignup();
+            } else {
+                showLogin();
+            }
+            sessionStorage.removeItem('showTab');
+
+        
             // Form submission
             document
                 .getElementById('signupForm')
@@ -175,8 +177,8 @@
                         document.getElementById('signup-remember').checked;
 
                     // Call your signup function here
-                    // console.log('Signup:', { username, email, password, remember });
-                    signup(username, email, password, remember);
+                    console.log('Signup:', { username, email, password, remember });
+                    // signup(username, email, password, remember);
                 });
 
             // Watch for login form submit
@@ -192,11 +194,10 @@
                         document.getElementById('login-remember').checked;
 
                     // Call your login function here
-                    // console.log('Login:', { username, password, remember });
-                    login(username, password, remember);
+                    console.log('Login:', { username, password, remember });
+                    // login(username, password, remember);
                 });
         </script>
-        <script src="/scripts/token.js"></script>
     </body>
 </html>
 

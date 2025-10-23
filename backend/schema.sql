@@ -20,8 +20,7 @@ CREATE TABLE IF NOT EXISTS budgets (
 );
 
 INSERT OR IGNORE INTO users (user_id, username, email, password_hash)
-VALUES (1, 'demo', 'demo@example.com', '$2b$10$jlrP6zRp71UDJV.JHoFnH.8y0e4BjNZDWEcNT9j9sZ/0j/jDRvzcm');
--- password is hashedpassword123
+VALUES (1, 'demo', 'demo@example.com', 'hashedpassword123');
 
 INSERT OR IGNORE INTO budgets (budget_id, user_id, name, currency)
 VALUES (1, 1, 'Default Budget', 'USD');
@@ -85,11 +84,31 @@ CREATE TABLE IF NOT EXISTS incomes (
   notes       TEXT,
   created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE,
-  FOREIGN KEY(user_id)   REFERENCES users(user_id)     ON DELETE CASCADE,
-  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE CASCADE
+  FOREIGN KEY(user_id)   REFERENCES users(user_id)     ON DELETE SET NULL,
+  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_incomes_budget_date ON incomes(budget_id, date);
+
+-- EXPENSES
+CREATE TABLE IF NOT EXISTS expenses (
+  expense_id   INTEGER PRIMARY KEY,
+  budget_id    INTEGER NOT NULL,
+  user_id      INTEGER,
+  account_id   INTEGER,
+  amount       INTEGER NOT NULL,     -- cents
+  category     TEXT,
+  source       TEXT,
+  date         TEXT NOT NULL,        -- YYYY-MM-DD
+  frequency    TEXT,
+  notes        TEXT,
+  created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(budget_id) REFERENCES budgets(budget_id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id)     REFERENCES users(user_id)     ON DELETE SET NULL,
+  FOREIGN KEY(account_id)  REFERENCES accounts(account_id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_expenses_budget_date ON expenses(budget_id, date);
 
 
 -- TRANSACTIONS (header)
@@ -104,8 +123,8 @@ CREATE TABLE IF NOT EXISTS transactions (
   type           TEXT,
   created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(budget_id)  REFERENCES budgets(budget_id) ON DELETE CASCADE,
-  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE CASCADE,
-  FOREIGN KEY(payee_id)   REFERENCES payees(payee_id) ON DELETE CASCADE
+  FOREIGN KEY(account_id) REFERENCES accounts(account_id) ON DELETE SET NULL,
+  FOREIGN KEY(payee_id)   REFERENCES payees(payee_id) ON DELETE SET NULL
 );
 
 -- TRANSACTION LINES (detail rows)
@@ -118,7 +137,7 @@ CREATE TABLE IF NOT EXISTS transaction_lines (
   note           TEXT,
   created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY(transaction_id) REFERENCES transactions(transaction_id) ON DELETE CASCADE,
-  FOREIGN KEY(category_id)    REFERENCES categories(category_id) ON DELETE CASCADE
+  FOREIGN KEY(category_id)    REFERENCES categories(category_id) ON DELETE SET NULL
 );
 
 -- TRANSACTION_TAGS (many-to-many)

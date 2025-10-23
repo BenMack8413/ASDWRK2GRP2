@@ -365,10 +365,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Add this for Jest tests
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        loadCharts,
-        renderChart,
-        addChart,
-        deleteChart,
-    };
+  module.exports = {
+    loadCharts,
+    renderChart,
+    addChart,
+    deleteChart,
+  };
 }

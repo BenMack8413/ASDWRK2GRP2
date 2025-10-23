@@ -41,7 +41,11 @@ body {
     bottom: 0;
     width: 240px;
     padding: 28px 20px;
-    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    background: linear-gradient(
+        180deg,
+        var(--accent),
+        var(--accent-2)
+    );
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -625,17 +629,17 @@ body {
         width: 200px;
         padding: 24px 16px;
     }
-
+    
     .main {
         margin-left: 200px;
         width: calc(100% - 200px);
         padding: 24px;
     }
-
+    
     .budget-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-
+    
     .main-content {
         flex-direction: column;
     }
@@ -651,7 +655,7 @@ body {
     .dashboard {
         flex-direction: column;
     }
-
+    
     .sidebar {
         position: relative;
         width: 100%;
@@ -659,24 +663,24 @@ body {
         padding: 20px;
         border-radius: 0;
     }
-
+    
     .main {
         margin-left: 0;
         width: 100%;
         padding: 20px;
     }
-
+    
     .nav {
         flex-direction: row;
         flex-wrap: wrap;
     }
-
+    
     .nav a {
         flex: 1;
         min-width: 120px;
         justify-content: center;
     }
-
+    
     .budget-header {
         flex-direction: column;
         gap: 16px;
@@ -686,7 +690,7 @@ body {
         width: 100%;
         justify-content: space-between;
     }
-
+    
     .header-date {
         order: 3;
         width: 100%;
@@ -715,6 +719,64 @@ body {
         display: none;
     }
 }
+
+/* small helpers for budget page */
+.progress-small {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progress-small > i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.category-row .budget-input {
+  width: 100%;
+  max-width: 110px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #e6e9ef;
+  font-size: 14px;
+}
+
+.category-row .spent-amount {
+  color: #111;
+  font-weight: 600;
+}
+
+.category-row .remaining-amount {
+  font-weight: 600;
+}
+
+.category-row .status-badge.small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+#categoriesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* make donut and line canvas responsive */
+#categoryDonut, #monthlyLine {
+  max-height: 260px;
+  width: 100% !important;
+}
+
+/* small responsive tweaks */
+@media (max-width: 768px) {
+  .budget-grid { grid-template-columns: 1fr; }
+  .chart-container { height: auto; }
+}
+
 /* -------- Budget End -------- */
 /* BUDGET HTML PAGE END */
 
@@ -1089,13 +1151,13 @@ body {
         width: 200px;
         padding: 24px 16px;
     }
-
+    
     .main {
         margin-left: 200px;
         width: calc(100% - 200px);
         padding: 24px;
     }
-
+    
     .income-stats {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1113,13 +1175,13 @@ body {
     .income-stats {
         grid-template-columns: 1fr;
     }
-
+    
     .list-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
     }
-
+    
     .list-controls {
         width: 100%;
         justify-content: space-between;
@@ -1130,7 +1192,7 @@ body {
     .dashboard {
         flex-direction: column;
     }
-
+    
     .sidebar {
         position: relative;
         width: 100%;
@@ -1138,24 +1200,24 @@ body {
         padding: 20px;
         border-radius: 0;
     }
-
+    
     .main {
         margin-left: 0;
         width: 100%;
         padding: 20px;
     }
-
+    
     .nav {
         flex-direction: row;
         flex-wrap: wrap;
     }
-
+    
     .nav a {
         flex: 1;
         min-width: 120px;
         justify-content: center;
     }
-
+    
     .income-header {
         flex-direction: column;
         gap: 16px;
@@ -1165,7 +1227,7 @@ body {
         width: 100%;
         justify-content: space-between;
     }
-
+    
     .header-date {
         order: 3;
         width: 100%;
@@ -1182,7 +1244,7 @@ body {
         flex-direction: column;
         align-items: stretch;
     }
-
+    
     .income-stats {
         grid-template-columns: 1fr;
     }
@@ -1265,7 +1327,7 @@ body {
         width: 200px;
         padding: 24px 16px;
     }
-
+    
     .main {
         margin-left: 200px;
         width: calc(100% - 200px);
@@ -1277,7 +1339,7 @@ body {
     .dashboard {
         flex-direction: column;
     }
-
+    
     .sidebar {
         position: relative;
         width: 100%;
@@ -1285,30 +1347,30 @@ body {
         padding: 20px;
         border-radius: 0;
     }
-
+    
     .main {
         margin-left: 0;
         width: 100%;
         padding: 20px;
     }
-
+    
     .nav {
         flex-direction: row;
         flex-wrap: wrap;
     }
-
+    
     .nav a {
         flex: 1;
         min-width: 120px;
         justify-content: center;
     }
-
+    
     .expense-header {
         flex-direction: column;
         gap: 16px;
         align-items: flex-start;
     }
-
+    
     .expenseContainer {
         padding: 16px;
     }
@@ -1318,8 +1380,8 @@ body {
     .expenseTable {
         font-size: 14px;
     }
-
-    .expenseTable th,
+    
+    .expenseTable th, 
     .expenseTable td {
         padding: 10px 8px;
     }
@@ -2520,8 +2582,7 @@ body {
     padding: 16px 0;
 }
 
-#logoutBtn,
-#deleteBtn {
+#logoutBtn, #deleteBtn {
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: 500;
@@ -2610,19 +2671,19 @@ body {
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    transition: 0.4s;
+    transition: .4s;
     border-radius: 24px;
 }
 
 .slider:before {
     position: absolute;
-    content: '';
+    content: "";
     height: 16px;
     width: 16px;
     left: 4px;
     bottom: 4px;
     background-color: white;
-    transition: 0.4s;
+    transition: .4s;
     border-radius: 50%;
 }
 
@@ -2672,33 +2733,33 @@ input:checked + .slider:before {
     .account-information {
         padding: 20px;
     }
-
+    
     .info-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
-
+    
     .info-row .label {
         width: 100%;
     }
-
+    
     .setting-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
     }
-
+    
     .setting-control {
         width: 100%;
         justify-content: flex-start;
     }
-
+    
     #account-controls {
         flex-direction: column;
         align-items: flex-start;
     }
-
+    
     #acctMessage {
         margin-left: 0;
         margin-top: 8px;
@@ -2920,14 +2981,8 @@ input:checked + .slider:before {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .auth-form h2 {

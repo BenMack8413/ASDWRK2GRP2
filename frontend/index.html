@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -351,341 +351,98 @@
                     <a href="#">How It Works</a>
                     <a href="#">Pricing</a>
                     <div class="auth-buttons">
-                        <a href="login.html" class="btn btn-outline">Log In</a>
-                        <a href="login.html" class="btn btn-primary">Sign Up</a>
+                        <a href="login.html" id="loginBtn" class="btn btn-outline">Log In</a>
+                        <a href="login.html" id="signupBtn" class="btn btn-primary">Sign Up</a>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <h1>Take Control of Your Finances</h1>
-                <p>
-                    Our intuitive budget tracking tool helps you create budgets,
-                    track expenses, and achieve your financial goals with ease.
-                </p>
-                <div class="hero-buttons">
-                    <a href="login.html" class="btn btn-primary"
-                        >Get Started Free</a
-                    >
-                    <a href="#features" class="btn btn-outline">Learn More</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Take Control of Your Finances</h1>
+            <p>Our intuitive budget tracking tool helps you create budgets, track expenses, and achieve your financial goals with ease.</p>
+            <div class="hero-buttons">
+                <a href="login.html" class="btn btn-primary">Get Started Free</a>
+                <a href="#features" class="btn btn-outline">Learn More</a>
+            </div>
+            <div class="hero-image">
+                <!-- Budget app dashboard illustration -->
+                <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="0" y="0" width="800" height="450" fill="#f8fafc" />
+                    <rect x="50" y="40" width="700" height="60" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1" />
+                    <rect x="70" y="55" width="120" height="30" rx="4" fill="#e5e7eb" />
+                    <rect x="210" y="55" width="80" height="30" rx="4" fill="#e5e7eb" />
+                    <rect x="310" y="55" width="80" height="30" rx="4" fill="#e5e7eb" />
+                    <rect x="410" y="55" width="80" height="30" rx="4" fill="#e5e7eb" />
+                    <rect x="610" y="55" width="120" height="30" rx="4" fill="#1062CD" />
+                    
+                    <rect x="50" y="120" width="340" height="300" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1" />
+                    <rect x="70" y="140" width="300" height="30" rx="4" fill="#f3f4f6" />
+                    <rect x="70" y="190" width="300" height="15" rx="2" fill="#f3f4f6" />
+                    <rect x="70" y="215" width="250" height="15" rx="2" fill="#f3f4f6" />
+                    <rect x="70" y="240" width="280" height="15" rx="2" fill="#f3f4f6" />
+                    <rect x="70" y="265" width="200" height="15" rx="2" fill="#f3f4f6" />
+                    <rect x="70" y="290" width="300" height="15" rx="2" fill="#f3f4f6" />
+                    <rect x="70" y="315" width="270" height="15" rx="2" fill="#f3f4f6" />
+                    <rect x="70" y="340" width="230" height="15" rx="2" fill="#f3f4f6" />
+                    <rect x="70" y="365" width="300" height="15" rx="2" fill="#f3f4f6" />
+                    
+                    <rect x="410" y="120" width="340" height="140" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1" />
+                    <rect x="430" y="140" width="300" height="100" rx="4" fill="#f0f9ff" />
+                    <circle cx="480" cy="190" r="40" fill="#1062CD" opacity="0.2" />
+                    <circle cx="580" cy="190" r="40" fill="#0ea5e9" opacity="0.4" />
+                    <circle cx="680" cy="190" r="40" fill="#38bdf8" opacity="0.6" />
+                    
+                    <rect x="410" y="280" width="340" height="140" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1" />
+                    <rect x="430" y="300" width="300" height="100" rx="4" fill="#f0fdf4" />
+                    <rect x="450" y="320" width="260" height="15" rx="2" fill="#dcfce7" />
+                    <rect x="450" y="345" width="220" height="15" rx="2" fill="#dcfce7" />
+                    <rect x="450" y="370" width="240" height="15" rx="2" fill="#dcfce7" />
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Powerful Features for Your Finances</h2>
+                <p>Everything you need to manage your money effectively and reach your financial goals</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3>Budget Creation</h3>
+                    <p>Easily create customized budgets for different categories and track your spending against them.</p>
                 </div>
-                <div class="hero-image">
-                    <!-- Budget app dashboard illustration -->
-                    <svg
-                        viewBox="0 0 800 450"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <rect
-                            x="0"
-                            y="0"
-                            width="800"
-                            height="450"
-                            fill="#f8fafc"
-                        />
-                        <rect
-                            x="50"
-                            y="40"
-                            width="700"
-                            height="60"
-                            rx="8"
-                            fill="white"
-                            stroke="#e5e7eb"
-                            stroke-width="1"
-                        />
-                        <rect
-                            x="70"
-                            y="55"
-                            width="120"
-                            height="30"
-                            rx="4"
-                            fill="#e5e7eb"
-                        />
-                        <rect
-                            x="210"
-                            y="55"
-                            width="80"
-                            height="30"
-                            rx="4"
-                            fill="#e5e7eb"
-                        />
-                        <rect
-                            x="310"
-                            y="55"
-                            width="80"
-                            height="30"
-                            rx="4"
-                            fill="#e5e7eb"
-                        />
-                        <rect
-                            x="410"
-                            y="55"
-                            width="80"
-                            height="30"
-                            rx="4"
-                            fill="#e5e7eb"
-                        />
-                        <rect
-                            x="610"
-                            y="55"
-                            width="120"
-                            height="30"
-                            rx="4"
-                            fill="#1062CD"
-                        />
-
-                        <rect
-                            x="50"
-                            y="120"
-                            width="340"
-                            height="300"
-                            rx="8"
-                            fill="white"
-                            stroke="#e5e7eb"
-                            stroke-width="1"
-                        />
-                        <rect
-                            x="70"
-                            y="140"
-                            width="300"
-                            height="30"
-                            rx="4"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="190"
-                            width="300"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="215"
-                            width="250"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="240"
-                            width="280"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="265"
-                            width="200"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="290"
-                            width="300"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="315"
-                            width="270"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="340"
-                            width="230"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-                        <rect
-                            x="70"
-                            y="365"
-                            width="300"
-                            height="15"
-                            rx="2"
-                            fill="#f3f4f6"
-                        />
-
-                        <rect
-                            x="410"
-                            y="120"
-                            width="340"
-                            height="140"
-                            rx="8"
-                            fill="white"
-                            stroke="#e5e7eb"
-                            stroke-width="1"
-                        />
-                        <rect
-                            x="430"
-                            y="140"
-                            width="300"
-                            height="100"
-                            rx="4"
-                            fill="#f0f9ff"
-                        />
-                        <circle
-                            cx="480"
-                            cy="190"
-                            r="40"
-                            fill="#1062CD"
-                            opacity="0.2"
-                        />
-                        <circle
-                            cx="580"
-                            cy="190"
-                            r="40"
-                            fill="#0ea5e9"
-                            opacity="0.4"
-                        />
-                        <circle
-                            cx="680"
-                            cy="190"
-                            r="40"
-                            fill="#38bdf8"
-                            opacity="0.6"
-                        />
-
-                        <rect
-                            x="410"
-                            y="280"
-                            width="340"
-                            height="140"
-                            rx="8"
-                            fill="white"
-                            stroke="#e5e7eb"
-                            stroke-width="1"
-                        />
-                        <rect
-                            x="430"
-                            y="300"
-                            width="300"
-                            height="100"
-                            rx="4"
-                            fill="#f0fdf4"
-                        />
-                        <rect
-                            x="450"
-                            y="320"
-                            width="260"
-                            height="15"
-                            rx="2"
-                            fill="#dcfce7"
-                        />
-                        <rect
-                            x="450"
-                            y="345"
-                            width="220"
-                            height="15"
-                            rx="2"
-                            fill="#dcfce7"
-                        />
-                        <rect
-                            x="450"
-                            y="370"
-                            width="240"
-                            height="15"
-                            rx="2"
-                            fill="#dcfce7"
-                        />
-                    </svg>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3>Expense Tracking</h3>
+                    <p>Monitor all your expenses in one place with intuitive categorization and spending insights.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                    </div>
+                    <h3>Goal Setting</h3>
+                    <p>Set financial goals and track your progress with visual indicators and milestone celebrations.</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Features Section -->
-        <section class="features" id="features">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Powerful Features for Your Finances</h2>
-                    <p>
-                        Everything you need to manage your money effectively and
-                        reach your financial goals
-                    </p>
-                </div>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                                />
-                            </svg>
-                        </div>
-                        <h3>Budget Creation</h3>
-                        <p>
-                            Easily create customized budgets for different
-                            categories and track your spending against them.
-                        </p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
-                        </div>
-                        <h3>Expense Tracking</h3>
-                        <p>
-                            Monitor all your expenses in one place with
-                            intuitive categorization and spending insights.
-                        </p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                />
-                            </svg>
-                        </div>
-                        <h3>Goal Setting</h3>
-                        <p>
-                            Set financial goals and track your progress with
-                            visual indicators and milestone celebrations.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
+    </section>
 
         <!-- CTA Section -->
         <section class="cta">
@@ -716,4 +473,13 @@
             </div>
         </footer>
     </body>
+    <script>
+document.getElementById('loginBtn').addEventListener('click', (e) => {
+    sessionStorage.setItem('showTab', 'login');
+});
+
+document.getElementById('signupBtn').addEventListener('click', (e) => {
+    sessionStorage.setItem('showTab', 'signup');
+});
+</script>
 </html>

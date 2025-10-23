@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Expenses</title>
+        <title>Expense Tracking</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
         <link rel="stylesheet" href="./css/style.css" />
     </head>
 
@@ -19,62 +20,529 @@
                     <a onclick="location.href='/dashboard.html';">Dashboard</a>
                     <a onclick="location.href='/budget.html';">Budget</a>
                     <a onclick="location.href='/income.html';">Income</a>
-                    <a class="active" onclick="location.href='/expenses.html';"
-                        >Expenses</a
-                    >
+                    <a class="active" onclick="location.href='/expenses.html';">Expenses</a>
                     <a onclick="location.href='/chart.html';">Charts</a>
-                    <a onclick="location.href='/categories.html';"
-                        >Categories</a
-                    >
-                    <a onclick="location.href='/saving-goals.html';"
-                        >Saving Goals</a
-                    >
-                    <a onclick="location.href='/upcoming-payments.html';"
-                        >Upcoming Payments</a
-                    >
+                    <a onclick="location.href='/categories.html';">Categories</a>
+                    <a onclick="location.href='/saving-goals.html';">Saving Goals</a>
+                    <a onclick="location.href='/upcoming-payments.html';">Upcoming Payments</a>
                     <a onclick="location.href='/account.html';">Settings</a>
                 </nav>
             </aside>
             <!--LEFT SIDE BAR END HERE-->
 
             <main class="main">
-                <div class="expense-header">
-                    <h1 class="title">Expense Tracking</h1>
-                    <button class="addExpenseButton" id="addExpense">
-                        + Add Expense
-                    </button>
+                <div class="income-header">
+                    <div class="header-left">
+                        <h1>Expense Tracking</h1>
+                    </div>
+                    <div class="header-right">
+                        <!-- keep button class for existing CSS; id changed -->
+                        <button class="add-income-btn" id="showExpenseForm">
+                            <i class="fas fa-plus"></i> Add Expense
+                        </button>
+                    </div>
                 </div>
 
-                <div class="expenseContainer">
-                    <table class="expenseTable" id="expenseTable">
-                        <thead>
-                            <tr>
-                                <th>Amount</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Date</th>
-                                <th>Frequency</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>$500</td>
-                                <td>Groceries</td>
-                                <td>Weekly grocery shopping</td>
-                                <td>1st January 2026</td>
-                                <td>Weekly</td>
-                            </tr>
-                            <tr>
-                                <td>$150</td>
-                                <td>Utilities</td>
-                                <td>Monthly utility bills</td>
-                                <td>13th January 2026</td>
-                                <td>Monthly</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- re-uses the same container classes so your CSS applies -->
+                <div class="income-form-container" id="expenseForm">
+                    <div class="form-header">
+                        <h3>Add New Expense</h3>
+                        <button class="close-form" id="closeExpenseForm">
+                            &times;
+                        </button>
+                    </div>
+                    <form id="expenseEntryForm">
+                        <div class="form-group">
+                            <label for="expenseCategory">Category</label>
+                            <input
+                                type="text"
+                                id="expenseCategory"
+                                required
+                                placeholder="Rent, Groceries, Transport, etc."
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseAmount">Amount ($)</label>
+                            <input
+                                type="number"
+                                id="expenseAmount"
+                                required
+                                placeholder="0.00"
+                                step="0.01"
+                                min="0"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseDate">Date</label>
+                            <input type="date" id="expenseDate" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseFrequency">Frequency</label>
+                            <select id="expenseFrequency" required>
+                                <option value="">Select frequency</option>
+                                <option value="one-time">One-time</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="fortnightly">Fortnightly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="expenseDescription"
+                                >Description (Optional)</label
+                            >
+                            <input
+                                type="text"
+                                id="expenseDescription"
+                                placeholder="Additional details about this expense"
+                            />
+                        </div>
+                        <div
+                            class="form-group full-width recurring-options"
+                            id="recurringOptionsExpense"
+                            style="display: none"
+                        >
+                            <input type="checkbox" id="setRecurringExpense" />
+                            <label for="setRecurringExpense"
+                                >Set as recurring expense</label
+                            >
+                        </div>
+                        <div class="form-actions">
+                            <button
+                                type="button"
+                                class="cancel-btn"
+                                id="cancelExpenseForm"
+                            >
+                                Cancel
+                            </button>
+                            <button type="submit" class="submit-btn">
+                                Add Expense
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="income-stats">
+                    <div class="stat-card stat-1">
+                        <div class="stat-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="stat-value" id="stat-total-expense">$0</div>
+                        <div class="stat-title">
+                            Total Current Monthly Expenses
+                        </div>
+                    </div>
+                    <div class="stat-card stat-2">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-value" id="stat-expected-expense">
+                            $0
+                        </div>
+                        <div class="stat-title">Expected This Month</div>
+                    </div>
+                    <div class="stat-card stat-3">
+                        <div class="stat-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="stat-value" id="stat-expense-categories">0</div>
+                        <div class="stat-title">Expense Categories</div>
+                    </div>
+                </div>
+
+                <div class="income-list-container">
+                    <div class="list-header">
+                        <h3>Expense History</h3>
+                        <div class="list-controls">
+                            <input
+                                type="text"
+                                class="search-box"
+                                placeholder="Search expenses..."
+                                id="searchExpense"
+                            />
+                            <select class="sort-select" id="sortExpense">
+                                <option value="date-desc">
+                                    Sort by: Date (Newest)
+                                </option>
+                                <option value="date-asc">
+                                    Sort by: Date (Oldest)
+                                </option>
+                                <option value="amount-desc">
+                                    Sort by: Amount (High to Low)
+                                </option>
+                                <option value="amount-asc">
+                                    Sort by: Amount (Low to High)
+                                </option>
+                                <option value="category">Sort by: Category</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="income-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Frequency</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenseList"></tbody>
+                        </table>
+                    </div>
                 </div>
             </main>
         </div>
     </body>
+
+    <script>
+        // API root for expenses
+        const API_ROOT = '/api/expenses';
+        const BUDGET_ID = 1;
+
+        // Elements
+        const showExpenseFormBtn = document.getElementById('showExpenseForm');
+        const expenseForm = document.getElementById('expenseForm');
+        const closeExpenseFormBtn = document.getElementById('closeExpenseForm');
+        const cancelExpenseFormBtn = document.getElementById('cancelExpenseForm');
+        const expenseEntryForm = document.getElementById('expenseEntryForm');
+        const expenseFrequency = document.getElementById('expenseFrequency');
+        const recurringOptionsExpense = document.getElementById('recurringOptionsExpense');
+        const expenseList = document.getElementById('expenseList');
+        const searchExpense = document.getElementById('searchExpense');
+        const sortExpense = document.getElementById('sortExpense');
+
+        const formHeaderTitle = expenseForm.querySelector('.form-header h3');
+        const submitBtn = expenseEntryForm.querySelector('button[type="submit"]');
+        const inputCategory = document.getElementById('expenseCategory');
+        const inputAmount = document.getElementById('expenseAmount');
+        const inputDate = document.getElementById('expenseDate');
+        const inputFrequency = document.getElementById('expenseFrequency');
+        const inputDescription = document.getElementById('expenseDescription');
+        const inputRecurringCheckbox = document.getElementById('setRecurringExpense');
+
+        /* ---- edit state ---- */
+        let editingExpenseId = null;
+
+        function openExpenseFormForCreate() {
+            editingExpenseId = null;
+            formHeaderTitle.textContent = 'Add New Expense';
+            submitBtn.textContent = 'Add Expense';
+            expenseEntryForm.reset();
+            recurringOptionsExpense.style.display = 'none';
+            expenseForm.classList.add('visible');
+
+            if (!inputDate.value) inputDate.valueAsDate = new Date();
+        }
+
+        function openExpenseFormForEdit(expense) {
+            editingExpenseId = expense.id;
+            formHeaderTitle.textContent = 'Edit Expense';
+            submitBtn.textContent = 'Save Changes';
+
+            inputCategory.value = expense.category || expense.source || '';
+            inputAmount.value =
+                typeof expense.amount === 'number'
+                    ? expense.amount.toFixed(2)
+                    : '';
+
+            inputDate.value = expense.date ? expense.date.split('T')[0] : '';
+            inputFrequency.value = expense.frequency || '';
+            inputDescription.value = expense.description || expense.notes || '';
+            inputRecurringCheckbox.checked = false;
+            recurringOptionsExpense.style.display =
+                inputFrequency.value && inputFrequency.value !== 'one-time'
+                    ? 'flex'
+                    : 'none';
+            expenseForm.classList.add('visible');
+
+            inputCategory.focus();
+        }
+
+        function hideExpenseForm() {
+            expenseForm.classList.remove('visible');
+            editingExpenseId = null;
+            expenseEntryForm.reset();
+
+            formHeaderTitle.textContent = 'Add New Expense';
+            submitBtn.textContent = 'Add Expense';
+            recurringOptionsExpense.style.display = 'none';
+        }
+
+        showExpenseFormBtn.addEventListener('click', openExpenseFormForCreate);
+        closeExpenseFormBtn.addEventListener('click', hideExpenseForm);
+        cancelExpenseFormBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            hideExpenseForm();
+        });
+
+        expenseFrequency.addEventListener('change', function () {
+            if (this.value !== 'one-time' && this.value !== '')
+                recurringOptionsExpense.style.display = 'flex';
+            else recurringOptionsExpense.style.display = 'none';
+        });
+
+        let expenses = [];
+
+        async function loadExpenses() {
+            try {
+                const res = await fetch(`${API_ROOT}?budget_id=${BUDGET_ID}`);
+                if (!res.ok)
+                    throw new Error('Failed to load expenses: ' + res.statusText);
+                expenses = await res.json();
+                renderExpenses();
+            } catch (err) {
+                console.error(err);
+                // optionally show a message to user
+            }
+        }
+
+        async function createExpense(payload) {
+            try {
+                const res = await fetch(API_ROOT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Create failed: ' + txt);
+                }
+                const created = await res.json();
+                // add to local list
+                expenses.unshift(created);
+                renderExpenses();
+                return created;
+            } catch (err) {
+                console.error(err);
+                throw err;
+            }
+        }
+
+        async function updateExpenseOnServer(id, payload) {
+            try {
+                let res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (res.ok) return await res.json();
+
+                res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (res.ok) return await res.json();
+
+                const text = await res.text().catch(() => '');
+                throw new Error(`Update not supported or failed: ${res.status} ${text}`);
+            } catch (err) {
+                throw err;
+            }
+        }
+
+        async function deleteExpenseOnServer(id) {
+            try {
+                const res = await fetch(`${API_ROOT}/${id}?budget_id=${BUDGET_ID}`, { method: 'DELETE' });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error('Delete failed: ' + txt);
+                }
+                expenses = expenses.filter((i) => i.id !== id);
+                renderExpenses();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete item on server.');
+            }
+        }
+
+        expenseEntryForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const category = inputCategory.value.trim();
+            const amountRaw = inputAmount.value;
+            const amount = parseFloat(amountRaw);
+            const date = inputDate.value;
+            const frequency = inputFrequency.value;
+            const description = inputDescription.value;
+            const isRecurring = inputRecurringCheckbox.checked;
+
+            if (!date || !Number.isFinite(amount)) {
+                alert('Please provide valid date and amount.');
+                return;
+            }
+
+            // send both category and source for broader backend compatibility
+            const payload = {
+                budget_id: BUDGET_ID,
+                amount,
+                date,
+                category,
+                source: category,
+                frequency,
+                description,
+                account_id: null,
+            };
+
+            try {
+                if (editingExpenseId == null) {
+                    await createExpense(payload);
+                    hideExpenseForm();
+                    alert('Expense added successfully!');
+                } else {
+                    try {
+                        const updated = await updateExpenseOnServer(editingExpenseId, payload);
+
+                        if (updated && updated.id) {
+                            expenses = expenses.map((i) => (i.id === updated.id ? updated : i));
+                        } else {
+                            await loadExpenses();
+                        }
+                        hideExpenseForm();
+                        alert('Expense updated successfully!');
+                    } catch (updateErr) {
+                        console.warn('Update failed, falling back to recreate+delete:', updateErr);
+                        const created = await createExpense(payload);
+
+                        try {
+                            await deleteExpenseOnServer(editingExpenseId);
+                        } catch (delErr) {
+                            console.warn('Failed to delete old expense after fallback create:', delErr);
+                        }
+                        hideExpenseForm();
+                        alert('Expense updated (by creating a new record).');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to save expense: ' + (err.message || err));
+            } finally {
+                editingExpenseId = null;
+            }
+        });
+
+        function updateExpenseStats(list) {
+            const now = new Date();
+            let totalExpense = 0;
+            let expectedThisMonth = 0;
+
+            list.forEach((i) => {
+                const amount = i.amount || 0;
+                totalExpense += amount;
+
+                const expDate = new Date(i.date);
+
+                switch ((i.frequency || '').toLowerCase()) {
+                    case 'monthly':
+                        if (expDate <= now) expectedThisMonth += amount;
+                        break;
+                    case 'weekly':
+                        if (expDate <= now) expectedThisMonth += amount * 4;
+                        break;
+                    case 'yearly':
+                        if (expDate <= now) expectedThisMonth += amount / 12;
+                        break;
+                    default:
+                        if (expDate.getMonth() === now.getMonth() && expDate.getFullYear() === now.getFullYear()) {
+                            expectedThisMonth += amount;
+                        }
+                }
+            });
+
+            const categories = new Set(list.map((i) => i.category || i.source)).size;
+
+            document.getElementById('stat-total-expense').textContent = `$${totalExpense.toFixed(2)}`;
+            document.getElementById('stat-expected-expense').textContent = `$${expectedThisMonth.toFixed(2)}`;
+            document.getElementById('stat-expense-categories').textContent = categories;
+        }
+
+        function renderExpenses() {
+            expenseList.innerHTML = '';
+
+            expenses.forEach((expense) => {
+                const row = document.createElement('tr');
+                row.classList.add('income-row'); // keeps existing CSS targeting
+
+                row.innerHTML = `
+      <td>
+        <div class="income-source">
+          <div class="source-icon"><i class="fas fa-receipt"></i></div>
+          <div class="income-source-text"></div>
+        </div>
+      </td>
+      <td class="income-amount"></td>
+      <td class="income-date"></td>
+      <td>
+        <span class="income-frequency">${expense.frequency || 'One-time'}</span>
+      </td>
+      <td>
+        <div class="income-actions">
+          <button class="edit-btn" type="button" title="Edit"><i class="fas fa-edit"></i></button>
+          <button class="delete-btn" type="button" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>
+    `;
+
+                row.querySelector('.income-source-text').textContent = expense.category || expense.source || '';
+                row.querySelector('.income-amount').textContent = `-$${(expense.amount || 0).toFixed(2)}`;
+                row.querySelector('.income-date').textContent = new Date(expense.date).toLocaleDateString();
+
+                row.querySelector('.edit-btn').addEventListener('click', () => {
+                    openExpenseFormForEdit(expense);
+                });
+
+                row.querySelector('.delete-btn').addEventListener('click', async () => {
+                    if (!confirm('Delete this expense?')) return;
+                    try {
+                        await deleteExpenseOnServer(expense.id);
+                    } catch (err) {
+                        console.error(err);
+                        alert('Failed to delete expense.');
+                    }
+                });
+
+                expenseList.appendChild(row);
+            });
+
+            updateExpenseStats(expenses);
+        }
+
+        searchExpense.addEventListener('input', () => {
+            const q = searchExpense.value.trim().toLowerCase();
+            if (!q) {
+                renderExpenses();
+                return;
+            }
+            const filtered = expenses.filter(
+                (i) =>
+                    (i.category || i.source || '').toLowerCase().includes(q) ||
+                    (i.description || i.notes || '').toLowerCase().includes(q),
+            );
+
+            const prev = expenses;
+            expenses = filtered;
+            renderExpenses();
+            expenses = prev;
+        });
+
+        sortExpense.addEventListener('change', () => {
+            const mode = sortExpense.value;
+
+            expenses.sort((a, b) => {
+                if (mode === 'date-desc') return new Date(b.date) - new Date(a.date);
+                if (mode === 'date-asc') return new Date(a.date) - new Date(b.date);
+                if (mode === 'amount-desc') return (b.amount || 0) - (a.amount || 0);
+                if (mode === 'amount-asc') return (a.amount || 0) - (b.amount || 0);
+                if (mode === 'category') return (a.category || a.source || '').localeCompare(b.category || b.source || '');
+                return 0;
+            });
+            renderExpenses();
+        });
+
+        document.getElementById('expenseDate').valueAsDate = new Date();
+        document.addEventListener('DOMContentLoaded', loadExpenses);
+        loadExpenses();
+    </script>
 </html>
