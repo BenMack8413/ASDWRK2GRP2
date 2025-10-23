@@ -234,18 +234,18 @@ body {
 }
 
 .layout-controls {
-  display: flex;
-  gap: 10px;      
-  align-items: center;
-  justify-content: flex-end;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 @media (max-width: 480px) {
-  .layout-controls {
-    flex-direction: column;
-    gap: 8px;
-    align-items: stretch;
-  }
+    .layout-controls {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
 }
 
 /* -------- Dashboard End -------- */
@@ -2717,7 +2717,7 @@ input:checked + .slider:before {
     margin-bottom: 24px;
 }
 
-#user-data-buttons input[type="file"] {
+#user-data-buttons input[type='file'] {
     padding: 8px 12px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
@@ -2732,7 +2732,9 @@ input:checked + .slider:before {
     border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
     border: none;
     font-size: 14px;
     flex: 0 0 auto;
@@ -2758,7 +2760,7 @@ input:checked + .slider:before {
         align-items: stretch;
     }
 
-    #user-data-buttons input[type="file"],
+    #user-data-buttons input[type='file'],
     #user-data-buttons button {
         width: 100%;
     }

@@ -12,6 +12,16 @@
                 margin-top: 4px;
             }
 
+            .error-box {
+                background-color: #fdecea;
+                border: 1px solid #f5c2c0;
+                color: #b71c1c;
+                padding: 10px 12px;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                font-size: 0.95em;
+            }
+
             input.error-field {
                 border: 1px solid #e74c3c;
                 outline: none;
@@ -60,6 +70,11 @@
                 <form class="auth-form active" id="loginForm">
                     <h2>Welcome Back</h2>
                     <div class="form-group">
+                        <div
+                            id="login-error"
+                            class="error-box"
+                            style="display: none"
+                        ></div>
                         <label for="login-username">Email</label>
                         <input
                             type="email"
@@ -98,6 +113,11 @@
                 <form class="auth-form" id="signupForm">
                     <h2>Create Account</h2>
                     <div class="form-group">
+                        <div
+                            id="signup-error"
+                            class="error-box"
+                            style="display: none"
+                        ></div>
                         <label for="signup-username">Username</label>
                         <input
                             type="text"
@@ -184,7 +204,7 @@
             // look for existing tokens
             window.addEventListener('DOMContentLoaded', async () => {
                 const token = getToken();
-                if (token) {
+                if (isLoggedIn()) {
                     try {
                         const response = await fetch('/api/user/verify', {
                             method: 'GET',
@@ -226,11 +246,25 @@
                 }
             }
 
+            function showFormError(formId, message) {
+                const box = document.getElementById(formId);
+                box.textContent = message;
+                box.style.display = 'block';
+            }
+
+            function clearFormError(formId) {
+                const box = document.getElementById(formId);
+                box.textContent = '';
+                box.style.display = 'none';
+            }
+
             // Signup form
             document
                 .getElementById('signupForm')
                 .addEventListener('submit', function (e) {
                     e.preventDefault();
+
+                    clearFormError('signup-error');
 
                     const username = document
                         .getElementById('signup-username')
@@ -255,7 +289,22 @@
                         return;
                     }
 
-                    signup(username, email, password, remember);
+                    signup(username, email, password, remember)
+                        .then((result) => {
+                            if (!result.success) {
+                                showFormError('signup-error', result.error);
+                                return;
+                            }
+                            // Redirect on success
+                            window.location.href = '/dashboard.html';
+                        })
+                        .catch((err) => {
+                            showFormError(
+                                'signup-error',
+                                'Network error. Please try again.',
+                            );
+                            console.error(err);
+                        });
                 });
 
             document
@@ -263,6 +312,7 @@
                 .addEventListener('submit', function (e) {
                     e.preventDefault();
 
+                    clearFormError('login-error');
                     const username = document
                         .getElementById('login-username')
                         .value.trim();
@@ -282,7 +332,22 @@
                         return;
                     }
 
-                    login(username, password, remember);
+                    login(username, password, remember)
+                        .then((result) => {
+                            if (!result.success) {
+                                showFormError('login-error', result.error);
+                                return;
+                            }
+                            // Redirect on success
+                            window.location.href = '/dashboard.html';
+                        })
+                        .catch((err) => {
+                            showFormError(
+                                'login-error',
+                                'Network error. Please try again.',
+                            );
+                            console.error(err);
+                        });
                 });
         </script>
         <script src="/scripts/token.js"></script>
