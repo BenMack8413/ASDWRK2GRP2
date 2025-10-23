@@ -8,7 +8,6 @@
   const totalIncomeEl = document.getElementById('total-income');
   const totalExpensesEl = document.getElementById('total-expenses');
   const remainingEl = document.getElementById('remaining');
-  const categoriesContainer = document.getElementById('categoriesContainer');
   const currentMonthLabel = document.getElementById('current-month-label');
 
   const statMonthLabel = document.getElementById('stat-month-label');
@@ -137,8 +136,6 @@
     const totalExpenseThisRangeCents = Object.values(sums).reduce((a, b) => a + b, 0);
     const budgetTotal = Object.values(categoryBudgets).reduce((a, b) => a + Number(b || 0), 0);
 
-    categoriesContainer.innerHTML = '';
-
     // Build a list of category names to include: categories from server + ones from sums
     const allNames = new Set();
     categories.forEach((c) => allNames.add(c.name));
@@ -183,7 +180,6 @@
         renderSummary(); // update remaining totals
       });
 
-      categoriesContainer.appendChild(div);
     });
 
     renderSummary();
@@ -400,25 +396,6 @@ async function drawDonut() {
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-  });
-
-  addCategoryBudgetBtn.addEventListener('click', () => {
-    // read all budget inputs and persist to localStorage
-    document.querySelectorAll('.budget-input').forEach((input) => {
-      const name = input.dataset.cat;
-      const v = parseFloat(input.value || 0);
-      categoryBudgets[name] = Number(isNaN(v) ? 0 : v).toFixed(2);
-    });
-    saveLocalBudgets(categoryBudgets);
-    alert('Budgets saved locally.');
-    renderCategories(); // refresh UI to reflect saved budgets
-  });
-
-  resetBudgetsBtn.addEventListener('click', () => {
-    if (!confirm('Reset all saved budgets?')) return;
-    resetLocalBudgets();
-    categoryBudgets = {};
-    renderCategories();
   });
 
   // init
