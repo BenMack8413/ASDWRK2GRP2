@@ -408,10 +408,6 @@ async function drawDonut() {
     URL.revokeObjectURL(url);
   });
 
-  addTxBtn.addEventListener('click', () => {
-    alert('Open transaction modal (not implemented). You can add transactions using the Income/Expenses pages.');
-  });
-
   addCategoryBudgetBtn.addEventListener('click', () => {
     // read all budget inputs and persist to localStorage
     document.querySelectorAll('.budget-input').forEach((input) => {
