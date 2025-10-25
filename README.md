@@ -73,7 +73,7 @@ ASDWRK2GRP2/
 | **Ben** | Database, schema, router structure, user accounts, login, account settings, upload/download user data, logout, delete account, frontend structure, server logic, github setup, ci/cd workflows, azure web services |
 | **Jackson** | Dashboard HTML, Income HTML, Budget HTML, Dashboard CSS, Inomce CSS, Budget CSS, Expense CSS, Header CSS, Income JS, Income_simple JS, Transactions JS |
 | **Randy** | Expense HTML and Scripting, Budget Scripting, Expense Backend Scripting, Budget Backend Scripting |
-| **Romnic** | Saving Goals (HTML/CSS/JS), Upcoming Payments (HTML/CSS/JS), backend API routers (`savingGoals.js`, `upcomingPayments.js`), DB queries & validation, status/filter UI, mark-paid/edit/delete flows, summary cards, Jest + Supertest API tests for both features, README updates |
+| **Romnic** | Saving Goals (HTML/CSS/JS), Upcoming Payments (HTML/CSS/JS), backend API routers (`savingGoals.js`, `upcomingPayments.js`), DB queries & validation, status/filter UI, mark-paid/edit/delete flows, Jest tests for both features |
 
 
 ## Setup instructions
