@@ -31,40 +31,40 @@ ASDWRK2GRP2/
 │ │ └── any image files  
 │ └── html files  
 │  
-├── backend/\
-│ ├── api/\
-│ │ ├── index.js - the main router which connects all other routers into it
-│ │ ├── sampleApi.js - holds the structure of what an api router should be
-│ │ └── other router files that isolated for specific functions
-│ ├── export/
-│ │ └── holds temp export files for the database
-│ ├── uploads/
-│ │ └── holds temp import files for the database
-│ ├── helpers/
-│ │ └── holds helper files for backend functions
-│ ├── mybudget.db - SQLite database file
-│ ├── schema.sql - Database schema definition
-│ ├── auth.js - holds the token related functions
-│ ├── db-init.js - holds database initialisation functions
-│ └── db.js - holds database related functions
-│
-├── .github/workflows
-│ ├── main_saniriser.yml
-│ └── code-test-and-lint.yml
-│
-├── tests/
-│ └── test files
-│
-├── run.js - has the server run code
-├── package.json
-├── package-lock.json
-├── .gitignore
-├── prettierrc
-├── azure-pipelines.yml
-├── esling.config.mjs
-├── jest.setup.js
-├── .env
-└── README.md
+├── backend/  
+│ ├── api/  
+│ │ ├── index.js - the main router which connects all other routers into it  
+│ │ ├── sampleApi.js - holds the structure of what an api router should be  
+│ │ └── other router files that isolated for specific functions  
+│ ├── export/  
+│ │ └── holds temp export files for the database  
+│ ├── uploads/  
+│ │ └── holds temp import files for the database  
+│ ├── helpers/  
+│ │ └── holds helper files for backend functions  
+│ ├── mybudget.db - SQLite database file  
+│ ├── schema.sql - Database schema definition  
+│ ├── auth.js - holds the token related functions  
+│ ├── db-init.js - holds database initialisation functions  
+│ └── db.js - holds database related functions  
+│  
+├── .github/workflows  
+│ ├── main_saniriser.yml  
+│ └── code-test-and-lint.yml  
+│  
+├── tests/  
+│ └── test files  
+│  
+├── run.js - has the server run code  
+├── package.json  
+├── package-lock.json  
+├── .gitignore  
+├── prettierrc  
+├── azure-pipelines.yml  
+├── esling.config.mjs  
+├── jest.setup.js  
+├── .env  
+└── README.md  
 
 ## 👥 Contributors and Responsibilities
 
