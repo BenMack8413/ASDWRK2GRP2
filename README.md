@@ -19,8 +19,8 @@ The project supports:
 
 ## 🗂️ Repository Structure
 
-ASDWRK2GRP2//n
-│/n
+ASDWRK2GRP2/
+│
 ├── WebPages/
 │ ├── html files
 │ ├── css/
