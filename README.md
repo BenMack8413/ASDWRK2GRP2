@@ -73,6 +73,8 @@ ASDWRK2GRP2/
 | **Ben** | Database, schema, router structure, user accounts, login, account settings, upload/download user data, logout, delete account, frontend structure, server logic, github setup, ci/cd workflows, azure web services |
 | **Jackson** | Dashboard HTML, Income HTML, Budget HTML, Dashboard CSS, Inomce CSS, Budget CSS, Expense CSS, Header CSS, Income JS, Income_simple JS, Transactions JS |
 | **Randy** | Expense HTML and Scripting, Budget Scripting, Expense Backend Scripting, Budget Backend Scripting |
+| **Romnic** | Saving Goals (HTML/CSS/JS), Upcoming Payments (HTML/CSS/JS), backend API routers (`savingGoals.js`, `upcomingPayments.js`), DB queries & validation, status/filter UI, mark-paid/edit/delete flows, summary cards, Jest + Supertest API tests for both features, README updates |
+
 
 ## Setup instructions
 ### Prerequisites
@@ -175,6 +177,25 @@ starts with /transactions
 | /:id | GET | Get transactuin by transaction id and budget id |
 | / | POST | Create new transaction |
 
+savingGoals.js  
+starts with /saving-goals
+| Route        | Method | Description                                  |
+|--------------|--------|----------------------------------------------|
+| /            | GET    | Get all saving goals for the current user    |
+| /            | POST   | Create a new saving goal                     |
+| /:id         | PUT    | Update an existing saving goal               |
+| /:id         | DELETE | Delete a saving goal                         |
+
+upcomingPayments.js  
+starts with /upcoming-payments
+| Route               | Method | Description                                             |
+|---------------------|--------|---------------------------------------------------------|
+| /                   | GET    | Get all upcoming payments for the current user         |
+| /                   | POST   | Create a new upcoming payment                          |
+| /:id                | PUT    | Update an existing upcoming payment                    |
+| /:id                | DELETE | Delete a payment                                       |
+| /:id/mark-paid      | PATCH  | Mark a payment as paid                                 |
+
 User.js 
 starts with /user
 | Route | Method | Description |
@@ -184,4 +205,4 @@ starts with /user
 | /verify | GET | Verify token |
 | /me | GET | Returns user |
 | /information/:id | GET | Gets account information |
-| /delete/id | DELETE | Deletes account |
+| /delete/id | DELETE | Deletes account |<img width="725" height="483" alt="Screenshot 2025-10-26 at 6 55 05 AM" src="https://github.com/user-attachments/assets/57588a23-612f-4442-81fd-162c70656565" />
