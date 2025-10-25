@@ -71,6 +71,7 @@ ASDWRK2GRP2/
 | Team Member | Responsibilities |
 |--------------|------------------|
 | **Ben** | Database, schema, router structure, user accounts, login, account settings, upload/download user data, logout, delete account, frontend structure, server logic, github setup, ci/cd workflows, azure web services |
+| **Jackson** | Dashboard HTML, Income HTML, Budget HTML, Dashboard CSS, Inomce CSS, Budget CSS, Expense CSS, Header CSS, Income JS, Income_simple JS, Transactions JS |
 
 ## Setup instructions
 ### Prerequisites
