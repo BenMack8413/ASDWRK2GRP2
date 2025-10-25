@@ -19,20 +19,20 @@ The project supports:
 
 ## 🗂️ Repository Structure
 
-ASDWRK2GRP2/
-│
-├── WebPages/
-│ ├── html files
-│ ├── css/
-│ │ └── style.css
-│ ├── scripts/
-│ │ └── javascript helper scripts
-│ ├── images/
-│ │ └── any image files
-│ └── html files
-│
-├── backend/
-│ ├── api/
+ASDWRK2GRP2/  
+│  
+├── WebPages/  
+│ ├── html files  
+│ ├── css/  
+│ │ └── style.css  
+│ ├── scripts/  
+│ │ └── javascript helper scripts  
+│ ├── images/  
+│ │ └── any image files  
+│ └── html files  
+│  
+├── backend/\
+│ ├── api/\
 │ │ ├── index.js - the main router which connects all other routers into it
 │ │ ├── sampleApi.js - holds the structure of what an api router should be
 │ │ └── other router files that isolated for specific functions
