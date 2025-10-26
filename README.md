@@ -74,6 +74,7 @@ ASDWRK2GRP2/
 | **Jackson** | Dashboard HTML, Income HTML, Budget HTML, Dashboard CSS, Inomce CSS, Budget CSS, Expense CSS, Header CSS, Income JS, Income_simple JS, Transactions JS |
 | **Randy** | Expense HTML and Scripting, Budget Scripting, Expense Backend Scripting, Budget Backend Scripting |
 | **Romnic** | Saving Goals (HTML/CSS/JS), Upcoming Payments (HTML/CSS/JS), backend API routers (`savingGoals.js`, `upcomingPayments.js`), DB queries & validation, status/filter UI, mark-paid/edit/delete flows, Jest tests for both features |
+| **Conlan** | Visual Reports/Charts (HTML/CSS/JS), Categories (HTML/CSS/JS), backend API routers (`charts.js`, `categories.js`), database schema for both features, CRUD operations for both features |
 
 
 ## Setup instructions
